@@ -140,10 +140,12 @@ void CBloom::Abort()
 void CBloom::Put(const BYTE* buffer, unsigned length)
 {
 #ifdef _DEBUG
-	std::wostringstream out;
-	for (unsigned i = 0; i < length; i++)
-		out << std::hex << std::setfill(L'0') << std::setw(2) << (int)buffer[i] << ' ';
-	_RPTWN(_CRT_WARN, L"Put: %s\r\n", out.str());
+	{
+		_RPTW0(_CRT_WARN, L"Put: ");
+		for (unsigned i = 0; i < length; i++)
+			_RPTWN(_CRT_WARN, L"%02X ", buffer[i]);
+		_RPTW0(_CRT_WARN, L"\r\n");
+	}
 #endif
 
 	unsigned Count = Header.Size();
@@ -168,10 +170,10 @@ void CBloom::Put(const BYTE* buffer, unsigned length)
 
 #ifdef _DEBUG
 	{
-		std::wostringstream out;
+		_RPTW0(_CRT_WARN, L"Put hash: ");
 		for (unsigned i = 0; i < hash.Size(); i++)
-			out << std::hex << std::setfill(L'0') << std::setw(2) << (int)hash[i] << ' ';
-		_RPTWN(_CRT_WARN, L"Put hash: %s\r\n", out.str());
+			_RPTWN(_CRT_WARN, L"%02X ", hash[i]);
+		_RPTW0(_CRT_WARN, L"\r\n");
 	}
 #endif
 
@@ -194,17 +196,17 @@ void CBloom::Put(const BYTE* buffer, unsigned length)
 void CBloom::Put(const TCHAR* String)
 {
 	_RPTWN(_CRT_WARN, L"PutString: '%s'\r\n", String);
-	Put((const BYTE*)String, (unsigned)_tcslen(String));
+	Put((const BYTE*)String, (unsigned)_tcslen(String) * 2U);
 }
 
 BOOL CBloom::Check(const BYTE* buffer, unsigned length) const
 {
 #ifdef _DEBUG
 	{
-		std::wostringstream out;
+		_RPTW0(_CRT_WARN, L"Check: ");
 		for (unsigned i = 0; i < length; i++)
-			out << std::hex << std::setfill(L'0') << std::setw(2) << (int)buffer[i] << ' ';
-		_RPTWN(_CRT_WARN, L"Check: %s\r\n", out.str());
+			_RPTWN(_CRT_WARN, L"%02X ", buffer[i]);
+		_RPTW0(_CRT_WARN, L"\r\n");
 	}
 #endif
 
@@ -230,10 +232,10 @@ BOOL CBloom::Check(const BYTE* buffer, unsigned length) const
 
 #ifdef _DEBUG
 	{
-		std::wostringstream out;
+		_RPTW0(_CRT_WARN, L"Check hash: ");
 		for (unsigned i = 0; i < hash.Size(); i++)
-			out << std::hex << std::setfill(L'0') << std::setw(2) << (int)hash[i] << ' ';
-		_RPTWN(_CRT_WARN, L"Check hash: %s\r\n", out.str());
+			_RPTWN(_CRT_WARN, L"%02X ", hash[i]);
+		_RPTW0(_CRT_WARN, L"\r\n");
 	}
 #endif
 
@@ -256,7 +258,7 @@ BOOL CBloom::Check(const BYTE* buffer, unsigned length) const
 BOOL CBloom::Check(const TCHAR* String) const
 {
 	_RPTWN(_CRT_WARN, L"CheckString: '%s'\r\n", String);
-	return Check((const BYTE*)String, (unsigned)_tcslen(String));
+	return Check((const BYTE*)String, (unsigned)_tcslen(String) * 2U);
 }
 
 BYTE CBloom::operator[](unsigned pos) const

@@ -7,14 +7,14 @@ namespace BloomCS_Test
     public class BloomTest
     {
         [TestMethod]
-        public void Test1()
+        public void TestString()
         {
             CreateTestString();
             OpenTestString();
         }
 
         [TestMethod]
-        public void Test2()
+        public void TestArray()
         {
             CreateTestArray();
             OpenTestArray();
