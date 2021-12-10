@@ -2,8 +2,11 @@
 
 namespace BloomCS
 {
-    public static class Bloom
+    public class Bloom : IDisposable
     {
+        private readonly IntPtr bloom;
+        private bool disposedValue;
+
         [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "CreateBloom")]
         private static extern IntPtr _create_bloom();
 
@@ -52,32 +55,63 @@ namespace BloomCS
         [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "HeaderHashFunc")]
         private static extern byte _header_hash_func([In] IntPtr Bloom);
 
-        public static IntPtr CreateBloom() => _create_bloom();
-        public static void DestroyBloom(IntPtr Bloom) => _destroy_bloom(Bloom);
-
-        public static void Create(IntPtr Bloom, string FileName) => _create(Bloom, FileName);
-        public static void Open(IntPtr Bloom, string FileName) => _open(Bloom, FileName);
-        public static void Store(IntPtr Bloom) => _store(Bloom);
-        public static void Load(IntPtr Bloom) => _load(Bloom);
-        public static void Close(IntPtr Bloom) => _close(Bloom);
-        public static void Abort(IntPtr Bloom) => _abort(Bloom);
-        public static void Allocate(IntPtr Bloom, uint Elements) => _allocate(Bloom, Elements);
-
-        public static void PutString(IntPtr Bloom, string String) => _put_string(Bloom, String);
-        public static void PutArray(IntPtr Bloom, byte[] Array)
+        public Bloom()
         {
-            using var pinnedArray = new AutoPinner(Array);
-            _put_array(Bloom, pinnedArray, (uint)Array.Length);
-        }
-        public static bool CheckString(IntPtr Bloom, string String) => _check_string(Bloom, String);
-        public static bool CheckArray(IntPtr Bloom, byte[] Array)
-        {
-            using var pinnedArray = new AutoPinner(Array);
-            return _check_array(Bloom, pinnedArray, (uint)Array.Length);
+            bloom = _create_bloom();
+            if (bloom == IntPtr.Zero)
+                throw new InvalidOperationException("Error creating Bloom Filter");
         }
 
-        public static ushort HeaderVersion(IntPtr Bloom) => _header_version(Bloom);
-        public static ulong HeaderSize(IntPtr Bloom) => _header_size(Bloom);
-        public static byte HeaderHashFunc(IntPtr Bloom) => _header_hash_func(Bloom);
+        public void Create(string FileName) => _create(bloom, FileName);
+        public void Open(string FileName) => _open(bloom, FileName);
+        public void Store() => _store(bloom);
+        public void Load() => _load(bloom);
+        public void Close() => _close(bloom);
+        public void Abort() => _abort(bloom);
+        public void Allocate(uint Elements) => _allocate(bloom, Elements);
+
+        public void PutString(string String) => _put_string(bloom, String);
+        public void PutArray(byte[] Array)
+        {
+            using var pinnedArray = new AutoPinner(Array);
+            _put_array(bloom, pinnedArray, (uint)Array.Length);
+        }
+
+        public bool CheckString(string String) => _check_string(bloom, String);
+        public bool CheckArray(byte[] Array)
+        {
+            using var pinnedArray = new AutoPinner(Array);
+            return _check_array(bloom, pinnedArray, (uint)Array.Length);
+        }
+
+        public ushort HeaderVersion() => _header_version(bloom);
+        public ulong HeaderSize() => _header_size(bloom);
+        public byte HeaderHashFunc() => _header_hash_func(bloom);
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    _destroy_bloom(bloom);
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        ~Bloom()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: false);
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
     }
 }
