@@ -6,8 +6,8 @@
 
 constexpr USHORT BLOOM_VERSION = 0x0200;
 constexpr auto BLOOM_PFP = ((double)0.001);		// Probability of a false positive = 1%;
-constexpr auto UNCOMPRESSED = 0;
-constexpr auto GZIP = 1;
+//constexpr auto UNCOMPRESSED = 0;
+//constexpr auto GZIP = 1;
 
 constexpr auto  HASH_FUNC = sha256;
 constexpr auto  HASH_DIGESTSIZE = SHA256_DIGEST_SIZE;

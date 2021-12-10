@@ -41,25 +41,25 @@ unsigned CBloom::CountBits(unsigned int Elements)
 
 void CBloom::Allocate(unsigned Elements)
 {
-	unsigned bits;
-	unsigned bytes;
+	if (!IsFileValid(File))
+		throw bloom_exception(bloom_exception::_error::BLOOM_ERROR_NOT_OPENED);
 
 	if (Elements == 0)
 		return;
 
-	if (Header.Version() == BLOOM_VERSION)
-	{
-		bits = CountBits(Elements);
-		bytes = (bits >> 3) + 1;
-	}
-	else
+	if (Header.Version() != BLOOM_VERSION)
 		throw bloom_exception(bloom_exception::_error::BLOOM_ERROR_UNKNOWN_VERSION);
+
+	unsigned bits = CountBits(Elements);
+	unsigned bytes = (bits >> 3) + 1;
 
 	Header.Size(bits);
 	Header.Save(File);
 
 	m_bDirty = TRUE;
-	Array.reset(new BYTE[ArraySize = bytes]);
+	BYTE* buffer = new BYTE[ArraySize = bytes];
+	memset(buffer, 0, bytes);
+	Array.reset(buffer);
 }
 
 void CBloom::Store()
@@ -77,7 +77,7 @@ void CBloom::Open(const TCHAR* FileName)
 {
 	if (IsFileValid(File))
 		throw bloom_exception(bloom_exception::_error::BLOOM_ERROR_ALREADY_OPENED);
-	IO_Validate0(_tsopen_s(&File, FileName, _O_BINARY | _O_RDWR, _SH_DENYNO, _S_IREAD | _S_IWRITE));	// Does it need R/O mode for opening? R/O files cause exception #5
+	IO_Validate0(_tsopen_s(&File, FileName, _O_BINARY | _O_RDWR, _SH_DENYNO, _S_IREAD | _S_IWRITE));
 
 	Header.Load(File);
 	if (!Header.Check())
@@ -139,6 +139,13 @@ void CBloom::Abort()
 
 void CBloom::Put(const BYTE* buffer, unsigned length)
 {
+#ifdef _DEBUG
+	std::wostringstream out;
+	for (unsigned i = 0; i < length; i++)
+		out << std::hex << std::setfill(L'0') << std::setw(2) << (int)buffer[i] << ' ';
+	_RPTWN(_CRT_WARN, L"Put: %s\r\n", out.str());
+#endif
+
 	unsigned Count = Header.Size();
 	unsigned HeaderSize;
 	if (Count == 0)
@@ -158,6 +165,16 @@ void CBloom::Put(const BYTE* buffer, unsigned length)
 	}
 	else
 		throw bloom_exception(bloom_exception::_error::BLOOM_ERROR_UNKNOWN_VERSION);
+
+#ifdef _DEBUG
+	{
+		std::wostringstream out;
+		for (unsigned i = 0; i < hash.Size(); i++)
+			out << std::hex << std::setfill(L'0') << std::setw(2) << (int)hash[i] << ' ';
+		_RPTWN(_CRT_WARN, L"Put hash: %s\r\n", out.str());
+	}
+#endif
+
 	for (UINT i = 0; i < hash.Size(); i++)
 	{
 		unsigned bit = hash[i] % Count;
@@ -167,19 +184,30 @@ void CBloom::Put(const BYTE* buffer, unsigned length)
 
 		auto array = Array.get();
 		b = array[byte];
+		_RPTWN(_CRT_WARN, L"Put: Position = %i Mask = 0x%0X Value = 0x%0X\r\n", byte, mask, b);
 		b |= mask;
 		array[byte] = b;
-		m_bDirty = TRUE;
 	}
+	m_bDirty = TRUE;
 }
 
 void CBloom::Put(const TCHAR* String)
 {
+	_RPTWN(_CRT_WARN, L"PutString: '%s'\r\n", String);
 	Put((const BYTE*)String, (unsigned)_tcslen(String));
 }
 
 BOOL CBloom::Check(const BYTE* buffer, unsigned length) const
 {
+#ifdef _DEBUG
+	{
+		std::wostringstream out;
+		for (unsigned i = 0; i < length; i++)
+			out << std::hex << std::setfill(L'0') << std::setw(2) << (int)buffer[i] << ' ';
+		_RPTWN(_CRT_WARN, L"Check: %s\r\n", out.str());
+	}
+#endif
+
 	unsigned Count = Header.Size();
 	unsigned HeaderSize;
 	if (Count == 0)
@@ -199,6 +227,16 @@ BOOL CBloom::Check(const BYTE* buffer, unsigned length) const
 	}
 	else
 		throw bloom_exception(bloom_exception::_error::BLOOM_ERROR_UNKNOWN_VERSION);
+
+#ifdef _DEBUG
+	{
+		std::wostringstream out;
+		for (unsigned i = 0; i < hash.Size(); i++)
+			out << std::hex << std::setfill(L'0') << std::setw(2) << (int)hash[i] << ' ';
+		_RPTWN(_CRT_WARN, L"Check hash: %s\r\n", out.str());
+	}
+#endif
+
 	for (UINT i = 0; i < hash.Size(); i++)
 	{
 		unsigned bit = hash[i] % Count;
@@ -208,6 +246,7 @@ BOOL CBloom::Check(const BYTE* buffer, unsigned length) const
 
 		auto array = Array.get();
 		b = array[byte];
+		_RPTWN(_CRT_WARN, L"Check: Position = %i Mask = 0x%0X Value = 0x%0X\r\n", byte, mask, b);
 		if (!(b & mask))
 			return FALSE;
 	}
@@ -216,6 +255,7 @@ BOOL CBloom::Check(const BYTE* buffer, unsigned length) const
 
 BOOL CBloom::Check(const TCHAR* String) const
 {
+	_RPTWN(_CRT_WARN, L"CheckString: '%s'\r\n", String);
 	return Check((const BYTE*)String, (unsigned)_tcslen(String));
 }
 

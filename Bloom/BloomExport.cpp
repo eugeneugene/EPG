@@ -89,7 +89,7 @@ extern "C" BLOOM_API BOOL __stdcall CheckArray(void* objptr, const BYTE * buffer
 {
 	CBloom* bloom = (CBloom*)objptr;
 	if (bloom)
-		bloom->Check(buffer, length);
+		return bloom->Check(buffer, length);
 	return FALSE;
 }
 

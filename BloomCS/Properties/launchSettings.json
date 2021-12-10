@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "BloomCS": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

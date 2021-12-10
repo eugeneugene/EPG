@@ -38,13 +38,13 @@ namespace BloomCS
         private static extern void _put_string([In] IntPtr Bloom, [In] string String);
 
         [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "PutArray")]
-        private static extern void _put_array([In] IntPtr Bloom, [In] IntPtr buffer, [In] uint length);
+        private static extern void _put_array([In] IntPtr Bloom, [In] byte[] buffer, [In] uint length);
 
         [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "CheckString")]
-        private static extern bool _check_string([In] IntPtr Bloom, [In] string String);
+        private static extern int _check_string([In] IntPtr Bloom, [In] string String);
 
         [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "CheckArray")]
-        private static extern bool _check_array([In] IntPtr Bloom, [In] IntPtr buffer, [In] uint length);
+        private static extern int _check_array([In] IntPtr Bloom, [In] byte[] buffer, [In] uint length);
 
         [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "HeaderVersion")]
         private static extern ushort _header_version([In] IntPtr Bloom);
@@ -71,18 +71,9 @@ namespace BloomCS
         public void Allocate(uint Elements) => _allocate(bloom, Elements);
 
         public void PutString(string String) => _put_string(bloom, String);
-        public void PutArray(byte[] Array)
-        {
-            using var pinnedArray = new AutoPinner(Array);
-            _put_array(bloom, pinnedArray, (uint)Array.Length);
-        }
-
-        public bool CheckString(string String) => _check_string(bloom, String);
-        public bool CheckArray(byte[] Array)
-        {
-            using var pinnedArray = new AutoPinner(Array);
-            return _check_array(bloom, pinnedArray, (uint)Array.Length);
-        }
+        public void PutArray(byte[] Array) => _put_array(bloom, Array, (uint)Array.Length);
+        public bool CheckString(string String) => _check_string(bloom, String) != 0;
+        public bool CheckArray(byte[] Array) => _check_array(bloom, Array, (uint)Array.Length) != 0;
 
         public ushort HeaderVersion() => _header_version(bloom);
         public ulong HeaderSize() => _header_size(bloom);
