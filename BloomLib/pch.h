@@ -21,8 +21,4 @@
 
 #if defined(_DEBUG)
 #include <crtdbg.h>
-#include <iostream>
-#include <sstream> // for ostringstream
-#include <string>
-#include <iomanip>
 #endif

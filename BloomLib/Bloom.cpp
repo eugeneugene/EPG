@@ -71,6 +71,7 @@ void CBloom::Store()
 	Header.Save(File);
 
 	IO_Validate(_write(File, Array.get(), (unsigned)ArraySize));
+	m_bDirty = FALSE;
 }
 
 void CBloom::Open(const TCHAR* FileName)
@@ -89,15 +90,10 @@ void CBloom::Open(const TCHAR* FileName)
 void CBloom::Close()
 {
 	if (m_bDirty)
-	{
 		Store();
-		m_bDirty = FALSE;
-	}
 	if (IsFileValid(File))
-	{
 		IO_Validate(_close(File));
-		File = 0;
-	}
+	File = 0;
 	Array.reset();
 }
 
@@ -126,12 +122,10 @@ void CBloom::Load()
 void CBloom::Abort()
 {
 	if (IsFileValid(File))
-	{
-		int res = _close(File);
-		File = 0;
-		IO_Validate(res);
-	}
+		IO_Validate(close(File));
+	File = 0;
 	Array.reset();
+	m_bDirty = FALSE;
 	Header.Default();
 	Header.Version(BLOOM_VERSION);
 	Header.HashFunc(BLOOM_DEFAULT_HASHSIZE);
@@ -148,7 +142,7 @@ void CBloom::Put(const BYTE* buffer, unsigned length)
 	}
 #endif
 
-	unsigned Count = Header.Size();
+	auto Count = Header.Size();
 	unsigned HeaderSize;
 	if (Count == 0)
 		throw bloom_exception(bloom_exception::_error::BLOOM_ERROR_NOT_ALLOCATED);
@@ -177,6 +171,7 @@ void CBloom::Put(const BYTE* buffer, unsigned length)
 	}
 #endif
 
+	auto array = Array.get();
 	for (UINT i = 0; i < hash.Size(); i++)
 	{
 		unsigned bit = hash[i] % Count;
@@ -184,7 +179,6 @@ void CBloom::Put(const BYTE* buffer, unsigned length)
 		BYTE b = BYTE(bit & 7);
 		BYTE mask = 1 << b;
 
-		auto array = Array.get();
 		b = array[byte];
 		_RPTWN(_CRT_WARN, L"Put: Position = %i Mask = 0x%0X Value = 0x%0X\r\n", byte, mask, b);
 		b |= mask;
@@ -210,7 +204,7 @@ BOOL CBloom::Check(const BYTE* buffer, unsigned length) const
 	}
 #endif
 
-	unsigned Count = Header.Size();
+	auto Count = Header.Size();
 	unsigned HeaderSize;
 	if (Count == 0)
 		throw bloom_exception(bloom_exception::_error::BLOOM_ERROR_NOT_ALLOCATED);
@@ -239,6 +233,7 @@ BOOL CBloom::Check(const BYTE* buffer, unsigned length) const
 	}
 #endif
 
+	auto array = Array.get();
 	for (UINT i = 0; i < hash.Size(); i++)
 	{
 		unsigned bit = hash[i] % Count;
@@ -246,7 +241,6 @@ BOOL CBloom::Check(const BYTE* buffer, unsigned length) const
 		BYTE b = BYTE(bit & 7);
 		BYTE mask = 1 << b;
 
-		auto array = Array.get();
 		b = array[byte];
 		_RPTWN(_CRT_WARN, L"Check: Position = %i Mask = 0x%0X Value = 0x%0X\r\n", byte, mask, b);
 		if (!(b & mask))
@@ -263,7 +257,7 @@ BOOL CBloom::Check(const TCHAR* String) const
 
 BYTE CBloom::operator[](unsigned pos) const
 {
-	unsigned Count = Header.Size();
+	auto Count = Header.Size();
 	if (Count == 0)
 		throw bloom_exception(bloom_exception::_error::BLOOM_ERROR_NOT_ALLOCATED);
 	if (GetSize() == 0)	// Not allocated in memory
