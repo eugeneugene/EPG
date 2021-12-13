@@ -33,6 +33,15 @@
     <ClInclude Include="Hash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\char_to_oem_filters.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\WideHelp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Win32ErrorEx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -45,6 +54,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BloomHeader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\WideHelp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

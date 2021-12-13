@@ -20,19 +20,15 @@ public:
 	void Close();
 	void Abort();
 	void Allocate(unsigned Elements);
-	static unsigned CountBits(unsigned Elements);
-	static unsigned CountBytes(unsigned Elements)
-	{
-		return (CountBits(Elements) >> 3) + 1;
-	}
-	size_t GetSize() const
-	{
-		return ArraySize;
-	}
 	void Put(const TCHAR* String);
 	void Put(const BYTE* buffer, unsigned length);
 	BOOL Check(const TCHAR* String) const;
 	BOOL Check(const BYTE* buffer, unsigned length) const;
+	BYTE operator[](unsigned pos) const;
+	size_t GetSize() const
+	{
+		return ArraySize;
+	}
 	void CopyHeader(CBloomHeader* BloomHeaderDest) const
 	{
 		memcpy(BloomHeaderDest, &Header, sizeof CBloomHeader);
@@ -45,7 +41,21 @@ public:
 	{
 		return Array;
 	}
-	BYTE operator[](unsigned pos) const;
+
+	static unsigned CountBits(unsigned Elements)
+	{
+		if (Elements == 0)
+			return 0;
+		double k = (double)BLOOM_DEFAULT_HASHSIZE;
+		double n = (double)Elements;
+		double mn = -k / log(1.0 - exp(log(BLOOM_PFP) / k));
+		double m = mn * n;
+		return unsigned(m);
+	}
+	static unsigned CountBytes(unsigned Elements)
+	{
+		return (CountBits(Elements) >> 3) + 1;
+	}
 
 private:
 	int File;
@@ -58,13 +68,13 @@ private:
 	static long IO_Validate(long result)
 	{
 		if (-1 == result)
-			throw CWin32Error();
+			throw CWin32ErrorT();
 		return result;
 	}
 	static long IO_Validate0(long result)
 	{
 		if (0 != result)
-			throw CWin32Error();
+			throw CWin32ErrorT();
 		return result;
 	}
 	static bool IsFileValid(int file)

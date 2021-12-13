@@ -28,17 +28,6 @@ void CBloom::Create(const TCHAR* FileName)
 	Header.Save(File);
 }
 
-unsigned CBloom::CountBits(unsigned int Elements)
-{
-	if (Elements == 0)
-		return 0;
-	double k = (double)BLOOM_DEFAULT_HASHSIZE;
-	double n = (double)Elements;
-	double mn = -k / log(1.0 - exp(log(BLOOM_PFP) / k));
-	double m = mn * n;
-	return unsigned(m);
-}
-
 void CBloom::Allocate(unsigned Elements)
 {
 	if (!IsFileValid(File))
@@ -122,7 +111,7 @@ void CBloom::Load()
 void CBloom::Abort()
 {
 	if (IsFileValid(File))
-		IO_Validate(close(File));
+		IO_Validate(_close(File));
 	File = 0;
 	Array.reset();
 	m_bDirty = FALSE;

@@ -15,6 +15,7 @@
 #include <tchar.h>
 #include <windows.h>
 #include <memory>
+#include <stdexcept>
 
 #if defined(_DEBUG)
 #include <crtdbg.h>

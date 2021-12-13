@@ -1,15 +1,30 @@
 #pragma once
 
+#include "BloomError.h"
+
 #ifdef BLOOM_EXPORTS
 #define BLOOM_API __declspec(dllexport)
 #else
 #define BLOOM_API __declspec(dllimport)
 #endif
 
-extern "C" BLOOM_API void* __stdcall CreateBloom();
-extern "C" BLOOM_API void __stdcall DestroyBloom(void* objptr);
+class CBloomExpContainer
+{
+private:
+	CBloom m_bloom;
+	CBloomError m_bloomError;
 
-extern "C" BLOOM_API void __stdcall Create(void* objptr, const TCHAR * FileName);
+public :
+	CBloomExpContainer()
+	{
+
+	}
+};
+
+extern "C" BLOOM_API void* __stdcall CreateBloom();
+extern "C" BLOOM_API INT __stdcall DestroyBloom(void* objptr);
+
+extern "C" BLOOM_API INT __stdcall Create(void* objptr, const TCHAR * FileName);
 extern "C" BLOOM_API void __stdcall Open(void* objptr, const TCHAR * FileName);
 
 extern "C" BLOOM_API void __stdcall Store(void* objptr);

@@ -55,13 +55,13 @@ private:
 	static long IO_Validate(long result)
 	{
 		if (-1 == result)
-			throw CWin32Error();
+			throw CWin32ErrorT();
 		return result;
 	}
 	static long IO_Validate0(long result)
 	{
 		if (0 != result)
-			throw CWin32Error();
+			throw CWin32ErrorT();
 		return result;
 	}
 	static bool IsFileValid(int file)
