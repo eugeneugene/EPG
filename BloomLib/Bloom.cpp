@@ -20,7 +20,7 @@ void CBloom::Create(const TCHAR* FileName)
 
 	Header.Default();
 
-	static_assert(HASH_DIGESTSIZE >= BLOOM_DEFAULT_HASHSIZE * sizeof LONG, "Internal error: Insufficient HASH_DIGESTSIZE");
+	static_assert(HASH_DIGESTSIZE >= BLOOM_DEFAULT_HASHSIZE * sizeof(LONG), "Internal error: Insufficient HASH_DIGESTSIZE");
 	Header.Version(BLOOM_VERSION);
 	Header.HashFunc(BLOOM_DEFAULT_HASHSIZE);
 
@@ -95,7 +95,7 @@ void CBloom::Load()
 	long head;
 
 	if (Header.Version() == BLOOM_VERSION)
-		head = sizeof CHead;
+		head = sizeof(CHead);
 	else
 		throw bloom_exception(bloom_exception::_error::BLOOM_ERROR_UNKNOWN_VERSION);
 
@@ -146,7 +146,7 @@ void CBloom::Put(const BYTE* buffer, unsigned length)
 		BYTE h[HASH_DIGESTSIZE];
 		HASH_FUNC(h, buffer, length);
 		memcpy(hash.GetHash(), h, hash.Size() * sizeof(unsigned));
-		HeaderSize = sizeof CHead;
+		HeaderSize = sizeof(CHead);
 	}
 	else
 		throw bloom_exception(bloom_exception::_error::BLOOM_ERROR_UNKNOWN_VERSION);
@@ -208,7 +208,7 @@ BOOL CBloom::Check(const BYTE* buffer, unsigned length) const
 		BYTE h[HASH_DIGESTSIZE];
 		HASH_FUNC(h, buffer, length);
 		memcpy(hash.GetHash(), h, hash.Size() * sizeof(unsigned));
-		HeaderSize = sizeof CHead;
+		HeaderSize = sizeof(CHead);
 	}
 	else
 		throw bloom_exception(bloom_exception::_error::BLOOM_ERROR_UNKNOWN_VERSION);

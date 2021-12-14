@@ -1,50 +1,60 @@
 ﻿using System.Runtime.InteropServices;
+using System.Text;
 
 namespace BloomCS
 {
     public class Bloom : IDisposable
     {
-        private readonly IntPtr bloom;
+        private readonly IntPtr bloomContainer;
         private bool disposedValue;
 
         [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "CreateBloom")]
         private static extern IntPtr _create_bloom();
 
         [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "DestroyBloom")]
-        private static extern void _destroy_bloom([In] IntPtr Bloom);
+        private static extern void _destroy_bloom([In] IntPtr BloomContainer);
+
+        [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "GetErrorClass")]
+        private static extern int _get_error_class([In] IntPtr BloomContainer);
+
+        [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "GetErrorCode")]
+        private static extern long _get_error_code([In] IntPtr BloomContainer);
+
+        [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "GetErrorMessage")]
+        private static extern int _get_error_message([In] IntPtr BloomContainer, [In] IntPtr buffer, [In, Out] IntPtr bufferLength);
 
         [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "Create")]
-        private static extern void _create([In] IntPtr Bloom, [In] string FileName);
+        private static extern int _create([In] IntPtr BloomContainer, [In] string FileName);
 
         [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "Open")]
-        private static extern void _open([In] IntPtr Bloom, [In] string FileName);
+        private static extern int _open([In] IntPtr BloomContainer, [In] string FileName);
 
         [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "Store")]
-        private static extern void _store([In] IntPtr Bloom);
+        private static extern int _store([In] IntPtr BloomContainer);
 
         [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "Load")]
-        private static extern void _load([In] IntPtr Bloom);
+        private static extern int _load([In] IntPtr BloomContainer);
 
         [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "Close")]
-        private static extern void _close([In] IntPtr Bloom);
+        private static extern int _close([In] IntPtr BloomContainer);
 
         [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "Abort")]
-        private static extern void _abort([In] IntPtr Bloom);
+        private static extern int _abort([In] IntPtr BloomContainer);
 
         [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "Allocate")]
-        private static extern void _allocate([In] IntPtr Bloom, [In] uint Elements);
+        private static extern int _allocate([In] IntPtr BloomContainer, [In] uint Elements);
 
         [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "PutString")]
-        private static extern void _put_string([In] IntPtr Bloom, [In] string String);
+        private static extern int _put_string([In] IntPtr BloomContainer, [In] string String);
 
         [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "PutArray")]
-        private static extern void _put_array([In] IntPtr Bloom, [In] byte[] buffer, [In] uint length);
+        private static extern int _put_array([In] IntPtr BloomContainer, [In] byte[] buffer, [In] uint length);
 
         [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "CheckString")]
-        private static extern int _check_string([In] IntPtr Bloom, [In] string String);
+        private static extern int _check_string([In] IntPtr BloomContainer, [In] string String);
 
         [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "CheckArray")]
-        private static extern int _check_array([In] IntPtr Bloom, [In] byte[] buffer, [In] uint length);
+        private static extern int _check_array([In] IntPtr BloomContainer, [In] byte[] buffer, [In] uint length);
 
         [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "HeaderVersion")]
         private static extern ushort _header_version([In] IntPtr Bloom);
@@ -55,29 +65,168 @@ namespace BloomCS
         [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "HeaderHashFunc")]
         private static extern byte _header_hash_func([In] IntPtr Bloom);
 
+        private string GetErrorMessage()
+        {
+            IntPtr buffer = IntPtr.Zero;
+            IntPtr bufferLength = Marshal.AllocHGlobal(sizeof(long));
+            Marshal.WriteInt64(bufferLength, 0);
+            if (_get_error_message(bloomContainer, buffer, bufferLength) == 0)
+            {
+                // Можем получить сообщение
+                int size = (int)Marshal.ReadInt64(bufferLength) + 1;
+                buffer = Marshal.AllocHGlobal(size);
+                Marshal.WriteInt64(bufferLength, size);
+                _ = _get_error_message(bloomContainer, buffer, bufferLength);
+            }
+            Marshal.FreeHGlobal(bufferLength);
+            var ret = Marshal.PtrToStringUni(buffer);
+            return ret ?? string.Empty;
+        }
+
         public Bloom()
         {
-            bloom = _create_bloom();
-            if (bloom == IntPtr.Zero)
+            bloomContainer = _create_bloom();
+            if (bloomContainer == IntPtr.Zero)
                 throw new InvalidOperationException("Error creating Bloom Filter");
         }
 
-        public void Create(string FileName) => _create(bloom, FileName);
-        public void Open(string FileName) => _open(bloom, FileName);
-        public void Store() => _store(bloom);
-        public void Load() => _load(bloom);
-        public void Close() => _close(bloom);
-        public void Abort() => _abort(bloom);
-        public void Allocate(uint Elements) => _allocate(bloom, Elements);
+        public void Create(string FileName)
+        {
+            var res = _create(bloomContainer, FileName);
+            if (res < 0)
+            {
+                throw new BloomException(
+                    errorClass: (BloomErrorClass)_get_error_class(bloomContainer),
+                    errorCode: _get_error_code(bloomContainer),
+                    errorMessage: GetErrorMessage());
+            }
+        }
 
-        public void PutString(string String) => _put_string(bloom, String);
-        public void PutArray(byte[] Array) => _put_array(bloom, Array, (uint)Array.Length);
-        public bool CheckString(string String) => _check_string(bloom, String) != 0;
-        public bool CheckArray(byte[] Array) => _check_array(bloom, Array, (uint)Array.Length) != 0;
+        public void Open(string FileName)
+        {
+            var res = _open(bloomContainer, FileName);
+            if (res < 0)
+            {
+                throw new BloomException(
+                    errorClass: (BloomErrorClass)_get_error_class(bloomContainer),
+                    errorCode: _get_error_code(bloomContainer),
+                    errorMessage: GetErrorMessage());
+            }
+        }
 
-        public ushort HeaderVersion() => _header_version(bloom);
-        public ulong HeaderSize() => _header_size(bloom);
-        public byte HeaderHashFunc() => _header_hash_func(bloom);
+        public void Store()
+        {
+            var res = _store(bloomContainer);
+            if (res < 0)
+            {
+                throw new BloomException(
+                    errorClass: (BloomErrorClass)_get_error_class(bloomContainer),
+                    errorCode: _get_error_code(bloomContainer),
+                    errorMessage: GetErrorMessage());
+            }
+        }
+
+        public void Load()
+        {
+            var res = _load(bloomContainer);
+            if (res < 0)
+            {
+                throw new BloomException(
+                    errorClass: (BloomErrorClass)_get_error_class(bloomContainer),
+                    errorCode: _get_error_code(bloomContainer),
+                    errorMessage: GetErrorMessage());
+            }
+        }
+
+        public void Close()
+        {
+            var res = _close(bloomContainer);
+            if (res < 0)
+            {
+                throw new BloomException(
+                    errorClass: (BloomErrorClass)_get_error_class(bloomContainer),
+                    errorCode: _get_error_code(bloomContainer),
+                    errorMessage: GetErrorMessage());
+            }
+        }
+
+        public void Abort()
+        {
+            var res = _abort(bloomContainer);
+            if (res < 0)
+            {
+                throw new BloomException(
+                    errorClass: (BloomErrorClass)_get_error_class(bloomContainer),
+                    errorCode: _get_error_code(bloomContainer),
+                    errorMessage: GetErrorMessage());
+            }
+        }
+
+        public void Allocate(uint Elements)
+        {
+            var res = _allocate(bloomContainer, Elements);
+            if (res < 0)
+            {
+                throw new BloomException(
+                    errorClass: (BloomErrorClass)_get_error_class(bloomContainer),
+                    errorCode: _get_error_code(bloomContainer),
+                    errorMessage: GetErrorMessage());
+            }
+        }
+
+        public void PutString(string String)
+        {
+            var res = _put_string(bloomContainer, String);
+            if (res < 0)
+            {
+                throw new BloomException(
+                    errorClass: (BloomErrorClass)_get_error_class(bloomContainer),
+                    errorCode: _get_error_code(bloomContainer),
+                    errorMessage: GetErrorMessage());
+            }
+        }
+
+        public void PutArray(byte[] Array)
+        {
+            var res = _put_array(bloomContainer, Array, (uint)Array.Length);
+            if (res < 0)
+            {
+                throw new BloomException(
+                    errorClass: (BloomErrorClass)_get_error_class(bloomContainer),
+                    errorCode: _get_error_code(bloomContainer),
+                    errorMessage: GetErrorMessage());
+            }
+        }
+
+        public bool CheckString(string String)
+        {
+            var res = _check_string(bloomContainer, String);
+            if (res < 0)
+            {
+                throw new BloomException(
+                    errorClass: (BloomErrorClass)_get_error_class(bloomContainer),
+                    errorCode: _get_error_code(bloomContainer),
+                    errorMessage: GetErrorMessage());
+            }
+            return res != 0;
+        }
+
+        public bool CheckArray(byte[] Array)
+        {
+            var res = _check_array(bloomContainer, Array, (uint)Array.Length);
+            if (res < 0)
+            {
+                throw new BloomException(
+                    errorClass: (BloomErrorClass)_get_error_class(bloomContainer),
+                    errorCode: _get_error_code(bloomContainer),
+                    errorMessage: GetErrorMessage());
+            }
+            return res != 0;
+        }
+
+        public ushort HeaderVersion() => _header_version(bloomContainer);
+        public ulong HeaderSize() => _header_size(bloomContainer);
+        public byte HeaderHashFunc() => _header_hash_func(bloomContainer);
 
         protected virtual void Dispose(bool disposing)
         {
@@ -85,7 +234,7 @@ namespace BloomCS
             {
                 if (disposing)
                 {
-                    _destroy_bloom(bloom);
+                    _destroy_bloom(bloomContainer);
                 }
 
                 disposedValue = true;

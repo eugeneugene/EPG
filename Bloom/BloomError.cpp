@@ -22,6 +22,7 @@ void CBloomError::process_exception(std::exception& ex)
 	error_code = 0L;
 	error_message = toTstring(ex.what());
 }
+
 void CBloomError::reset()
 {
 	error_class = BloomErrorClass::BLOOM_NOERROR;

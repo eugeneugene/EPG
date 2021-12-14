@@ -108,7 +108,7 @@ protected:
 	void allocCopyData(_Type* pTemp, int nLen, unsigned int dwLastErr)
 	{
 		SMetaMem* pSM = nullptr;
-		pSM = (SMetaMem*) new unsigned char[sizeof(SMetaMem) + (nLen + 1) * sizeof(_Type)];
+		pSM = (SMetaMem*) new unsigned char[sizeof(SMetaMem) + sizeof(_Type) * (((size_t)nLen) + 1)];
 		if (!pSM)
 			return;
 		pSM->m_dwErrCode = dwLastErr;

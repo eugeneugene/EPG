@@ -1,5 +1,6 @@
 using BloomCS;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Diagnostics;
 
 namespace BloomCS_Test
 {
@@ -20,9 +21,25 @@ namespace BloomCS_Test
             OpenTestArray();
         }
 
+        [TestMethod]
+        [DoNotParallelize]
+        public void TestFileNotFoundException()
+        {
+            try
+            {
+                using Bloom bloom = new();
+                Assert.IsNotNull(bloom);
+                bloom.Open("non_existent_file.bf");
+            }
+            catch(BloomException ex)
+            {
+                Debug.WriteLine("BloomException: Class: {0} Code: {1} Message: {2}", ex.BloomErrorClass, ex.ErrorCode, ex.Message);
+            }
+        }
+
         private static void CreateTestString()
         {
-            Bloom bloom = new();
+            using Bloom bloom = new();
             Assert.IsNotNull(bloom);
 
             bloom.Create("BloomTest1.bf");
@@ -53,7 +70,7 @@ namespace BloomCS_Test
 
         private static void OpenTestString()
         {
-            Bloom bloom = new();
+            using Bloom bloom = new();
             Assert.IsNotNull(bloom);
 
             bloom.Open("BloomTest1.bf");
@@ -80,7 +97,7 @@ namespace BloomCS_Test
 
         private static void CreateTestArray()
         {
-            Bloom bloom = new();
+            using Bloom bloom = new();
             Assert.IsNotNull(bloom);
 
             bloom.Create("BloomTest2.bf");
@@ -106,7 +123,7 @@ namespace BloomCS_Test
 
         private static void OpenTestArray()
         {
-            Bloom bloom = new();
+            using Bloom bloom = new();
             Assert.IsNotNull(bloom);
 
             bloom.Open("BloomTest2.bf");

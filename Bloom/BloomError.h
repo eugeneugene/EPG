@@ -23,17 +23,21 @@ public:
 	void process_exception(std::exception& ex);
 	void reset();
 
-	BloomErrorClass ErrorClass()
+	BloomErrorClass GetErrorClass()
 	{
 		return error_class;
 	}
-	long ErrorCode()
+	long GetErrorCode()
 	{
 		return error_code;
 	}
-	const TCHAR* GetErrorMesssage()
+	const TCHAR* GetErrorMessage()
 	{
 		return error_message.c_str();
+	}
+	const size_t GetErrorMessageLen()
+	{
+		return error_message.length();
 	}
 };
 

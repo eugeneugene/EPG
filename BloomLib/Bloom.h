@@ -31,7 +31,7 @@ public:
 	}
 	void CopyHeader(CBloomHeader* BloomHeaderDest) const
 	{
-		memcpy(BloomHeaderDest, &Header, sizeof CBloomHeader);
+		memcpy(BloomHeaderDest, &Header, sizeof(CBloomHeader));
 	}
 	const CBloomHeader& GetHeader() const
 	{
