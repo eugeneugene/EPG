@@ -31,6 +31,15 @@ extern "C" BLOOM_API LONG __stdcall GetErrorCode(void* objptr)
 	return bc->GetBloomError()->GetErrorCode();
 }
 
+/// <summary>
+/// Получить сообщение об ошибке
+/// </summary>
+/// <param name="objptr">Указатель на CBloomContainer</param>
+/// <param name="buffer">Буфер, куда будет скопировано сообщение об ошибке. Должно быть выделено length символов </param>
+/// <param name="length">Размер буфера. Если *length меньше требуемого размера, то метод возвращает 0, а в *length копируется требуемый размер буфера.
+/// Выделять нужно на 1 символ больше под финальный '\0'</param>
+/// <returns>Если возвращается 0, то *length содержит требуемый размер буфера,
+/// Если возвращается 1, то *buffer содержит сообщение об ошибке</returns>
 extern "C" BLOOM_API INT __stdcall GetErrorMessage(void* objptr, TCHAR * buffer, DWORD * length)
 {
 	CBloomContainer* bc = (CBloomContainer*)objptr;

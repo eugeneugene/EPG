@@ -7,6 +7,7 @@ namespace BloomCS_Test
     [TestClass]
     public class BloomTest
     {
+        [DoNotParallelize]
         [TestMethod]
         public void TestString()
         {
@@ -14,6 +15,7 @@ namespace BloomCS_Test
             OpenTestString();
         }
 
+        [DoNotParallelize]
         [TestMethod]
         public void TestArray()
         {
