@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "BloomExport.h"
+#include "BloomDll.h"
 #include "BloomContainer.h"
 
 extern "C" BLOOM_API void* __stdcall CreateBloom()
@@ -38,14 +38,13 @@ extern "C" BLOOM_API LONG __stdcall GetErrorCode(void* objptr)
 }
 
 /// <summary>
-/// Получить сообщение об ошибке
+/// Get Error Message
 /// </summary>
-/// <param name="objptr">Указатель на CBloomContainer</param>
-/// <param name="buffer">Буфер, куда будет скопировано сообщение об ошибке. Должно быть выделено length символов </param>
-/// <param name="length">Размер буфера. Если *length меньше требуемого размера, то метод возвращает 0, а в *length копируется требуемый размер буфера.
-/// Выделять нужно на 1 символ больше под финальный '\0'</param>
-/// <returns>Если возвращается 0, то *length содержит требуемый размер буфера,
-/// Если возвращается 1, то *buffer содержит сообщение об ошибке</returns>
+/// <param name="objptr">Pointer to CBloomContainer</param>
+/// <param name="buffer">The memory area where the message shall be copied. 'length' symbols must be allocated ahead</param>
+/// <param name="length">The buffer size in symbols (not bytes). If *length is less than required, method returns 0 and *length gets the required amount of symbols.
+/// It is safe to allocate length+1 symbols for terminating '\0'</param>
+/// <returns>0 if *length gets required size of buffer, 1 if buffer gets the error message, -1 if there is no error information available</returns>
 extern "C" BLOOM_API INT __stdcall GetErrorMessage(void* objptr, TCHAR * buffer, DWORD * length)
 {
 	CBloomContainer* bc = (CBloomContainer*)objptr;

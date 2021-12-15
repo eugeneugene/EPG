@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../BloomLib/Bloom.h"
+#include "../Bloom/Bloom.h"
 #include "BloomError.h"
 
 class CBloomContainer

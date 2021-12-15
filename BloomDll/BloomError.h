@@ -2,7 +2,7 @@
 
 #include "../Common/WideHelp.h"
 #include "../Common/Win32ErrorEx.h"
-#include "../BloomLib/bloom_exception.h"
+#include "../Bloom/bloom_exception.h"
 
 class CBloomError
 {
