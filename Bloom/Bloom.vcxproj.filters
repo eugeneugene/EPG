@@ -21,24 +21,42 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BloomExport.h">
+    <ClInclude Include="Bloom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BloomError.h">
+    <ClInclude Include="bloom_exception.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BloomContainer.h">
+    <ClInclude Include="BloomHeader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\char_to_oem_filters.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\WideHelp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Win32ErrorEx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dllmain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BloomExport.cpp">
+    <ClCompile Include="Bloom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bloom_exception.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BloomHeader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\WideHelp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

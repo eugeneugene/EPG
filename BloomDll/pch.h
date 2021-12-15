@@ -12,12 +12,10 @@
 
 #endif //PCH_H
 
-#include <io.h>
-#include <fcntl.h>
-#include <stdexcept>
 #include <tchar.h>
+#include <windows.h>
 #include <memory>
-#include "../Common/Win32ErrorEx.h"
+#include <stdexcept>
 
 #if defined(_DEBUG)
 #include <crtdbg.h>
