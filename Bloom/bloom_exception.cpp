@@ -7,7 +7,6 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 // **** Error messages **** //
-
 const char* bloom_exception::bloom_str_error(_error e)
 {
 	switch (e)

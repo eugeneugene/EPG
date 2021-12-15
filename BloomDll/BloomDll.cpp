@@ -37,15 +37,7 @@ extern "C" BLOOM_API LONG __stdcall GetErrorCode(void* objptr)
 	return bloom_error->get_error_code();
 }
 
-/// <summary>
-/// Get Error Message
-/// </summary>
-/// <param name="objptr">Pointer to CBloomContainer</param>
-/// <param name="buffer">The memory area where the message shall be copied. 'length' symbols must be allocated ahead</param>
-/// <param name="length">The buffer size in symbols (not bytes). If *length is less than required, method returns 0 and *length gets the required amount of symbols.
-/// It is safe to allocate length+1 symbols for terminating '\0'</param>
-/// <returns>0 if *length gets required size of buffer, 1 if buffer gets the error message, -1 if there is no error information available</returns>
-extern "C" BLOOM_API INT __stdcall GetErrorMessage(void* objptr, TCHAR * buffer, DWORD * length)
+extern "C" BLOOM_API INT __stdcall GetErrorMessage(void* objptr, TCHAR * buffer, INT64 length)
 {
 	CBloomContainer* bc = (CBloomContainer*)objptr;
 	if (!bc)
@@ -53,14 +45,19 @@ extern "C" BLOOM_API INT __stdcall GetErrorMessage(void* objptr, TCHAR * buffer,
 	auto bloom_error = bc->GetBloomError();
 	if (!bloom_error)
 		return -1;
-	if (bloom_error->get_error_message_len() > *length)
-	{
-		*length = (DWORD)bloom_error->get_error_message_len();
-		return 0;
-	}
-	_tcscpy_s(buffer, *length, bloom_error->get_error_message());
-	*length = (DWORD)bloom_error->get_error_message_len();
+	_tcscpy_s(buffer, length, bloom_error->get_error_message());
 	return 1;
+}
+
+extern "C" BLOOM_API INT64 __stdcall GetErrorMessageLength(void* objptr)
+{
+	CBloomContainer* bc = (CBloomContainer*)objptr;
+	if (!bc)
+		throw std::invalid_argument("Bloom Filter Container pointer cannot be null");
+	auto bloom_error = bc->GetBloomError();
+	if (!bloom_error)
+		return -1;
+	return bloom_error->get_error_message_len();
 }
 
 extern "C" BLOOM_API INT __stdcall Create(void* objptr, const TCHAR * filename)

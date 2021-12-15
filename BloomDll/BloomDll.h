@@ -13,7 +13,8 @@ extern "C" BLOOM_API void __stdcall DestroyBloom(void* objptr);
 
 extern "C" BLOOM_API INT __stdcall GetErrorClass(void* objptr);
 extern "C" BLOOM_API LONG __stdcall GetErrorCode(void* objptr);
-extern "C" BLOOM_API INT __stdcall GetErrorMessage(void* objptr, TCHAR * buffer, DWORD * length);
+extern "C" BLOOM_API INT __stdcall GetErrorMessage(void* objptr, TCHAR * buffer, INT64 length);
+extern "C" BLOOM_API INT64 __stdcall GetErrorMessageLength(void* objptr);
 
 extern "C" BLOOM_API INT __stdcall Create(void* objptr, const TCHAR * filename);
 extern "C" BLOOM_API INT __stdcall Open(void* objptr, const TCHAR * filename);

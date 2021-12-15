@@ -8,18 +8,18 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Bloom\Bloom.vcxproj" />
+		<Content Include="$(SolutionDir)x64/$(Configuration)/BloomDll.dll">
+			<Link>BloomDll.dll</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="$(SolutionDir)x64/$(Configuration)/BloomDll.pdb">
+			<Link>BloomDll.pdb</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="$(SolutionDir)x64/$(Configuration)/Bloom.dll">
-			<Link>Bloom.dll</Link>
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="$(SolutionDir)x64/$(Configuration)/Bloom.pdb">
-			<Link>Bloom.pdb</Link>
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
+		<ProjectReference Include="..\BloomDll\BloomDll.vcxproj" />
 	</ItemGroup>
 
 </Project>

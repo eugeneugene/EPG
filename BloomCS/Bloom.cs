@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using System.Text;
 
 namespace BloomCS
 {
@@ -20,7 +21,10 @@ namespace BloomCS
         private static extern long _get_error_code([In] IntPtr BloomContainer);
 
         [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "GetErrorMessage")]
-        private static extern int _get_error_message([In] IntPtr BloomContainer, [In] IntPtr buffer, [In, Out] IntPtr bufferLength);
+        private static extern int _get_error_message([In] IntPtr BloomContainer, [In, Out] StringBuilder lpString, [In] ulong bufferLength);
+
+        [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "GetErrorMessageLength")]
+        private static extern ulong _get_error_message_length([In] IntPtr BloomContainer);
 
         [DllImport("Bloom.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "Create")]
         private static extern int _create([In] IntPtr BloomContainer, [In] string FileName);
@@ -66,29 +70,11 @@ namespace BloomCS
 
         private string GetErrorMessage()
         {
-            IntPtr buffer = IntPtr.Zero;
-            IntPtr bufferLength = Marshal.AllocHGlobal(sizeof(long));
-            try
-            {
-                Marshal.WriteInt64(bufferLength, 0);
-                if (_get_error_message(bloomContainer, buffer, bufferLength) == 0)
-                {
-                    // Можем получить сообщение
-                    int size = (int)Marshal.ReadInt64(bufferLength) + 1;
-                    buffer = Marshal.AllocHGlobal(size);
-                    Marshal.WriteInt64(bufferLength, size);
-                    _ = _get_error_message(bloomContainer, buffer, bufferLength);
-                }
-                if (buffer != IntPtr.Zero)
-                {
-                    var ret = Marshal.PtrToStringUni(buffer);
-                    return ret ?? string.Empty;
-                }
-            }
-            finally
-            {
-                Marshal.FreeHGlobal(bufferLength);
-            }
+            var length = (int)_get_error_message_length(bloomContainer);
+            StringBuilder buffer = new(length + 1);
+            if (_get_error_message(bloomContainer, buffer, (ulong)buffer.Capacity) > 0)
+                return buffer.ToString();
+
             return string.Empty;
         }
 

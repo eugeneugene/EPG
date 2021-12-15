@@ -1,18 +1,8 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BFM.Models;
+using BloomCS;
+using Microsoft.Win32;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace BFM
 {
@@ -21,25 +11,73 @@ namespace BFM
     /// </summary>
     public partial class MainWindow : Window
     {
-        private OpenFileDialog ofd;
+        private readonly OpenFileDialog BloomFileDialog;
+        private readonly OpenFileDialog TextFileDialog;
+        private readonly MainWindowModel model = new();
+        private readonly Bloom bloom = new();
+
         public MainWindow()
         {
             InitializeComponent();
-            ofd = new();
-            ofd.CheckFileExists = true;
-            ofd.DefaultExt = ".bf";
-            ofd.Filter = "Bloom Filter|*.bf|Any file|*.*";
-            ofd.Title = "Open Bloom Filter";
+            BloomFileDialog = new()
+            {
+                CheckFileExists = false,
+                CheckPathExists = true,
+                DefaultExt = ".bf",
+                Filter = "Bloom Filter|*.bf|Any file|*.*",
+                Title = "Open Bloom Filter"
+            };
+            TextFileDialog = new()
+            {
+                CheckFileExists = true,
+                DefaultExt = ".txt",
+                Filter = "Text File|*.txt|Any file|*.*",
+                Title = "Import Text File"
+            };
+            model.MainWindowBloomFilterModel = new();
         }
 
-        private void BloomFilterBrowseCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        private void BloomFilterOpenCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            var res = ofd.ShowDialog(this) ?? false;
+            var res = BloomFileDialog.ShowDialog(this) ?? false;
             if (res)
             {
-
+                bloom.Close();
+                model.MainWindowBloomFilterModel = new();
+                try
+                {
+                    bloom.Open(BloomFileDialog.FileName);
+                    model.MainWindowBloomFilterModel.BloomFilterStatus = "OK";
+                    model.MainWindowBloomFilterModel.ValidBloomFilter = true;
+                    model.MainWindowBloomFilterModel.BloomFilterPath = BloomFileDialog.FileName;
+                    model.MainWindowBloomFilterModel.BloomFilterFile = System.IO.Path.GetFileName(BloomFileDialog.FileName);
+                    model.MainWindowBloomFilterModel.HeaderVersion = bloom.HeaderVersion();
+                    model.MainWindowBloomFilterModel.HeaderSize = bloom.HeaderSize();
+                    model.MainWindowBloomFilterModel.HeaderHashFunc = bloom.HeaderHashFunc();
+                }
+                catch (BloomException ex)
+                {
+                    bloom.Abort();
+                    model.MainWindowBloomFilterModel.ValidBloomFilter = false;
+                    model.MainWindowBloomFilterModel.BloomFilterStatus = ex.Message;
+                    model.MainWindowBloomFilterModel.BloomFilterPath = BloomFileDialog.FileName;
+                    model.MainWindowBloomFilterModel.BloomFilterFile = System.IO.Path.GetFileName(BloomFileDialog.FileName);
+                }
             }
             e.Handled = true;
+        }
+
+        private void BloomFilterCreateCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        { }
+
+        private void WindowLoaded(object sender, RoutedEventArgs e)
+        {
+            DataContext = model;
+        }
+
+        private void BloomFilterImportCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+
         }
     }
 }
