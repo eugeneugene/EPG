@@ -68,18 +68,28 @@ namespace BloomCS
         {
             IntPtr buffer = IntPtr.Zero;
             IntPtr bufferLength = Marshal.AllocHGlobal(sizeof(long));
-            Marshal.WriteInt64(bufferLength, 0);
-            if (_get_error_message(bloomContainer, buffer, bufferLength) == 0)
+            try
             {
-                // Можем получить сообщение
-                int size = (int)Marshal.ReadInt64(bufferLength) + 1;
-                buffer = Marshal.AllocHGlobal(size);
-                Marshal.WriteInt64(bufferLength, size);
-                _ = _get_error_message(bloomContainer, buffer, bufferLength);
+                Marshal.WriteInt64(bufferLength, 0);
+                if (_get_error_message(bloomContainer, buffer, bufferLength) == 0)
+                {
+                    // Можем получить сообщение
+                    int size = (int)Marshal.ReadInt64(bufferLength) + 1;
+                    buffer = Marshal.AllocHGlobal(size);
+                    Marshal.WriteInt64(bufferLength, size);
+                    _ = _get_error_message(bloomContainer, buffer, bufferLength);
+                }
+                if (buffer != IntPtr.Zero)
+                {
+                    var ret = Marshal.PtrToStringUni(buffer);
+                    return ret ?? string.Empty;
+                }
             }
-            Marshal.FreeHGlobal(bufferLength);
-            var ret = Marshal.PtrToStringUni(buffer);
-            return ret ?? string.Empty;
+            finally
+            {
+                Marshal.FreeHGlobal(bufferLength);
+            }
+            return string.Empty;
         }
 
         public Bloom()

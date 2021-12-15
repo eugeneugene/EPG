@@ -16,26 +16,30 @@ private:
 
 public:
 	CBloomError() : error_class(BloomErrorClass::BLOOM_NOERROR), error_code(0L)
-	{}
+	{ }
 
-	void process_exception(CWin32ErrorT& win32error);
-	void process_exception(bloom_exception& ex);
-	void process_exception(std::exception& ex);
-	void reset();
+	CBloomError(CWin32ErrorT& win32error) : error_class(BloomErrorClass::BLOOM_WIN32ERROR), error_code(win32error.ErrorCode()), error_message(toTstring(win32error.Description()))
+	{ }
 
-	BloomErrorClass GetErrorClass()
+	CBloomError(bloom_exception& ex) : error_class(BloomErrorClass::BLOOM_LIBERROR), error_code(static_cast<long>(ex.error())), error_message(toTstring(ex.what()))
+	{ }
+
+	CBloomError(std::exception& ex) : error_class(BloomErrorClass::BLOOM_LIBERROR), error_code(0L), error_message(toTstring(ex.what()))
+	{ }
+
+	BloomErrorClass get_error_class()
 	{
 		return error_class;
 	}
-	long GetErrorCode()
+	long get_error_code()
 	{
 		return error_code;
 	}
-	const TCHAR* GetErrorMessage()
+	const TCHAR* get_error_message()
 	{
 		return error_message.c_str();
 	}
-	const size_t GetErrorMessageLen()
+	const size_t get_error_message_len()
 	{
 		return error_message.length();
 	}

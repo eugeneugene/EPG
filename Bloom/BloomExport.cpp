@@ -20,7 +20,10 @@ extern "C" BLOOM_API INT __stdcall GetErrorClass(void* objptr)
 	CBloomContainer* bc = (CBloomContainer*)objptr;
 	if (!bc)
 		throw std::invalid_argument("Bloom Filter Container pointer cannot be null");
-	return static_cast<int>(bc->GetBloomError()->GetErrorClass());
+	auto bloom_error = bc->GetBloomError();
+	if (!bloom_error)
+		return -1;
+	return static_cast<int>(bloom_error->get_error_class());
 }
 
 extern "C" BLOOM_API LONG __stdcall GetErrorCode(void* objptr)
@@ -28,7 +31,10 @@ extern "C" BLOOM_API LONG __stdcall GetErrorCode(void* objptr)
 	CBloomContainer* bc = (CBloomContainer*)objptr;
 	if (!bc)
 		throw std::invalid_argument("Bloom Filter Container pointer cannot be null");
-	return bc->GetBloomError()->GetErrorCode();
+	auto bloom_error = bc->GetBloomError();
+	if (!bloom_error)
+		return -1;
+	return bloom_error->get_error_code();
 }
 
 /// <summary>
@@ -45,13 +51,16 @@ extern "C" BLOOM_API INT __stdcall GetErrorMessage(void* objptr, TCHAR * buffer,
 	CBloomContainer* bc = (CBloomContainer*)objptr;
 	if (!bc)
 		throw std::invalid_argument("Bloom Filter Container pointer cannot be null");
-	if (bc->GetBloomError()->GetErrorMessageLen() > *length)
+	auto bloom_error = bc->GetBloomError();
+	if (!bloom_error)
+		return -1;
+	if (bloom_error->get_error_message_len() > *length)
 	{
-		*length = (DWORD)bc->GetBloomError()->GetErrorMessageLen();
+		*length = (DWORD)bloom_error->get_error_message_len();
 		return 0;
 	}
-	_tcscpy_s(buffer, *length, bc->GetBloomError()->GetErrorMessage());
-	*length = (DWORD)bc->GetBloomError()->GetErrorMessageLen();
+	_tcscpy_s(buffer, *length, bloom_error->get_error_message());
+	*length = (DWORD)bloom_error->get_error_message_len();
 	return 1;
 }
 
@@ -67,15 +76,15 @@ extern "C" BLOOM_API INT __stdcall Create(void* objptr, const TCHAR * filename)
 	}
 	catch (CWin32ErrorT& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	catch (bloom_exception& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	catch (std::exception& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	return -1;
 }
@@ -92,15 +101,15 @@ extern "C" BLOOM_API INT __stdcall Open(void* objptr, const TCHAR * filename)
 	}
 	catch (CWin32ErrorT& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	catch (bloom_exception& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	catch (std::exception& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	return -1;
 }
@@ -117,15 +126,15 @@ extern "C" BLOOM_API INT __stdcall Store(void* objptr)
 	}
 	catch (CWin32ErrorT& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	catch (bloom_exception& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	catch (std::exception& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	return -1;
 }
@@ -142,15 +151,15 @@ extern "C" BLOOM_API INT __stdcall Load(void* objptr)
 	}
 	catch (CWin32ErrorT& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	catch (bloom_exception& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	catch (std::exception& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	return -1;
 }
@@ -167,15 +176,15 @@ extern "C" BLOOM_API INT __stdcall Close(void* objptr)
 	}
 	catch (CWin32ErrorT& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	catch (bloom_exception& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	catch (std::exception& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	return -1;
 }
@@ -192,15 +201,15 @@ extern "C" BLOOM_API INT __stdcall Abort(void* objptr)
 	}
 	catch (CWin32ErrorT& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	catch (bloom_exception& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	catch (std::exception& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	return -1;
 }
@@ -217,15 +226,15 @@ extern "C" BLOOM_API INT __stdcall Allocate(void* objptr, unsigned elements)
 	}
 	catch (CWin32ErrorT& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	catch (bloom_exception& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	catch (std::exception& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	return -1;
 }
@@ -242,15 +251,15 @@ extern "C" BLOOM_API INT __stdcall PutString(void* objptr, const TCHAR * string)
 	}
 	catch (CWin32ErrorT& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	catch (bloom_exception& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	catch (std::exception& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	return -1;
 }
@@ -267,15 +276,15 @@ extern "C" BLOOM_API INT __stdcall PutArray(void* objptr, const BYTE * buffer, u
 	}
 	catch (CWin32ErrorT& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	catch (bloom_exception& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	catch (std::exception& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	return -1;
 }
@@ -291,15 +300,15 @@ extern "C" BLOOM_API BOOL __stdcall CheckString(void* objptr, const TCHAR * stri
 	}
 	catch (CWin32ErrorT& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	catch (bloom_exception& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	catch (std::exception& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	return -1;
 }
@@ -315,15 +324,15 @@ extern "C" BLOOM_API BOOL __stdcall CheckArray(void* objptr, const BYTE * buffer
 	}
 	catch (CWin32ErrorT& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	catch (bloom_exception& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	catch (std::exception& ex)
 	{
-		bc->GetBloomError()->process_exception(ex);
+		bc->process_exception(ex);
 	}
 	return -1;
 }

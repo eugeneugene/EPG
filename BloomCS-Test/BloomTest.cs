@@ -25,6 +25,7 @@ namespace BloomCS_Test
 
         [TestMethod]
         [DoNotParallelize]
+        [ExpectedException(typeof(BloomException))]
         public void TestFileNotFoundException()
         {
             try
@@ -33,9 +34,10 @@ namespace BloomCS_Test
                 Assert.IsNotNull(bloom);
                 bloom.Open("non_existent_file.bf");
             }
-            catch(BloomException ex)
+            catch (BloomException ex)
             {
                 Debug.WriteLine("BloomException: Class: {0} Code: {1} Message: {2}", ex.BloomErrorClass, ex.ErrorCode, ex.Message);
+                throw;
             }
         }
 
