@@ -14,16 +14,13 @@
     mc:Ignorable="d">
     <Window.CommandBindings>
         <CommandBinding Command="localcommands:BFMCommands.BloomFilterOpenCommand" Executed="BloomFilterOpenCommandExecuted" />
-        <CommandBinding Command="localcommands:BFMCommands.BloomFilterCreateCommand" Executed="BloomFilterCreateCommandExecuted" />
         <CommandBinding Command="localcommands:BFMCommands.BloomFilterImportCommand" Executed="BloomFilterImportCommandExecuted" />
     </Window.CommandBindings>
     <StackPanel Orientation="Vertical">
         <Menu Height="25">
             <MenuItem Header="Bloom Filter">
                 <MenuItem Command="localcommands:BFMCommands.BloomFilterOpenCommand" Header="Open..." />
-                <MenuItem Command="localcommands:BFMCommands.BloomFilterCreateCommand" Header="Create..." />
-                <Separator />
-                <MenuItem Command="localcommands:BFMCommands.BloomFilterCreateCommand" Header="Import..." />
+                <MenuItem Command="localcommands:BFMCommands.BloomFilterImportCommand" Header="Import..." />
                 <Separator />
                 <MenuItem Header="Close" />
                 <Separator />

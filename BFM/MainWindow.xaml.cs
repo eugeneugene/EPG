@@ -12,7 +12,7 @@ namespace BFM
     public partial class MainWindow : Window
     {
         private readonly OpenFileDialog BloomFileDialog;
-        private readonly OpenFileDialog TextFileDialog;
+        //private readonly OpenFileDialog TextFileDialog;
         private readonly MainWindowModel model = new();
         private readonly Bloom bloom = new();
 
@@ -27,13 +27,13 @@ namespace BFM
                 Filter = "Bloom Filter|*.bf|Any file|*.*",
                 Title = "Open Bloom Filter"
             };
-            TextFileDialog = new()
-            {
-                CheckFileExists = true,
-                DefaultExt = ".txt",
-                Filter = "Text File|*.txt|Any file|*.*",
-                Title = "Import Text File"
-            };
+            //TextFileDialog = new()
+            //{
+            //    CheckFileExists = true,
+            //    DefaultExt = ".txt",
+            //    Filter = "Text File|*.txt|Any file|*.*",
+            //    Title = "Import Text File"
+            //};
             model.MainWindowBloomFilterModel = new();
         }
 
@@ -67,9 +67,6 @@ namespace BFM
             e.Handled = true;
         }
 
-        private void BloomFilterCreateCommandExecuted(object sender, ExecutedRoutedEventArgs e)
-        { }
-
         private void WindowLoaded(object sender, RoutedEventArgs e)
         {
             DataContext = model;
@@ -77,7 +74,8 @@ namespace BFM
 
         private void BloomFilterImportCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-
+            ImportDialog importDialog = new ();
+            importDialog.ShowDialog();
         }
     }
 }

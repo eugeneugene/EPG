@@ -3,11 +3,77 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:BFM"
+    xmlns:localmodels="clr-namespace:BFM.Models"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Import Bloom Filter"
-    Width="800"
-    Height="450"
+    Width="690"
+    Height="240"
+    d:DataContext="{d:DesignInstance Type=localmodels:ImportModel}"
     mc:Ignorable="d">
-    <Grid />
+    <StackPanel Orientation="Vertical">
+        <GroupBox Margin="5" Header="Bloom Filter">
+            <StackPanel Orientation="Horizontal">
+                <Label
+                    Width="150"
+                    Margin="2"
+                    HorizontalAlignment="Left"
+                    HorizontalContentAlignment="Right"
+                    Content="Bloom Filter to create:" />
+                <TextBox
+                    x:Name="tbBloomFilter"
+                    Width="260"
+                    Margin="2" />
+                <Button
+                    Width="60"
+                    Margin="2"
+                    Content="Browse"
+                    Style="{StaticResource PressButtonEffectStyle}" />
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Margin="5" Header="Text File">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <Label
+                        Width="150"
+                        Margin="2"
+                        HorizontalAlignment="Left"
+                        HorizontalContentAlignment="Right"
+                        Content="Text file to import:" />
+                    <TextBox
+                        x:Name="tbTextFile"
+                        Width="260"
+                        Margin="2" />
+                    <Button
+                        Width="60"
+                        Margin="2"
+                        Content="Browse"
+                        Style="{StaticResource PressButtonEffectStyle}" />
+                    <Label
+                        Width="160"
+                        Margin="2"
+                        HorizontalContentAlignment="Right" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label
+                        Width="150"
+                        Margin="2"
+                        HorizontalAlignment="Left"
+                        HorizontalContentAlignment="Right"
+                        Content="Skip comments (Regex):" />
+                    <TextBox
+                        x:Name="tbComments"
+                        Width="260"
+                        Margin="2" />
+                    <Label Margin="2" Content="(Or leave empty)" />
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+        <Grid>
+            <Button
+                Width="60"
+                Margin="2"
+                Content="Import"
+                Style="{StaticResource PressButtonEffectStyle}" />
+        </Grid>
+    </StackPanel>
 </Window>
