@@ -3,13 +3,20 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:localcommands="clr-namespace:BFM.Commands"
     xmlns:localmodels="clr-namespace:BFM.Models"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Import Bloom Filter"
     Width="690"
     Height="240"
     d:DataContext="{d:DesignInstance Type=localmodels:ImportModel}"
+    Loaded="WindowLoaded"
     mc:Ignorable="d">
+    <Window.CommandBindings>
+        <CommandBinding Command="localcommands:BFMCommands.BloomFilterCreateCommand" Executed="BloomFilterCreateCommandExecuted" />
+        <CommandBinding Command="localcommands:BFMCommands.TextFileOpenCommand" Executed="TextFileOpenCommandExecuted" />
+        <CommandBinding Command="localcommands:BFMCommands.BloomFilterImportCommand" Executed="BloomFilterImportCommandExecuted" />
+    </Window.CommandBindings>
     <StackPanel Orientation="Vertical">
         <GroupBox Margin="5" Header="Bloom Filter">
             <StackPanel Orientation="Horizontal">
@@ -22,10 +29,12 @@
                 <TextBox
                     x:Name="tbBloomFilter"
                     Width="260"
-                    Margin="2" />
+                    Margin="2"
+                    Text="{Binding BloomFilter}" />
                 <Button
                     Width="60"
                     Margin="2"
+                    Command="localcommands:BFMCommands.BloomFilterCreateCommand"
                     Content="Browse"
                     Style="{StaticResource PressButtonEffectStyle}" />
             </StackPanel>
@@ -42,16 +51,19 @@
                     <TextBox
                         x:Name="tbTextFile"
                         Width="260"
-                        Margin="2" />
+                        Margin="2"
+                        Text="{Binding Path=TextFile}" />
                     <Button
                         Width="60"
                         Margin="2"
+                        Command="localcommands:BFMCommands.TextFileOpenCommand"
                         Content="Browse"
                         Style="{StaticResource PressButtonEffectStyle}" />
                     <Label
                         Width="160"
                         Margin="2"
-                        HorizontalContentAlignment="Right" />
+                        HorizontalContentAlignment="Right"
+                        Content="{Binding Path=Lines}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label
@@ -63,7 +75,8 @@
                     <TextBox
                         x:Name="tbComments"
                         Width="260"
-                        Margin="2" />
+                        Margin="2"
+                        Text="{Binding Path=Comments}" />
                     <Label Margin="2" Content="(Or leave empty)" />
                 </StackPanel>
             </StackPanel>
@@ -71,7 +84,9 @@
         <Grid>
             <Button
                 Width="60"
+                Height="25.96"
                 Margin="2"
+                Command="localcommands:BFMCommands.BloomFilterImportCommand"
                 Content="Import"
                 Style="{StaticResource PressButtonEffectStyle}" />
         </Grid>
