@@ -1,9 +1,12 @@
-﻿using System.ComponentModel;
+﻿using BFM.Code;
+using System;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace BFM.Models
 {
-    internal class ImportModel : INotifyPropertyChanged
+    internal class ImportModel : INotifyPropertyChanged, IDisposable
     {
         private string? bloomFilter;
         public string? BloomFilter
@@ -34,6 +37,8 @@ namespace BFM.Models
         }
 
         private string? comments;
+        private bool disposedValue;
+
         public string? Comments
         {
             get => comments;
@@ -47,16 +52,31 @@ namespace BFM.Models
             }
         }
 
-        private string? lines;
-        public string? Lines
+        private readonly SimpleReaderWriterLock<uint?> lines = new(null);
+        public uint? Lines
         {
-            get => lines;
+            get => lines.Value;
             set
             {
-                if (lines != value)
+                if (lines.Value != value)
                 {
-                    lines = value;
+                    lines.Value = value;
                     NotifyPropertyChanged(nameof(Lines));
+                }
+            }
+        }
+
+        private readonly SimpleReaderWriterLock<LinesCounterState> state = new(LinesCounterState.NOTRUN);
+        public LinesCounterState State
+        {
+            get => state.Value;
+            set
+            {
+                if (state.Value != value)
+                {
+                    state.Value = value;
+                    NotifyPropertyChanged(nameof(State));
+                    Debug.WriteLine("LinesCounterState: {0}", value);
                 }
             }
         }
@@ -68,6 +88,27 @@ namespace BFM.Models
                 return;
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    lines.Dispose();
+                    state.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }
