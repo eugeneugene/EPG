@@ -3,11 +3,14 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace BFM.Models
 {
     internal class ImportModel : INotifyPropertyChanged, IDisposable
     {
+        private bool disposedValue;
+
         private string? bloomFilter;
         public string? BloomFilter
         {
@@ -36,9 +39,35 @@ namespace BFM.Models
             }
         }
 
-        private string? comments;
-        private bool disposedValue;
+        private string? errorMsg;
+        public string? ErrorMsg
+        {
+            get => errorMsg;
+            set
+            {
+                if (errorMsg != value)
+                {
+                    errorMsg = value;
+                    NotifyPropertyChanged(nameof(ErrorMsg));
+                }
+            }
+        }
 
+        private Task? importTask;
+        public Task? ImportTask
+        {
+            get => importTask;
+            set
+            {
+                if (importTask != value)
+                {
+                    importTask = value;
+                    NotifyPropertyChanged(nameof(ImportTask));
+                }
+            }
+        }
+
+        private string? comments;
         public string? Comments
         {
             get => comments;

@@ -9,7 +9,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Import Bloom Filter"
     Width="690"
-    Height="240"
+    Height="260"
     d:DataContext="{d:DesignInstance Type=localmodels:ImportModel}"
     Loaded="WindowLoaded"
     mc:Ignorable="d">
@@ -87,14 +87,28 @@
             </StackPanel>
         </GroupBox>
         <Grid>
-            <Button
-                Width="60"
-                Height="25.96"
-                Margin="2"
-                Command="localcommands:BFMCommands.BloomFilterImportCommand"
-                Content="Import"
-                IsEnabled="{Binding Path=State, Converter={StaticResource ImportEnabledConverter}}"
-                Style="{StaticResource PressButtonEffectStyle}" />
+            <StackPanel Orientation="Vertical">
+                <Button
+                    Width="60"
+                    Height="25.96"
+                    Margin="2"
+                    Command="localcommands:BFMCommands.BloomFilterImportCommand"
+                    Content="Import"
+                    Style="{StaticResource PressButtonEffectStyle}">
+                    <Button.IsEnabled>
+                        <MultiBinding Converter="{StaticResource ImportEnabledConverter}">
+                            <Binding Path="State" />
+                            <Binding Path="BloomFilter" />
+                            <Binding Path="ImportTask" />
+                        </MultiBinding>
+                    </Button.IsEnabled>
+                </Button>
+                <Label
+                    Width="670"
+                    Height="25"
+                    Margin="2"
+                    Content="{Binding Path=ErrorMsg}" />
+            </StackPanel>
         </Grid>
     </StackPanel>
 </Window>
