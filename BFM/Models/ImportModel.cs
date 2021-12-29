@@ -53,8 +53,8 @@ namespace BFM.Models
             }
         }
 
-        private Task? importTask;
-        public Task? ImportTask
+        private bool importTask;
+        public bool ImportTask
         {
             get => importTask;
             set

@@ -11,11 +11,13 @@
     Width="690"
     Height="260"
     d:DataContext="{d:DesignInstance Type=localmodels:ImportModel}"
+    Closing="WindowClosing"
     Loaded="WindowLoaded"
     mc:Ignorable="d">
     <Window.Resources>
         <localcodeconverters:LinesConverter x:Key="LinesConverter" />
         <localcodeconverters:ImportEnabledConverter x:Key="ImportEnabledConverter" />
+        <localcodeconverters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="localcommands:BFMCommands.BloomFilterCreateCommand" Executed="BloomFilterCreateCommandExecuted" />
@@ -35,12 +37,14 @@
                     x:Name="tbBloomFilter"
                     Width="260"
                     Margin="2"
+                    IsEnabled="{Binding Path=ImportTask, Converter={StaticResource InverseBooleanConverter}}"
                     Text="{Binding BloomFilter}" />
                 <Button
                     Width="60"
                     Margin="2"
                     Command="localcommands:BFMCommands.BloomFilterCreateCommand"
                     Content="Browse"
+                    IsEnabled="{Binding Path=ImportTask, Converter={StaticResource InverseBooleanConverter}}"
                     Style="{StaticResource PressButtonEffectStyle}" />
             </StackPanel>
         </GroupBox>
@@ -57,12 +61,14 @@
                         x:Name="tbTextFile"
                         Width="260"
                         Margin="2"
+                        IsEnabled="{Binding Path=ImportTask, Converter={StaticResource InverseBooleanConverter}}"
                         Text="{Binding Path=TextFile}" />
                     <Button
                         Width="60"
                         Margin="2"
                         Command="localcommands:BFMCommands.TextFileOpenCommand"
                         Content="Browse"
+                        IsEnabled="{Binding Path=ImportTask, Converter={StaticResource InverseBooleanConverter}}"
                         Style="{StaticResource PressButtonEffectStyle}" />
                     <Label
                         Width="160"
@@ -81,6 +87,7 @@
                         x:Name="tbComments"
                         Width="260"
                         Margin="2"
+                        IsEnabled="{Binding Path=ImportTask, Converter={StaticResource InverseBooleanConverter}}"
                         Text="{Binding Path=Comments}" />
                     <Label Margin="2" Content="(Or leave empty)" />
                 </StackPanel>

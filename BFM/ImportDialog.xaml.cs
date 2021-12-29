@@ -5,6 +5,7 @@ using Microsoft.Win32;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -20,6 +21,8 @@ namespace BFM
         private readonly OpenFileDialog TextFileDialog;
         private readonly ImportModel model;
         private readonly LinesCounter linesCounter;
+        private readonly CancellationTokenSource cancellationTokenSource;
+
         private bool disposedValue;
 
         public ImportDialog()
@@ -41,6 +44,7 @@ namespace BFM
             };
             model = new();
             linesCounter = new(model);
+            cancellationTokenSource = new();
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
@@ -65,7 +69,7 @@ namespace BFM
         private void BloomFilterImportCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             var task = Task.Run(async () => await ImportAsync());
-            model.ImportTask = task;
+            model.ImportTask = true;
         }
 
         private async Task ImportAsync()
@@ -81,24 +85,24 @@ namespace BFM
                 bloom.Allocate(model.Lines.Value);
 
                 StreamReader reader = new(model.TextFile, new FileStreamOptions() { Mode = FileMode.Open, Access = FileAccess.Read, Options = FileOptions.SequentialScan });
-                uint lines = 0U;
+                uint lines = 0;
                 double p;
-                double p10 = 0.0;
+                double p10 = 0;
 
                 model.ErrorMsg = "Importing...";
                 while (true)
                 {
+                    cancellationTokenSource.Token.ThrowIfCancellationRequested();
                     var line = await reader.ReadLineAsync();
                     if (line is null)
                         break;
                     bloom.PutString(line);
                     lines++;
-                    p = Math.Round(100.0 * lines / model.Lines.Value,1, MidpointRounding.ToZero);
+                    p = Math.Round(100.0 * lines / model.Lines.Value, 1, MidpointRounding.ToZero);
                     if (p > p10)
                     {
                         p10 = p;
                         model.ErrorMsg = $"Importing... {p10:F1}% imported";
-                        Debug.WriteLine(model.ErrorMsg);
                     }
                 }
                 bloom.Store();
@@ -109,11 +113,11 @@ namespace BFM
             {
                 model.ErrorMsg = ex.Message;
                 Debug.WriteLine(ex.Message);
-                bloom.Abort();
             }
             finally
             {
-                model.ImportTask = null;
+                bloom.Abort();
+                model.ImportTask = false;
             }
         }
 
@@ -135,6 +139,11 @@ namespace BFM
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
+        }
+
+        private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            cancellationTokenSource.Cancel();
         }
     }
 }
