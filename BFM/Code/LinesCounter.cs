@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,13 +16,15 @@ namespace BFM.Code
 
         private Task? task;
         private CancellationTokenSource? cancellationTokenSource;
+        private Regex? regex;
 
         public LinesCounter(ImportModel Model)
         {
-            model = Model;
+            model = Model ?? throw new ArgumentNullException(nameof(Model));
             model.PropertyChanged += ModelPropertyChanged;
             task = null;
             cancellationTokenSource = null;
+            regex = null;
         }
 
         private void ModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -44,6 +47,7 @@ namespace BFM.Code
             task = Task.Run(async () =>
             {
                 cancellationTokenSource = new();
+
                 try
                 {
                     model.State = LinesCounterState.RUN;
@@ -69,14 +73,19 @@ namespace BFM.Code
             if (model.TextFile is null)
                 return;
 
-            StreamReader reader = new(model.TextFile, new FileStreamOptions() { Mode = FileMode.Open, Access = FileAccess.Read, Options = FileOptions.SequentialScan });
+            if (!string.IsNullOrEmpty(model.Comments))
+                regex = new(model.Comments);
+
+            using StreamReader reader = new(model.TextFile, new FileStreamOptions() { Mode = FileMode.Open, Access = FileAccess.Read, Options = FileOptions.SequentialScan });
             model.Lines = 0;
-            while (!cancellationTokenSource!.IsCancellationRequested)
+            while (true)
             {
+                cancellationTokenSource!.Token.ThrowIfCancellationRequested();
                 var line = await reader.ReadLineAsync();
                 if (line is null)
                     break;
-                model.Lines++;
+                if (regex is null || !regex.IsMatch(line))
+                    model.Lines++;
             }
         }
 
@@ -86,9 +95,10 @@ namespace BFM.Code
             {
                 if (disposing)
                 {
+                    cancellationTokenSource?.Cancel();
+                    cancellationTokenSource?.Dispose();
                     model.PropertyChanged -= ModelPropertyChanged;
                     task?.Dispose();
-                    cancellationTokenSource?.Dispose();
                 }
 
                 disposedValue = true;

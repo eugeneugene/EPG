@@ -11,7 +11,6 @@
     Width="690"
     Height="260"
     d:DataContext="{d:DesignInstance Type=localmodels:ImportModel}"
-    Closing="WindowClosing"
     Loaded="WindowLoaded"
     mc:Ignorable="d">
     <Window.Resources>
@@ -28,18 +27,20 @@
         <GroupBox Margin="5" Header="Bloom Filter">
             <StackPanel Orientation="Horizontal">
                 <Label
+                    x:Name="BloomFilterLbl"
                     Width="150"
                     Margin="2"
                     HorizontalAlignment="Left"
                     HorizontalContentAlignment="Right"
                     Content="Bloom Filter to create:" />
                 <TextBox
-                    x:Name="tbBloomFilter"
+                    x:Name="BloomFilterTbx"
                     Width="260"
                     Margin="2"
                     IsEnabled="{Binding Path=ImportTask, Converter={StaticResource InverseBooleanConverter}}"
                     Text="{Binding BloomFilter}" />
                 <Button
+                    x:Name="BloomFilterBtn"
                     Width="60"
                     Margin="2"
                     Command="localcommands:BFMCommands.BloomFilterCreateCommand"
@@ -52,18 +53,20 @@
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
                     <Label
+                        x:Name="TextFileLbl"
                         Width="150"
                         Margin="2"
                         HorizontalAlignment="Left"
                         HorizontalContentAlignment="Right"
                         Content="Text file to import:" />
                     <TextBox
-                        x:Name="tbTextFile"
+                        x:Name="TextFileTbx"
                         Width="260"
                         Margin="2"
                         IsEnabled="{Binding Path=ImportTask, Converter={StaticResource InverseBooleanConverter}}"
                         Text="{Binding Path=TextFile}" />
                     <Button
+                        x:Name="TextFileBtn"
                         Width="60"
                         Margin="2"
                         Command="localcommands:BFMCommands.TextFileOpenCommand"
@@ -71,6 +74,7 @@
                         IsEnabled="{Binding Path=ImportTask, Converter={StaticResource InverseBooleanConverter}}"
                         Style="{StaticResource PressButtonEffectStyle}" />
                     <Label
+                        x:Name="TextFileLbl2"
                         Width="160"
                         Margin="2"
                         HorizontalContentAlignment="Right"
@@ -78,26 +82,31 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label
+                        x:Name="CommentsLbl"
                         Width="150"
                         Margin="2"
                         HorizontalAlignment="Left"
                         HorizontalContentAlignment="Right"
                         Content="Skip comments (Regex):" />
                     <TextBox
-                        x:Name="tbComments"
+                        x:Name="CommentsTbx"
                         Width="260"
                         Margin="2"
                         IsEnabled="{Binding Path=ImportTask, Converter={StaticResource InverseBooleanConverter}}"
                         Text="{Binding Path=Comments}" />
-                    <Label Margin="2" Content="(Or leave empty)" />
+                    <Label
+                        x:Name="CommentsLbl2"
+                        Margin="2"
+                        Content="(Or leave empty)" />
                 </StackPanel>
             </StackPanel>
         </GroupBox>
         <Grid>
             <StackPanel Orientation="Vertical">
                 <Button
+                    x:Name="ImportBtn"
                     Width="60"
-                    Height="25.96"
+                    Height="26"
                     Margin="2"
                     Command="localcommands:BFMCommands.BloomFilterImportCommand"
                     Content="Import"
@@ -111,8 +120,9 @@
                     </Button.IsEnabled>
                 </Button>
                 <Label
+                    x:Name="ErrorMsg"
                     Width="670"
-                    Height="25"
+                    Height="26"
                     Margin="2"
                     Content="{Binding Path=ErrorMsg}" />
             </StackPanel>

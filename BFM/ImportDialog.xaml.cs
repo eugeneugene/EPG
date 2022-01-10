@@ -5,6 +5,7 @@ using Microsoft.Win32;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,6 +24,8 @@ namespace BFM
         private readonly LinesCounter linesCounter;
         private readonly CancellationTokenSource cancellationTokenSource;
 
+        private Task? task;
+        private Regex? regex;
         private bool disposedValue;
 
         public ImportDialog()
@@ -43,13 +46,25 @@ namespace BFM
                 Title = "Open Text file"
             };
             model = new();
+            model.PropertyChanged += ModelPropertyChanged;
             linesCounter = new(model);
             cancellationTokenSource = new();
+            task = null;
+            regex = null;
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
         {
             DataContext = model;
+        }
+
+        private void ModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (!ReferenceEquals(model, sender))
+                return;
+
+            if (e.PropertyName == nameof(ImportModel.Comments) && !string.IsNullOrEmpty(model.Comments))
+                regex = new(model.Comments);
         }
 
         private void BloomFilterCreateCommandExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -68,7 +83,7 @@ namespace BFM
 
         private void BloomFilterImportCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            var task = Task.Run(async () => await ImportAsync());
+            task = Task.Run(async () => await ImportAsync());
             model.ImportTask = true;
         }
 
@@ -84,7 +99,7 @@ namespace BFM
                 bloom.Create(model.BloomFilter);
                 bloom.Allocate(model.Lines.Value);
 
-                StreamReader reader = new(model.TextFile, new FileStreamOptions() { Mode = FileMode.Open, Access = FileAccess.Read, Options = FileOptions.SequentialScan });
+                using StreamReader reader = new(model.TextFile, new FileStreamOptions() { Mode = FileMode.Open, Access = FileAccess.Read, Options = FileOptions.SequentialScan });
                 uint lines = 0;
                 double p;
                 double p10 = 0;
@@ -96,13 +111,16 @@ namespace BFM
                     var line = await reader.ReadLineAsync();
                     if (line is null)
                         break;
-                    bloom.PutString(line);
-                    lines++;
-                    p = Math.Round(100.0 * lines / model.Lines.Value, 1, MidpointRounding.ToZero);
-                    if (p > p10)
+                    if (regex is null || !regex.IsMatch(line))
                     {
-                        p10 = p;
-                        model.ErrorMsg = $"Importing... {p10:F1}% imported";
+                        bloom.PutString(line);
+                        lines++;
+                        p = Math.Round(100.0 * lines / model.Lines.Value, 1, MidpointRounding.ToZero);
+                        if (p > p10)
+                        {
+                            p10 = p;
+                            model.ErrorMsg = $"Importing... {p10:F1}% imported";
+                        }
                     }
                 }
                 bloom.Store();
@@ -127,7 +145,11 @@ namespace BFM
             {
                 if (disposing)
                 {
+                    cancellationTokenSource?.Cancel();
+                    cancellationTokenSource?.Dispose();
+                    model.PropertyChanged -= ModelPropertyChanged;
                     linesCounter.Dispose();
+                    task?.Dispose();
                 }
 
                 disposedValue = true;
@@ -139,11 +161,6 @@ namespace BFM
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
-        }
-
-        private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            cancellationTokenSource.Cancel();
         }
     }
 }
