@@ -18,9 +18,10 @@ namespace BFM
     /// </summary>
     public partial class ImportDialog : Window, IDisposable
     {
+        public ImportModel Model { get; }
+
         private readonly OpenFileDialog BloomFileDialog;
         private readonly OpenFileDialog TextFileDialog;
-        private readonly ImportModel model;
         private readonly LinesCounter linesCounter;
         private readonly CancellationTokenSource cancellationTokenSource;
 
@@ -45,9 +46,9 @@ namespace BFM
                 Filter = "Text file|*.txt|Any file|*.*",
                 Title = "Open Text file"
             };
-            model = new();
-            model.PropertyChanged += ModelPropertyChanged;
-            linesCounter = new(model);
+            Model = new();
+            Model.PropertyChanged += ModelPropertyChanged;
+            linesCounter = new(Model);
             cancellationTokenSource = new();
             task = null;
             regex = null;
@@ -55,56 +56,56 @@ namespace BFM
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
         {
-            DataContext = model;
+            DataContext = Model;
         }
 
         private void ModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (!ReferenceEquals(model, sender))
+            if (!ReferenceEquals(Model, sender))
                 return;
 
-            if (e.PropertyName == nameof(ImportModel.Comments) && !string.IsNullOrEmpty(model.Comments))
-                regex = new(model.Comments);
+            if (e.PropertyName == nameof(ImportModel.Comments) && !string.IsNullOrEmpty(Model.Comments))
+                regex = new(Model.Comments);
         }
 
         private void BloomFilterCreateCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             var res = BloomFileDialog.ShowDialog(this) ?? false;
             if (res)
-                model.BloomFilter = BloomFileDialog.FileName;
+                Model.BloomFilter = BloomFileDialog.FileName;
         }
 
         private void TextFileOpenCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             var res = TextFileDialog.ShowDialog(this) ?? false;
             if (res)
-                model.TextFile = TextFileDialog.FileName;
+                Model.TextFile = TextFileDialog.FileName;
         }
 
         private void BloomFilterImportCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             task = Task.Run(async () => await ImportAsync());
-            model.ImportTask = true;
+            Model.ImportTask = true;
         }
 
         private async Task ImportAsync()
         {
-            if (model.Lines is null || model.State != LinesCounterState.FINISH || string.IsNullOrEmpty(model.BloomFilter) || string.IsNullOrEmpty(model.TextFile))
+            if (Model.Lines is null || Model.State != LinesCounterState.FINISH || string.IsNullOrEmpty(Model.BloomFilter) || string.IsNullOrEmpty(Model.TextFile))
                 return;
 
             using Bloom bloom = new();
 
             try
             {
-                bloom.Create(model.BloomFilter);
-                bloom.Allocate(model.Lines.Value);
+                bloom.Create(Model.BloomFilter);
+                bloom.Allocate(Model.Lines.Value);
 
-                using StreamReader reader = new(model.TextFile, new FileStreamOptions() { Mode = FileMode.Open, Access = FileAccess.Read, Options = FileOptions.SequentialScan });
+                using StreamReader reader = new(Model.TextFile, new FileStreamOptions() { Mode = FileMode.Open, Access = FileAccess.Read, Options = FileOptions.SequentialScan });
                 uint lines = 0;
                 double p;
                 double p10 = 0;
 
-                model.ErrorMsg = "Importing...";
+                Model.ErrorMsg = "Importing...";
                 while (true)
                 {
                     cancellationTokenSource.Token.ThrowIfCancellationRequested();
@@ -115,27 +116,27 @@ namespace BFM
                     {
                         bloom.PutString(line);
                         lines++;
-                        p = Math.Round(100.0 * lines / model.Lines.Value, 1, MidpointRounding.ToZero);
+                        p = Math.Round(100.0 * lines / Model.Lines.Value, 1, MidpointRounding.ToZero);
                         if (p > p10)
                         {
                             p10 = p;
-                            model.ErrorMsg = $"Importing... {p10:F1}% imported";
+                            Model.ErrorMsg = $"Importing... {p10:F1}% imported";
                         }
                     }
                 }
                 bloom.Store();
                 bloom.Close();
-                model.ErrorMsg = "Import finished";
+                Model.ErrorMsg = "Import finished";
             }
             catch (Exception ex)
             {
-                model.ErrorMsg = ex.Message;
+                Model.ErrorMsg = ex.Message;
                 Debug.WriteLine(ex.Message);
             }
             finally
             {
                 bloom.Abort();
-                model.ImportTask = false;
+                Model.ImportTask = false;
             }
         }
 
@@ -147,9 +148,10 @@ namespace BFM
                 {
                     cancellationTokenSource?.Cancel();
                     cancellationTokenSource?.Dispose();
-                    model.PropertyChanged -= ModelPropertyChanged;
                     linesCounter.Dispose();
                     task?.Dispose();
+                    Model.PropertyChanged -= ModelPropertyChanged;
+                    Model.Dispose();
                 }
 
                 disposedValue = true;

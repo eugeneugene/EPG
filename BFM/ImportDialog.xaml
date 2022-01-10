@@ -12,6 +12,7 @@
     Height="260"
     d:DataContext="{d:DesignInstance Type=localmodels:ImportModel}"
     Loaded="WindowLoaded"
+    ResizeMode="NoResize"
     mc:Ignorable="d">
     <Window.Resources>
         <localcodeconverters:LinesConverter x:Key="LinesConverter" />

@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace BFM.Models
 {
-    internal class ImportModel : INotifyPropertyChanged, IDisposable
+    public class ImportModel : INotifyPropertyChanged, IDisposable
     {
         private bool disposedValue;
 

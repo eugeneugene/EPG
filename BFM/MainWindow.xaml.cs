@@ -1,5 +1,4 @@
 ﻿using BFM.Models;
-using BloomCS;
 using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Input;
@@ -13,7 +12,6 @@ namespace BFM
     {
         private readonly OpenFileDialog BloomFileDialog;
         private readonly MainWindowModel model = new();
-        private readonly Bloom bloom = new();
 
         public MainWindow()
         {
@@ -26,36 +24,13 @@ namespace BFM
                 Filter = "Bloom Filter|*.bf|Any file|*.*",
                 Title = "Open Bloom Filter"
             };
-            model.MainWindowBloomFilterModel = new();
         }
 
         private void BloomFilterOpenCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             var res = BloomFileDialog.ShowDialog(this) ?? false;
             if (res)
-            {
-                bloom.Close();
-                model.MainWindowBloomFilterModel = new();
-                try
-                {
-                    bloom.Open(BloomFileDialog.FileName);
-                    model.MainWindowBloomFilterModel.BloomFilterStatus = "OK";
-                    model.MainWindowBloomFilterModel.ValidBloomFilter = true;
-                    model.MainWindowBloomFilterModel.BloomFilterPath = BloomFileDialog.FileName;
-                    model.MainWindowBloomFilterModel.BloomFilterFile = System.IO.Path.GetFileName(BloomFileDialog.FileName);
-                    model.MainWindowBloomFilterModel.HeaderVersion = bloom.HeaderVersion();
-                    model.MainWindowBloomFilterModel.HeaderSize = bloom.HeaderSize();
-                    model.MainWindowBloomFilterModel.HeaderHashFunc = bloom.HeaderHashFunc();
-                }
-                catch (BloomException ex)
-                {
-                    bloom.Abort();
-                    model.MainWindowBloomFilterModel.ValidBloomFilter = false;
-                    model.MainWindowBloomFilterModel.BloomFilterStatus = ex.Message;
-                    model.MainWindowBloomFilterModel.BloomFilterPath = BloomFileDialog.FileName;
-                    model.MainWindowBloomFilterModel.BloomFilterFile = System.IO.Path.GetFileName(BloomFileDialog.FileName);
-                }
-            }
+                model.OpenBloom(BloomFileDialog.FileName);
             e.Handled = true;
         }
 
@@ -66,8 +41,15 @@ namespace BFM
 
         private void BloomFilterImportCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            ImportDialog importDialog = new ();
+            using ImportDialog importDialog = new();
             importDialog.ShowDialog();
+            if (importDialog.Model is not null && importDialog.Model.State == Code.LinesCounterState.FINISH && !string.IsNullOrEmpty(importDialog.Model.BloomFilter))
+                model.OpenBloom(importDialog.Model.BloomFilter);
+        }
+
+        private void BloomFilterCloseCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            model.CloseBloom();
         }
     }
 }
