@@ -15,8 +15,7 @@ namespace EPG
         public MainWindow(IHostApplicationLifetime applicationLifetime)
         {
             _applicationLifetime = applicationLifetime ?? throw new Exception(nameof(applicationLifetime));
-            model.PasswordMode = settings.PasswordMode;
-            model.ShowHyphenated = settings.ShowHyphenated;
+            model.FromSettings(settings);
             InitializeComponent();
             _applicationLifetime.ApplicationStopping.Register(() => Close(), true);
         }
@@ -26,10 +25,9 @@ namespace EPG
             DataContext = model;
         }
 
-        private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void WindowClosed(object sender, EventArgs e)
         {
-            settings.PasswordMode = model.PasswordMode;
-            settings.ShowHyphenated = model.ShowHyphenated;
+            settings.FromModel(model);
             settings.Save();
         }
     }

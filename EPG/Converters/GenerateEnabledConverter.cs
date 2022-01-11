@@ -1,12 +1,11 @@
-﻿using BFM.Code;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace BFM.Converters
+namespace EPG.Converters
 {
-    internal class ImportEnabledConverter : IMultiValueConverter
+    internal class GenerateEnabledConverter : IMultiValueConverter
     {
         public object Convert(object?[] values, Type targetType, object parameter, CultureInfo culture)
         {
@@ -15,10 +14,16 @@ namespace BFM.Converters
                 values[2] == DependencyProperty.UnsetValue)
                 return false;
 
-            var state = values[0] as LinesCounterState?;
-            var bloomFilter = values[1] as string;
-            var importTask = System.Convert.ToBoolean(values[2] ?? false);
-            return state is not null && state == LinesCounterState.FINISH && !string.IsNullOrEmpty(bloomFilter) && importTask == false;
+            uint NumberOfPasswords = System.Convert.ToUInt32(values[0] ?? 0U);
+            uint MinimumLength = System.Convert.ToUInt32(values[1] ?? 0U);
+            uint MaximumLength = System.Convert.ToUInt32(values[2] ?? 0U);
+
+            if (NumberOfPasswords == 0)
+                return false;
+            if (MinimumLength == 0 || MaximumLength == 0)
+                return false;
+
+            return MaximumLength >= MinimumLength;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

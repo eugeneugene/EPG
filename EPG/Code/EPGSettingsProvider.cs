@@ -162,7 +162,7 @@ namespace EPG.Code
         private static XmlNode CreateXmlValue(object serializedValue)
         {
             XmlElement xmlElement = new XmlDocument().CreateElement("value");
-            xmlElement.InnerText = serializedValue.ToString() ?? string.Empty;
+            xmlElement.InnerText = serializedValue?.ToString() ?? string.Empty;
             return xmlElement;
         }
     }

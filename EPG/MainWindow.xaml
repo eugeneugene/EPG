@@ -10,12 +10,14 @@
     Width="1200"
     Height="800"
     d:DataContext="{d:DesignInstance Type=localmodels:MainWindowModel}"
-    Closing="WindowClosing"
+    Closed="WindowClosed"
     Loaded="WindowLoaded"
     mc:Ignorable="d">
     <Window.Resources>
         <localcodeconverters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+        <localcodeconverters:UIntConverter x:Key="UIntConverter" />
         <localcodeconverters:ShowHyphenatedEnabledConverter x:Key="ShowHyphenatedEnabledConverter" />
+        <localcodeconverters:GenerateEnabledConverter x:Key="GenerateEnabledConverter" />
     </Window.Resources>
     <StackPanel>
         <Menu VerticalAlignment="Top">
@@ -24,14 +26,17 @@
             </MenuItem>
             <MenuItem Header="Edit" />
         </Menu>
-        <GroupBox Margin="5" Header="Options">
+        <GroupBox Margin="10" Header="Options">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="40*" />
                     <ColumnDefinition Width="40*" />
                     <ColumnDefinition Width="20*" />
                 </Grid.ColumnDefinitions>
-                <GroupBox Grid.Column="0" Header="Mode">
+                <GroupBox
+                    Grid.Column="0"
+                    Margin="5"
+                    Header="Mode">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="26" />
@@ -56,7 +61,10 @@
                             IsChecked="{Binding Path=PasswordMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static localmodels:PasswordMode.Random}}" />
                     </Grid>
                 </GroupBox>
-                <GroupBox Grid.Column="1" Header="Amount &amp; Length">
+                <GroupBox
+                    Grid.Column="1"
+                    Margin="5"
+                    Header="Amount &amp; Length">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="130" />
@@ -74,7 +82,8 @@
                         <TextBox
                             Grid.Row="0"
                             Grid.Column="1"
-                            Margin="3" />
+                            Margin="3"
+                            Text="{Binding Path=NumberOfPasswords, Converter={StaticResource UIntConverter}, UpdateSourceTrigger=PropertyChanged}" />
                         <Label
                             Grid.Row="1"
                             Grid.Column="0"
@@ -82,7 +91,8 @@
                         <TextBox
                             Grid.Row="1"
                             Grid.Column="1"
-                            Margin="3" />
+                            Margin="3"
+                            Text="{Binding Path=MinimumLength, Converter={StaticResource UIntConverter}, UpdateSourceTrigger=PropertyChanged}" />
                         <Label
                             Grid.Row="2"
                             Grid.Column="0"
@@ -90,18 +100,27 @@
                         <TextBox
                             Grid.Row="2"
                             Grid.Column="1"
-                            Margin="3" />
+                            Margin="3"
+                            Text="{Binding Path=MaximumLength, Converter={StaticResource UIntConverter}, UpdateSourceTrigger=PropertyChanged}" />
                     </Grid>
                 </GroupBox>
                 <Button
                     Grid.Column="2"
                     Width="80"
-                    Height="26"
+                    Height="20"
                     Content="Generate"
-                    Style="{StaticResource PressButtonEffectStyle}" />
+                    Style="{StaticResource PressButtonEffectStyle}">
+                    <Button.IsEnabled>
+                        <MultiBinding Converter="{StaticResource GenerateEnabledConverter}">
+                            <Binding Path="NumberOfPasswords" />
+                            <Binding Path="MinimumLength" />
+                            <Binding Path="MaximumLength" />
+                        </MultiBinding>
+                    </Button.IsEnabled>
+                </Button>
             </Grid>
         </GroupBox>
-        <GroupBox Margin="5" Header="Character set">
+        <GroupBox Margin="10" Header="Character set">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
@@ -117,24 +136,28 @@
                     Grid.Column="0"
                     Margin="3"
                     Content="Small symbols"
+                    IsChecked="{Binding Path=SmallSymbols}"
                     IsThreeState="True" />
                 <CheckBox
                     Grid.Row="1"
                     Grid.Column="0"
                     Margin="3"
                     Content="Capital symbols"
+                    IsChecked="{Binding Path=CapitalSymbols}"
                     IsThreeState="True" />
                 <CheckBox
                     Grid.Row="0"
                     Grid.Column="1"
                     Margin="3"
                     Content="Numerals"
+                    IsChecked="{Binding Path=Numerals}"
                     IsThreeState="True" />
                 <CheckBox
                     Grid.Row="1"
                     Grid.Column="1"
                     Margin="3"
                     Content="Special symbols"
+                    IsChecked="{Binding Path=SpecialSymbols}"
                     IsThreeState="True" />
                 <Grid Grid.Row="0" Grid.Column="2">
                     <Grid.ColumnDefinitions>
@@ -142,7 +165,10 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Label Grid.Column="0" Content="Exclude symbols:" />
-                    <TextBox Grid.Column="1" Margin="3" />
+                    <TextBox
+                        Grid.Column="1"
+                        Margin="3"
+                        Text="{Binding Path=Exclude}" />
                 </Grid>
                 <Grid Grid.Row="1" Grid.Column="2">
                     <Grid.ColumnDefinitions>
@@ -150,11 +176,14 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Label Grid.Column="0" Content="Include symbols:" />
-                    <TextBox Grid.Column="1" Margin="3" />
+                    <TextBox
+                        Grid.Column="1"
+                        Margin="3"
+                        Text="{Binding Path=Include}" />
                 </Grid>
             </Grid>
         </GroupBox>
-        <GroupBox Margin="5" Header="Restrictions">
+        <GroupBox Margin="10" Header="Restrictions">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="26" />
@@ -168,22 +197,29 @@
                     Grid.Row="0"
                     Grid.Column="0"
                     Margin="3"
-                    Content="Enable Bloom filter" />
+                    Content="Enable Bloom filter"
+                    IsChecked="{Binding Path=EnableBloom}" />
                 <CheckBox
                     Grid.Row="1"
                     Grid.Column="0"
                     Margin="3"
-                    Content="Paranoid check" />
+                    Content="Paranoid check"
+                    IsChecked="{Binding Path=ParanoidCheck}" />
                 <Grid Grid.Row="0" Grid.Column="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="50" />
                         <ColumnDefinition />
-                        <ColumnDefinition Width="80" />
+                        <ColumnDefinition Width="86" />
                     </Grid.ColumnDefinitions>
                     <Label Grid.Column="0" Content="Filter:" />
-                    <TextBox Grid.Column="1" Margin="3" />
+                    <TextBox
+                        Grid.Column="1"
+                        Margin="3"
+                        Text="{Binding Path=Filter}" />
                     <Button
                         Grid.Column="2"
+                        Width="80"
+                        Margin="3"
                         Content="Browse"
                         Style="{StaticResource PressButtonEffectStyle}" />
                 </Grid>
@@ -191,7 +227,8 @@
                     Grid.Row="1"
                     Grid.Column="1"
                     Margin="3"
-                    Content="Calculate quality" />
+                    Content="Calculate quality"
+                    IsChecked="{Binding Path=CalculateQuality}" />
             </Grid>
         </GroupBox>
         <DataGrid Visibility="Hidden" />

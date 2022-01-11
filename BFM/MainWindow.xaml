@@ -154,7 +154,7 @@
                     Grid.Column="1"
                     Margin="2"
                     IsEnabled="{Binding ValidBloomFilter}"
-                    Text="{Binding Path=CheckWord, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    Text="{Binding Path=CheckWord, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBlock
                     x:Name="CheckWordResultLbl"
                     Grid.Row="0"
