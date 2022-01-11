@@ -10,4 +10,8 @@
 // add headers that you want to pre-compile here
 #include "framework.h"
 
+#if defined(_DEBUG)
+#include <crtdbg.h>
+#endif
+
 #endif //PCH_H

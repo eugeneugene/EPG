@@ -12,20 +12,11 @@
 
 #include <Windows.h>
 
-#include <io.h>
-#include <fcntl.h>
-#include <stdexcept>
-#include <tchar.h>
-#include <memory>
-#include <stdio.h>
+#include <array>
 #include <string>
-#include <iostream>		// cin, cout.
-#include <sstream>
-#include <cstdio>		// EOF.
-#include <boost/iostreams/concepts.hpp>
-#include <boost/iostreams/filter/stdio.hpp>
-#include <boost/iostreams/operations.hpp>
-#include <boost/iostreams/filtering_stream.hpp>
+#include <vector>
+#include <limits.h>
+#include <stdexcept>
 
 #if defined(_DEBUG)
 #include <crtdbg.h>
