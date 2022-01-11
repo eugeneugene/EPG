@@ -96,9 +96,9 @@
                 <Button
                     Grid.Column="2"
                     Width="80"
-                    VerticalAlignment="Center"
+                    Height="26"
                     Content="Generate"
-                    IsDefault="True" />
+                    Style="{StaticResource PressButtonEffectStyle}" />
             </Grid>
         </GroupBox>
         <GroupBox Margin="5" Header="Character set">
@@ -184,8 +184,8 @@
                     <TextBox Grid.Column="1" Margin="3" />
                     <Button
                         Grid.Column="2"
-                        Margin="3"
-                        Content="Browse" />
+                        Content="Browse"
+                        Style="{StaticResource PressButtonEffectStyle}" />
                 </Grid>
                 <CheckBox
                     Grid.Row="1"

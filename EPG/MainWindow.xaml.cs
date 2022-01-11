@@ -1,22 +1,25 @@
 ﻿using EPG.Code;
 using EPG.Models;
+using Microsoft.Extensions.Hosting;
+using System;
 using System.Windows;
 
 namespace EPG
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private readonly MainWindowModel model = new();
         private readonly EPGSettings settings = new();
+        private readonly IHostApplicationLifetime _applicationLifetime;
 
-        public MainWindow()
+        public MainWindow(IHostApplicationLifetime applicationLifetime)
         {
             model.PasswordMode = settings.PasswordMode;
             model.ShowHyphenated = settings.ShowHyphenated;
             InitializeComponent();
+
+            _applicationLifetime = applicationLifetime ?? throw new Exception(nameof(applicationLifetime));
+            _applicationLifetime.ApplicationStopping.Register(() => Close(), true);
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
