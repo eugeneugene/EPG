@@ -14,11 +14,10 @@ namespace EPG
 
         public MainWindow(IHostApplicationLifetime applicationLifetime)
         {
+            _applicationLifetime = applicationLifetime ?? throw new Exception(nameof(applicationLifetime));
             model.PasswordMode = settings.PasswordMode;
             model.ShowHyphenated = settings.ShowHyphenated;
             InitializeComponent();
-
-            _applicationLifetime = applicationLifetime ?? throw new Exception(nameof(applicationLifetime));
             _applicationLifetime.ApplicationStopping.Register(() => Close(), true);
         }
 

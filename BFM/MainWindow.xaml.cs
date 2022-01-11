@@ -1,20 +1,24 @@
 ﻿using BFM.Models;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Win32;
+using System;
 using System.Windows;
 using System.Windows.Input;
 
 namespace BFM
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private readonly OpenFileDialog BloomFileDialog;
         private readonly MainWindowModel model = new();
+        private readonly IServiceProvider _serviceProvider;
+        private readonly IHostApplicationLifetime _applicationLifetime;
 
-        public MainWindow()
+        public MainWindow(IServiceProvider serviceProvider, IHostApplicationLifetime applicationLifetime)
         {
+            _serviceProvider = serviceProvider;
+            _applicationLifetime = applicationLifetime ?? throw new Exception(nameof(applicationLifetime));
             InitializeComponent();
             BloomFileDialog = new()
             {
@@ -24,6 +28,7 @@ namespace BFM
                 Filter = "Bloom Filter|*.bf|Any file|*.*",
                 Title = "Open Bloom Filter"
             };
+            _applicationLifetime.ApplicationStopping.Register(() => Close(), true);
         }
 
         private void BloomFilterOpenCommandExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -41,7 +46,7 @@ namespace BFM
 
         private void BloomFilterImportCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            using ImportDialog importDialog = new();
+            var importDialog = _serviceProvider.GetRequiredService<ImportDialog>();
             importDialog.ShowDialog();
             if (importDialog.Model is not null && importDialog.Model.State == Code.LinesCounterState.FINISH && !string.IsNullOrEmpty(importDialog.Model.BloomFilter))
                 model.OpenBloom(importDialog.Model.BloomFilter);
