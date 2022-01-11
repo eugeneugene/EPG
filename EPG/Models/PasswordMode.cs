@@ -1,6 +1,6 @@
-﻿namespace EPG.Model
+﻿namespace EPG.Models
 {
-    public enum Mode
+    public enum PasswordMode
     {
         Random,
         Pronounceable,

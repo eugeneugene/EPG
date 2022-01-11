@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using EPG.Code;
+using EPG.Models;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace EPG
 {
@@ -20,9 +9,26 @@ namespace EPG
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly MainWindowModel model = new();
+        private readonly EPGSettings settings = new();
+
         public MainWindow()
         {
+            model.PasswordMode = settings.PasswordMode;
+            model.ShowHyphenated = settings.ShowHyphenated;
             InitializeComponent();
+        }
+
+        private void WindowLoaded(object sender, RoutedEventArgs e)
+        {
+            DataContext = model;
+        }
+
+        private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            settings.PasswordMode = model.PasswordMode;
+            settings.ShowHyphenated = model.ShowHyphenated;
+            settings.Save();
         }
     }
 }

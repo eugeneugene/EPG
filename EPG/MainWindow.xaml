@@ -1,118 +1,199 @@
-﻿<Window x:Class="EPG.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="1200">
+﻿<Window
+    x:Class="EPG.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:localcodeconverters="clr-namespace:EPG.Converters"
+    xmlns:localmodels="clr-namespace:EPG.Models"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="MainWindow"
+    Width="1200"
+    Height="800"
+    d:DataContext="{d:DesignInstance Type=localmodels:MainWindowModel}"
+    Closing="WindowClosing"
+    Loaded="WindowLoaded"
+    mc:Ignorable="d">
+    <Window.Resources>
+        <localcodeconverters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+        <localcodeconverters:ShowHyphenatedEnabledConverter x:Key="ShowHyphenatedEnabledConverter" />
+    </Window.Resources>
     <StackPanel>
-        <Menu           
-            Height="25"
-            VerticalAlignment="Top">
+        <Menu VerticalAlignment="Top">
             <MenuItem Header="File">
                 <MenuItem Command="ApplicationCommands.Close" Header="Exit" />
             </MenuItem>
-            <MenuItem Header="Edit"/>
+            <MenuItem Header="Edit" />
         </Menu>
-        <GroupBox Header="Options" Margin="5">
-            <Grid >
+        <GroupBox Margin="5" Header="Options">
+            <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="40*"/>
-                    <ColumnDefinition Width="40*"/>
-                    <ColumnDefinition Width="20*"/>
+                    <ColumnDefinition Width="40*" />
+                    <ColumnDefinition Width="40*" />
+                    <ColumnDefinition Width="20*" />
                 </Grid.ColumnDefinitions>
                 <GroupBox Grid.Column="0" Header="Mode">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="25"/>
-                            <RowDefinition Height="25"/>
-                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="26" />
+                            <RowDefinition Height="26" />
+                            <RowDefinition Height="26" />
                         </Grid.RowDefinitions>
-                        <RadioButton Content="Random" Margin="5" Grid.Row="0"/>
-                        <CheckBox Content="Show hyphenated passwords" Margin="10,5,5,5" Grid.Row="1" />
-                        <RadioButton Content="Pronounceable" Margin="5" Grid.Row="2"/>
+                        <RadioButton
+                            Grid.Row="0"
+                            Margin="5"
+                            Content="Pronounceable"
+                            IsChecked="{Binding Path=PasswordMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static localmodels:PasswordMode.Pronounceable}}" />
+                        <CheckBox
+                            Grid.Row="1"
+                            Margin="10,5,5,5"
+                            Content="Show hyphenated passwords"
+                            IsChecked="{Binding Path=ShowHyphenated}"
+                            IsEnabled="{Binding Path=PasswordMode, Converter={StaticResource ShowHyphenatedEnabledConverter}}" />
+                        <RadioButton
+                            Grid.Row="2"
+                            Margin="5"
+                            Content="Random"
+                            IsChecked="{Binding Path=PasswordMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static localmodels:PasswordMode.Random}}" />
                     </Grid>
                 </GroupBox>
                 <GroupBox Grid.Column="1" Header="Amount &amp; Length">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="130"/>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="130" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="25"/>
-                            <RowDefinition Height="25"/>
-                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="26" />
+                            <RowDefinition Height="26" />
+                            <RowDefinition Height="26" />
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Number of passwords:" Margin="3"/>
-                        <TextBlock Grid.Row="0" Grid.Column="1" Margin="3" />
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Minimum length:" Margin="3"/>
-                        <TextBlock Grid.Row="1" Grid.Column="1" Margin="3"/>
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Maximum length:" Margin="3"/>
-                        <TextBlock Grid.Row="2" Grid.Column="1" Margin="3"/>
+                        <Label
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Content="Number of passwords:" />
+                        <TextBox
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="3" />
+                        <Label
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Content="Minimum length:" />
+                        <TextBox
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="3" />
+                        <Label
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Content="Maximum length:" />
+                        <TextBox
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Margin="3" />
                     </Grid>
                 </GroupBox>
-                <Button Grid.Column="2" Content="Generate" VerticalAlignment="Center" Width="80" IsDefault="True" />
+                <Button
+                    Grid.Column="2"
+                    Width="80"
+                    VerticalAlignment="Center"
+                    Content="Generate"
+                    IsDefault="True" />
             </Grid>
         </GroupBox>
-        <GroupBox Header="Character set" Margin="5">
+        <GroupBox Margin="5" Header="Character set">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="25"/>
-                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="25" />
+                    <RowDefinition Height="25" />
                 </Grid.RowDefinitions>
-                <CheckBox  Grid.Row="0" Grid.Column="0" Content="Small symbols" Margin="3"/>
-                <CheckBox  Grid.Row="1" Grid.Column="0" Content="Capital symbols" Margin="3"/>
-                <CheckBox  Grid.Row="0" Grid.Column="1" Content="Numerals" Margin="3"/>
-                <CheckBox  Grid.Row="1" Grid.Column="1" Content="Special symbols" Margin="3"/>
-                <Grid  Grid.Row="0" Grid.Column="2" >
+                <CheckBox
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="3"
+                    Content="Small symbols"
+                    IsThreeState="True" />
+                <CheckBox
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Margin="3"
+                    Content="Capital symbols"
+                    IsThreeState="True" />
+                <CheckBox
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="3"
+                    Content="Numerals"
+                    IsThreeState="True" />
+                <CheckBox
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="3"
+                    Content="Special symbols"
+                    IsThreeState="True" />
+                <Grid Grid.Row="0" Grid.Column="2">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="110"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="110" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="Exclude symbols:" Margin="3"/>
-                    <TextBlock Grid.Column="1" Margin="3" />
+                    <Label Grid.Column="0" Content="Exclude symbols:" />
+                    <TextBox Grid.Column="1" Margin="3" />
                 </Grid>
-                <Grid  Grid.Row="1" Grid.Column="2" >
+                <Grid Grid.Row="1" Grid.Column="2">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="110"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="110" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="Include symbols:" Margin="3"/>
-                    <TextBlock Grid.Column="1" Margin="3" />
+                    <Label Grid.Column="0" Content="Include symbols:" />
+                    <TextBox Grid.Column="1" Margin="3" />
                 </Grid>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Restrictions" Margin="5">
+        <GroupBox Margin="5" Header="Restrictions">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="25"/>
-                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="26" />
+                    <RowDefinition Height="26" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <CheckBox Content="Enable Bloom filter" Grid.Row="0" Grid.Column="0" Margin="3"/>
-                <CheckBox Content="Paranoid check" Grid.Row="1" Grid.Column="0" Margin="3"/>
+                <CheckBox
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="3"
+                    Content="Enable Bloom filter" />
+                <CheckBox
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Margin="3"
+                    Content="Paranoid check" />
                 <Grid Grid.Row="0" Grid.Column="1">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="50"/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="50" />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="80" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="Filter:" Grid.Column="0" Margin="3"/>
-                    <TextBox  Grid.Column="1" Margin="3"/>
-                    <Button Content="Browse" Grid.Column="2" Margin="3"/>
+                    <Label Grid.Column="0" Content="Filter:" />
+                    <TextBox Grid.Column="1" Margin="3" />
+                    <Button
+                        Grid.Column="2"
+                        Margin="3"
+                        Content="Browse" />
                 </Grid>
-                <CheckBox Content="Calculate quality" Grid.Row="1" Grid.Column="1" Margin="3"/>
+                <CheckBox
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="3"
+                    Content="Calculate quality" />
             </Grid>
         </GroupBox>
-        <DataGrid Visibility="Hidden"/>
+        <DataGrid Visibility="Hidden" />
     </StackPanel>
 </Window>
