@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BloomCS\BloomCS.csproj" />
+    <ProjectReference Include="..\CSAdapter\CSAdapter.csproj" />
   </ItemGroup>
 
 </Project>
