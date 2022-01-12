@@ -24,7 +24,7 @@ public:
 	CBloomError(bloom_exception& ex) : error_class(BloomErrorClass::BLOOM_LIBERROR), error_code(static_cast<long>(ex.error())), error_message(toTstring(ex.what()))
 	{ }
 
-	CBloomError(std::exception& ex) : error_class(BloomErrorClass::BLOOM_LIBERROR), error_code(0L), error_message(toTstring(ex.what()))
+	CBloomError(std::exception& ex) : error_class(BloomErrorClass::BLOOM_STDERROR), error_code(0L), error_message(toTstring(ex.what()))
 	{ }
 
 	BloomErrorClass get_error_class()
@@ -44,4 +44,3 @@ public:
 		return error_message.length();
 	}
 };
-

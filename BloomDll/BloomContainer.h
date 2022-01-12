@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "../Bloom/Bloom.h"
 #include "BloomError.h"
 
@@ -17,10 +18,12 @@ public:
 	{
 		return m_bloom.get();
 	}
+
 	CBloomError* GetBloomError()
 	{
 		return m_bloom_error.get();
 	}
+
 	void process_exception(CWin32ErrorT& win32error)
 	{
 		m_bloom_error.reset(new CBloomError(win32error));
@@ -41,4 +44,3 @@ public:
 		m_bloom_error.release();
 	}
 };
-

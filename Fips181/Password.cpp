@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Password.h"
 
-bool Password::GenerateWord(size_t len)
+bool CPassword::GenerateWord(size_t len)
 {
 	unsigned tries = 0;
 
@@ -148,7 +148,7 @@ bool Password::GenerateWord(size_t len)
 	return true;
 }
 
-bool Password::GenerateRandomWord(size_t len)
+bool CPassword::GenerateRandomWord(size_t len)
 {
 	if (mode == 0 || len == 0)
 		return false;
@@ -210,7 +210,7 @@ bool Password::GenerateRandomWord(size_t len)
 				ch = strIncludeSymbols[GetRandomUINT(0, (UINT)strIncludeSymbols.length() - 1)];
 
 			std::string name;
-			if (!GetSymbolName(ch, &name))
+			if (!GetSymbolName(ch, name))
 				name = ch;
 			Units.push_back(PwdUnit(ch, name, false));
 			Syllables.push_back(name);
@@ -235,7 +235,7 @@ bool Password::GenerateRandomWord(size_t len)
  * the individual letters, so three consecutive units can have
  * the length of 6 at most.
  */
-bool Password::ImproperWord(const std::vector<PwdUnit>& pwd_units)
+bool CPassword::ImproperWord(const std::vector<PwdUnit>& pwd_units)
 {
 	for (size_t unit_count = 0; unit_count < pwd_units.size(); unit_count++)
 	{
@@ -284,7 +284,7 @@ bool Password::ImproperWord(const std::vector<PwdUnit>& pwd_units)
  * y starts a word and is the only vowel in the first syllable.
  * The word ycl is one example.  We discard words like these.
  */
-bool Password::HaveInitialY(const std::vector<unsigned>& units)
+bool CPassword::HaveInitialY(const std::vector<unsigned>& units)
 {
 	unsigned vowel_count = 0;
 	unsigned normal_vowel_count = 0;
@@ -316,7 +316,7 @@ bool Password::HaveInitialY(const std::vector<unsigned>& units)
  * vowel at the end of the word or syllables like ble will
  * be generated.
  */
-bool Password::HaveFinalSplit(const std::vector<unsigned>& units)
+bool CPassword::HaveFinalSplit(const std::vector<unsigned>& units)
 {
 	size_t vowel_count = 0;
 
@@ -337,30 +337,22 @@ bool Password::HaveFinalSplit(const std::vector<unsigned>& units)
 	return ((vowel_count == 1) && (Rules[units.back()].flags & NO_FINAL_SPLIT));
 }
 
-bool Password::GetSymbolName(char symbol, std::string* name)
+bool CPassword::GetSymbolName(char symbol, std::string& out)
 {
 	auto p = std::find_if(SymbolNames.cbegin(), SymbolNames.cend(), [&, symbol](auto& s) { return (s.symbol == symbol); });
 
 	if (p == SymbolNames.cend())
 		return false;
-	*name = p->name;
+	out = p->name;
 	return true;
 }
 
-//char Password::UpperChar(char ch)
-//{
-//	auto a = std::find(LowerChars.cbegin(), LowerChars.cend(), ch);
-//	if (LowerChars.cend() == a)
-//		return ch;
-//	return *((a - LowerChars.cbegin()) + UpperChars.cbegin());
-//}
-
-bool Password::AreAllowedSymbolsIn(const std::string& strWord, const std::string& strExclude)
+bool CPassword::AreAllowedSymbolsIn(const std::string& strWord, const std::string& strExclude)
 {
 	return (strWord.find_first_of(strExclude) == std::string::npos);
 }
 
-size_t Password::GetWeight(int mode, const std::string& strIncludeSymbols) const
+size_t CPassword::GetWeight(int mode, const std::string& strIncludeSymbols) const
 {
 	size_t Weight = 0;
 
@@ -374,7 +366,7 @@ size_t Password::GetWeight(int mode, const std::string& strIncludeSymbols) const
 	return Weight;
 }
 
-size_t Password::GetWeightRandom(int mode, const std::string& strIncludeSymbols) const
+size_t CPassword::GetWeightRandom(int mode, const std::string& strIncludeSymbols) const
 {
 	size_t Weight = 0;
 
@@ -391,14 +383,14 @@ size_t Password::GetWeightRandom(int mode, const std::string& strIncludeSymbols)
 }
 
 #if !defined(_DEBUG)
-long Password::IO_Validate0(long result)
+long CPassword::IO_Validate0(long result)
 {
 	if (0 != result)
 		throw CWin32Error();
 	return result;
 }
 
-bool Password::Timeout(_timeb& start)
+bool CPassword::Timeout(_timeb& start)
 {
 	__timeb64 stop;
 	IO_Validate0(_ftime64_s(&stop));
