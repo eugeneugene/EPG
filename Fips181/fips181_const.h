@@ -7,14 +7,15 @@ enum digramflag_t { ANY_COMBINATION = 0, NOT_END = 1, END = 2, SUFFIX = 4, ILLEG
 
 struct SymbolName
 {
-	char symbol;
+	const char symbol;
 	const char* name;
 };
 
 struct Unit
 {
-	char unit_code[3];
-	unsigned flags;
+	const char unit_code[3];
+	const int unit_len;
+	const unsigned flags;
 };
 
 extern const std::array<char, 26> LowerChars;

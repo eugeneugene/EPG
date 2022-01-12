@@ -54,7 +54,7 @@ bool Syllable::Generate(int len)
 	 * discarded because of the retry limit. Since the saved_unit is OK and
 	 * fits in nicely with the preceding syllable, we will always use it.
 	 */
-	std::vector<unsigned> HoldSavedUnits(SavedUnits);
+	std::vector<unsigned> hold_saved_units(saved_units);
 
 	/*
 	 * Loop until valid syllable is found.
@@ -66,12 +66,12 @@ bool Syllable::Generate(int len)
 		 * syllable variables.
 		 */
 		tries1 = 0;
-		SavedUnits = HoldSavedUnits;
+		saved_units = hold_saved_units;
 		vowel_count = 0;
 		current_unit = 0;
 		length_left = len;
 		want_another_unit = true;
-		UnitsInSyllable.clear();
+		units_in_syllable.clear();
 		/*
 		 * This loop finds all the units for the syllable.
 		 */
@@ -89,7 +89,7 @@ bool Syllable::Generate(int len)
 				 * If there are saved_unit's from the previous
 				 * syllable, use them up first.
 				 */
-				if (SavedUnits.size() != 0)
+				if (saved_units.size() != 0)
 				{
 					/*
 					 * If there were two saved units, the first is
@@ -97,21 +97,21 @@ bool Syllable::Generate(int len)
 					 * syllable) to be valid.  We ignore the checks
 					 * and place it in this syllable manually.
 					 */
-					if (SavedUnits.size() == 2)
+					if (saved_units.size() == 2)
 					{
-						UnitsInSyllable.clear();
-						UnitsInSyllable.push_back(SavedUnits[1]);
-						if (Rules[SavedUnits[1]].flags & VOWEL)
+						units_in_syllable.clear();
+						units_in_syllable.push_back(saved_units[1]);
+						if (Rules[saved_units[1]].flags & VOWEL)
 							vowel_count++;
 						current_unit++;
 						//syl = Rules[SavedUnits[1]].unit_code;
-						length_left -= strlen(Rules[SavedUnits[1]].unit_code);
+						length_left -= Rules[saved_units[1]].unit_len;
 					}
 					/*
 					 * The unit becomes the last unit checked in the
 					 * previous syllable.
 					 */
-					unit = SavedUnits[0];
+					unit = saved_units[0];
 
 					/*
 					 * The saved units have been used.  Do not try to
@@ -119,7 +119,7 @@ bool Syllable::Generate(int len)
 					 * syllable is rejected at which point we start to rebuild
 					 * it with these same saved units.
 					 */
-					SavedUnits.clear();
+					saved_units.clear();
 				}
 				else
 				{
@@ -134,7 +134,7 @@ bool Syllable::Generate(int len)
 					else
 						unit = RandomRuler(NO_SPECIAL_RULE);
 				}
-				length_left -= strlen(Rules[unit].unit_code);
+				length_left -= Rules[unit].unit_len;
 
 				/*
 				 * Prevent having a word longer than expected.
@@ -185,19 +185,19 @@ bool Syllable::Generate(int len)
 					 /*
 					  * Reject ILLEGAL_PAIRS of units.
 					  */
-					if ((Allowed(UnitsInSyllable.data(), current_unit, unit, ILLEGAL_PAIR)) ||
+					if ((Allowed(current_unit, unit, ILLEGAL_PAIR)) ||
 
 						/*
 						 * Reject units that will be split between syllables
 						 * when the syllable has no vowels in it.
 						 */
-						(Allowed(UnitsInSyllable.data(), current_unit, unit, BREAK) && (vowel_count == 0)) ||
+						(Allowed(current_unit, unit, BREAK) && (vowel_count == 0)) ||
 
 						/*
 						 * Reject a unit that will end a syllable when no
 						 * previous unit was a vowel and neither is this one.
 						 */
-						(Allowed(UnitsInSyllable.data(), current_unit, unit, END) && (vowel_count == 0) && !(Rules[unit].flags & VOWEL)))
+						(Allowed(current_unit, unit, END) && (vowel_count == 0) && !(Rules[unit].flags & VOWEL)))
 						rule_broken = true;
 
 					if (current_unit == 1)
@@ -206,7 +206,7 @@ bool Syllable::Generate(int len)
 						 * Reject the unit if we are at the starting digram of
 						 * a syllable and it does not fit.
 						 */
-						if (Allowed(UnitsInSyllable.data(), current_unit, unit, NOT_BEGIN))
+						if (Allowed(current_unit, unit, NOT_BEGIN))
 							rule_broken = true;
 					}
 					else
@@ -215,7 +215,7 @@ bool Syllable::Generate(int len)
 						 * We are not at the start of a syllable.
 						 * Save the previous unit for later tests.
 						 */
-						last_unit = UnitsInSyllable[current_unit - 1];
+						last_unit = units_in_syllable[current_unit - 1];
 
 						/*
 						 * Do not allow syllables where the first letter is y
@@ -224,14 +224,14 @@ bool Syllable::Generate(int len)
 						 * Also, the combination does not sound to good even
 						 * if not split.
 						 */
-						if (((current_unit == 2) && (Allowed(UnitsInSyllable.data(), current_unit, unit, BEGIN))
-							&& (Rules[UnitsInSyllable[0]].flags & ALTERNATE_VOWEL)) ||
+						if (((current_unit == 2) && (Allowed(current_unit, unit, BEGIN))
+							&& (Rules[units_in_syllable[0]].flags & ALTERNATE_VOWEL)) ||
 
 							/*
 							 * If this is the last unit of a word, we should
 							 * reject any digram that cannot end a syllable.
 							 */
-							(Allowed(UnitsInSyllable.data(), current_unit, unit, NOT_END) && (length_left == 0)) ||
+							(Allowed(current_unit, unit, NOT_END) && (length_left == 0)) ||
 
 							/*
 							 * Reject the unit if the digram it forms wants
@@ -239,16 +239,16 @@ bool Syllable::Generate(int len)
 							 * digram that would end the syllable is not
 							 * allowed to end a syllable.
 							 */
-							(Allowed(UnitsInSyllable.data(), current_unit, unit, BREAK) &&
-								(Digram[UnitsInSyllable[current_unit - 2]][last_unit] & NOT_END)) ||
+							(Allowed(current_unit, unit, BREAK) &&
+								(Digram[units_in_syllable[current_unit - 2]][last_unit] & NOT_END)) ||
 
 							/*
 							 * Reject the unit if the digram it forms
 							 * expects a vowel preceding it and there is
 							 * none.
 							 */
-							(Allowed(UnitsInSyllable.data(), current_unit, unit, PREFIX) &&
-								!(Rules[UnitsInSyllable[current_unit - 2]].flags & VOWEL)))
+							(Allowed(current_unit, unit, PREFIX) &&
+								!(Rules[units_in_syllable[current_unit - 2]].flags & VOWEL)))
 							rule_broken = true;
 
 						/*
@@ -285,12 +285,12 @@ bool Syllable::Generate(int len)
 									** digram cannot legally end it), just
 									** discard it and try for another.
 									*/
-									if (Digram[UnitsInSyllable[current_unit - 2]][last_unit] & NOT_END)
+									if (Digram[units_in_syllable[current_unit - 2]][last_unit] & NOT_END)
 										rule_broken = true;
 									else
 									{
-										SavedUnits.clear();
-										SavedUnits.push_back(unit);
+										saved_units.clear();
+										saved_units.push_back(unit);
 										want_another_unit = false;
 									}
 								}
@@ -318,7 +318,7 @@ bool Syllable::Generate(int len)
 							 * is an END pair or we would otherwise exceed
 							 * the length of the word.
 							 */
-							(Allowed(UnitsInSyllable.data(), current_unit, unit, END) || (length_left == 0)))
+							(Allowed(current_unit, unit, END) || (length_left == 0)))
 							want_another_unit = false;
 						else
 						{
@@ -340,27 +340,27 @@ bool Syllable::Generate(int len)
 								** of the digram we are pushing to the next
 								** syllable.
 								*/
-								if (Allowed(UnitsInSyllable.data(), current_unit, unit, BEGIN) && (current_unit > 1) &&
+								if (Allowed(current_unit, unit, BEGIN) && (current_unit > 1) &&
 									!((vowel_count == 1) && (Rules[last_unit].flags & VOWEL)))
 								{
-									SavedUnits.clear();
-									SavedUnits.push_back(last_unit);
-									SavedUnits.push_back(unit);
+									saved_units.clear();
+									saved_units.push_back((unsigned)last_unit);
+									saved_units.push_back(unit);
 									want_another_unit = false;
 								}
 								else
 								{
-									if (Allowed(UnitsInSyllable.data(), current_unit, unit, BREAK))
+									if (Allowed(current_unit, unit, BREAK))
 									{
-										SavedUnits.clear();
-										SavedUnits.push_back(unit);
+										saved_units.clear();
+										saved_units.push_back(unit);
 										want_another_unit = false;
 									}
 								}
 							}
 							else
 							{
-								if (Allowed(UnitsInSyllable.data(), current_unit, unit, SUFFIX))
+								if (Allowed(current_unit, unit, SUFFIX))
 									want_vowel = true;
 							}
 						}
@@ -373,7 +373,7 @@ bool Syllable::Generate(int len)
 				 * letters left to go in the word.
 				 */
 				if (rule_broken)
-					length_left += strlen(Rules[unit].unit_code);
+					length_left += Rules[unit].unit_len;
 			} while (rule_broken && (tries1 <= MaxRetries(len)));
 			/*
 			 * The unit fit OK.
@@ -397,10 +397,10 @@ bool Syllable::Generate(int len)
 				 * adjust the syllable formed.  Otherwise, we
 				 * append the current unit to the syllable.
 				 */
-				switch (SavedUnits.size())
+				switch (saved_units.size())
 				{
 				case 0:
-					UnitsInSyllable.push_back(unit);
+					units_in_syllable.push_back(unit);
 					//syl += Rules[unit].unit_code;
 					break;
 				case 1:
@@ -408,8 +408,8 @@ bool Syllable::Generate(int len)
 					break;
 				case 2:
 					//syl.erase(syl.length() - strlen(Rules[last_unit].unit_code));
-					UnitsInSyllable.pop_back();
-					length_left += strlen(Rules[last_unit].unit_code);
+					units_in_syllable.pop_back();
+					length_left += Rules[last_unit].unit_len;
 					current_unit -= 2;
 					break;
 				}
@@ -429,10 +429,10 @@ bool Syllable::Generate(int len)
 		} while ((tries1 <= MaxRetries(len)) && want_another_unit);
 		if (++tries2 >= MaxRetries(len))
 		{
-			SavedUnits.clear();
+			saved_units.clear();
 			return false;
 		}
-	} while (rule_broken || IllegalPlacement(UnitsInSyllable));
+	} while (rule_broken || IllegalPlacement(units_in_syllable));
 
 	return true;
 }
@@ -444,7 +444,7 @@ bool Syllable::Generate(int len)
  * consonants, or syllables with consonants between vowels (unless
  * one of them is the final silent e).
  */
-bool Syllable::IllegalPlacement(const std::vector<unsigned> units) const
+bool Syllable::IllegalPlacement(const std::vector<unsigned> &units) const
 {
 	size_t vowel_count = 0;
 	size_t unit_count;
@@ -501,6 +501,8 @@ bool Syllable::IllegalPlacement(const std::vector<unsigned> units) const
 	return false;
 }
 
+#pragma warning(push)
+#pragma warning(disable: 26812)
 unsigned Syllable::RandomRuler(flag_t type)
 {
 	unsigned i;
@@ -510,9 +512,10 @@ unsigned Syllable::RandomRuler(flag_t type)
 	 * to do that and avoid looping with rejected consonants.
 	 */
 	if (type & VOWEL)
-		i = vowel_rulers[GetRandomUINT(0, vowel_rulers.size() - 1)];
+		i = vowel_rulers[GetRandomUINT(0, (UINT)vowel_rulers.size() - 1)];
 	else
 		// Get any letter according to the English distribution.
-		i = rulers[GetRandomUINT(0, rulers.size() - 1)];
+		i = rulers[GetRandomUINT(0, (UINT)rulers.size() - 1)];
 	return i;
 }
+#pragma warning(pop)

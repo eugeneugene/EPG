@@ -24,7 +24,7 @@ constexpr int MAXLEN = 128;
 constexpr int MINLEN = 4;
 constexpr int MAXWORDS = 65536;
 
-constexpr char strHyphen[] = "-";
+constexpr char chHyphen = '-';
 constexpr char chNewLine = '\n';
 constexpr char chSpace = ' ';
 constexpr char chVLine = '|';

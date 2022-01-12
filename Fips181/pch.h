@@ -11,11 +11,13 @@
 #include "framework.h"
 
 #include <Windows.h>
+#include <limits.h>
 
 #include <array>
 #include <string>
 #include <vector>
-#include <limits.h>
+#include <algorithm>
+#include <iterator>
 #include <stdexcept>
 
 #if defined(_DEBUG)

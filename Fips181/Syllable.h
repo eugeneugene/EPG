@@ -4,34 +4,41 @@
 #include "fips181_const.h"
 #include "fips181.h"
 
+/// <summary>
+/// Слог
+/// </summary>
 class Syllable
 {
-	std::vector<unsigned> SavedUnits;
+private:
+	std::vector<unsigned> saved_units;
+	std::vector<unsigned> units_in_syllable;
 
 public:
-	std::vector<unsigned> UnitsInSyllable;
-
 	bool Generate(int len);
 
-	std::string GetSyllable()
+	const std::vector<unsigned>* UnitsInSyllable() const
 	{
-		std::string s;
-		for (auto unit : UnitsInSyllable)
-			s += Rules[unit].unit_code;
-		return s;
+		return &units_in_syllable;
+	}
+
+	void GetSyllable(std::string& out) const
+	{
+		out.clear();
+		for (auto unit : units_in_syllable)
+			out += Rules[unit].unit_code;
 	}
 
 private:
-	bool IllegalPlacement(const std::vector<unsigned> units) const;
+	bool IllegalPlacement(const std::vector<unsigned>& units) const;
 	static unsigned RandomRuler(flag_t type);
 
-	inline unsigned MaxRetries(size_t len)
+	inline unsigned MaxRetries(size_t len) const
 	{
 		return static_cast<unsigned>(4 * len + Rules.size());
 	}
 
-	int Allowed(const unsigned* UnitsInSyllable, size_t nCurrentUnit, size_t nUnit, int nFlag)
+	int Allowed(size_t nCurrentUnit, size_t nUnit, int nFlag) const
 	{
-		return Digram[UnitsInSyllable[nCurrentUnit - 1]][nUnit] & nFlag;
+		return Digram[units_in_syllable[nCurrentUnit - 1]][nUnit] & nFlag;
 	}
 };

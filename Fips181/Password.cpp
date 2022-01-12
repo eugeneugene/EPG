@@ -8,7 +8,7 @@ bool Password::GenerateWord(size_t len)
 	if (mode == 0 || len == 0)
 		return false;
 
-	unsigned Weight = GetWeight(mode, strIncludeSymbols);
+	unsigned Weight = (unsigned)GetWeight(mode, strIncludeSymbols);
 	if (Weight == 0)
 		return false;
 
@@ -35,7 +35,7 @@ bool Password::GenerateWord(size_t len)
 			int p = GetRandomUINT(1, Weight);
 			if (mode & (ModeCO | ModeLO))
 			{
-				p -= WeightCL;
+				p -= (int)WeightCL;
 				if (p <= 0)
 				{
 					bool Upper = false;
@@ -43,7 +43,7 @@ bool Password::GenerateWord(size_t len)
 					** Get the syllable and find its length.
 					*/
 					Syllable syllable;
-					if (!syllable.Generate(len - GetLength()))
+					if (!syllable.Generate((int)(len - GetLength())))
 					{
 						tries = 0;
 						Units.clear();
@@ -51,7 +51,8 @@ bool Password::GenerateWord(size_t len)
 						Syllables.clear();
 						continue;
 					}
-					std::string new_syllable = syllable.GetSyllable();
+					std::string new_syllable;
+					syllable.GetSyllable(new_syllable);
 					size_t syllen = new_syllable.length();
 #ifdef _DEBUG
 					if (syllen > len - GetLength())
@@ -63,13 +64,12 @@ bool Password::GenerateWord(size_t len)
 						if (mode & ModeLO)
 							Upper = (bool)GetRandomUINT(0, 1);
 						if (Upper)
-							new_syllable = UpperString(new_syllable);
+							std::transform(new_syllable.cbegin(), new_syllable.cend(), new_syllable.begin(), ::toupper);
 					}
 
-					std::vector<pwd_unit> units;
-					units.assign(ProperUnits.cbegin(), ProperUnits.cend());
-					for (unsigned unit : syllable.UnitsInSyllable)
-						units.push_back(pwd_unit(unit, Upper));
+					std::vector<PwdUnit> units(ProperUnits);
+					for (unsigned unit : *syllable.UnitsInSyllable())
+						units.push_back(PwdUnit(unit, Upper));
 
 					/*
 					** If the word has been improperly formed, throw out
@@ -82,19 +82,19 @@ bool Password::GenerateWord(size_t len)
 					*/
 					if (AreAllowedSymbolsIn(new_syllable, strExcludeSymbols) &&
 						!ImproperWord(units) &&
-						!(Units.empty() && HaveInitialY(syllable.UnitsInSyllable)) &&
-						!((len == GetLength() + new_syllable.length()) && HaveFinalSplit(syllable.UnitsInSyllable)))
+						!(Units.empty() && HaveInitialY(*syllable.UnitsInSyllable())) &&
+						!((len == GetLength() + new_syllable.length()) && HaveFinalSplit(*syllable.UnitsInSyllable())))
 					{
-						ProperUnits.assign(units.cbegin(), units.cend());
-						for (unsigned unit : syllable.UnitsInSyllable)
-							Units.push_back(pwd_unit(unit, Upper));
+						ProperUnits = units;
+						for (unsigned unit : *syllable.UnitsInSyllable())
+							Units.push_back(PwdUnit(unit, Upper));
 						Syllables.push_back(new_syllable);
 						o_mode &= ~(ModeCO | ModeLO);
 					}
 				}
 				if ((mode & ModeN) && p > 0)
 				{
-					p -= Numbers.size();
+					p -= (int)Numbers.size();
 					if (p <= 0)
 					{
 						if (AddRandomSymbols(Numbers))
@@ -104,7 +104,7 @@ bool Password::GenerateWord(size_t len)
 				}
 				if ((mode & ModeS) && p > 0)
 				{
-					p -= Symbols.size();
+					p -= (int)Symbols.size();
 					if (p <= 0)
 					{
 						if (AddRandomSymbols(Symbols))
@@ -167,52 +167,52 @@ bool Password::GenerateRandomWord(size_t len)
 
 		do
 		{
-			int p = GetRandomUINT(1, Weight);
+			int p = GetRandomUINT(1, (UINT)Weight);
 			char ch = NULL;
 			if (mode & ModeC)
 			{
-				p -= UpperChars.size();
+				p -= (int)UpperChars.size();
 				if (p <= 0)
 				{
-					ch = UpperChars[GetRandomUINT(0, UpperChars.size() - 1)];
+					ch = UpperChars[GetRandomUINT(0, (UINT)UpperChars.size() - 1)];
 					o_mode &= ~ModeCO;
 				}
 			}
 			if ((mode & ModeL) && p > 0)
 			{
-				p -= LowerChars.size();
+				p -= (int)LowerChars.size();
 				if (p <= 0)
 				{
-					ch = LowerChars[GetRandomUINT(0, LowerChars.size() - 1)];
+					ch = LowerChars[GetRandomUINT(0, (UINT)LowerChars.size() - 1)];
 					o_mode &= ~ModeLO;
 				}
 			}
 			if ((mode & ModeN) && p > 0)
 			{
-				p -= Numbers.size();
+				p -= (int)Numbers.size();
 				if (p <= 0)
 				{
-					ch = Numbers[GetRandomUINT(0, Numbers.size() - 1)];
+					ch = Numbers[GetRandomUINT(0, (UINT)Numbers.size() - 1)];
 					o_mode &= ~ModeNO;
 				}
 
 			}
 			if ((mode & ModeS) && p > 0)
 			{
-				p -= Symbols.size();
+				p -= (int)Symbols.size();
 				if (p <= 0)
 				{
-					ch = Symbols[GetRandomUINT(0, Symbols.size() - 1)];
+					ch = Symbols[GetRandomUINT(0, (UINT)Symbols.size() - 1)];
 					o_mode &= ~ModeSO;
 				}
 			}
 			if (p > 0)
-				ch = strIncludeSymbols[GetRandomUINT(0, strIncludeSymbols.length() - 1)];
+				ch = strIncludeSymbols[GetRandomUINT(0, (UINT)strIncludeSymbols.length() - 1)];
 
 			std::string name;
 			if (!GetSymbolName(ch, &name))
 				name = ch;
-			Units.push_back(pwd_unit(ch, name, false));
+			Units.push_back(PwdUnit(ch, name, false));
 			Syllables.push_back(name);
 		} while (GetLength() < len);
 		if (o_mode)
@@ -235,7 +235,7 @@ bool Password::GenerateRandomWord(size_t len)
  * the individual letters, so three consecutive units can have
  * the length of 6 at most.
  */
-bool Password::ImproperWord(const std::vector<pwd_unit>& pwd_units)
+bool Password::ImproperWord(const std::vector<PwdUnit>& pwd_units)
 {
 	for (size_t unit_count = 0; unit_count < pwd_units.size(); unit_count++)
 	{
@@ -246,7 +246,7 @@ bool Password::ImproperWord(const std::vector<pwd_unit>& pwd_units)
 		 * (e.g., when saved_unit's in get_syllable() were not
 		 * used).
 		 */
-		if ((unit_count != 0) && (Digram[pwd_units[unit_count - 1].unit][pwd_units[unit_count].unit] & ILLEGAL_PAIR))
+		if ((unit_count != 0) && (Digram[pwd_units[unit_count - 1].Unit()][pwd_units[unit_count].Unit()] & ILLEGAL_PAIR))
 			return true;
 
 		/*
@@ -263,14 +263,14 @@ bool Password::ImproperWord(const std::vector<pwd_unit>& pwd_units)
 			/*
 			 * Vowel check.
 			 */
-			if ((((Rules[pwd_units[unit_count - 2].unit].flags & VOWEL) && !(Rules[pwd_units[unit_count - 2].unit].flags & ALTERNATE_VOWEL)) &&
-				(Rules[pwd_units[unit_count - 1].unit].flags & VOWEL) && (Rules[pwd_units[unit_count].unit].flags & VOWEL)) ||
+			if ((((Rules[pwd_units[unit_count - 2].Unit()].flags & VOWEL) && !(Rules[pwd_units[unit_count - 2].Unit()].flags & ALTERNATE_VOWEL)) &&
+				(Rules[pwd_units[unit_count - 1].Unit()].flags & VOWEL) && (Rules[pwd_units[unit_count].Unit()].flags & VOWEL)) ||
 				/*
 				 * Consonant check.
 				 */
-				 (!(Rules[pwd_units[unit_count - 2].unit].flags & VOWEL) &&
-				  !(Rules[pwd_units[unit_count - 1].unit].flags & VOWEL) &&
-				  !(Rules[pwd_units[unit_count].unit].flags & VOWEL)))
+				(!(Rules[pwd_units[unit_count - 2].Unit()].flags & VOWEL) &&
+					!(Rules[pwd_units[unit_count - 1].Unit()].flags & VOWEL) &&
+					!(Rules[pwd_units[unit_count].Unit()].flags & VOWEL)))
 				return true;
 		}
 	}
@@ -286,10 +286,10 @@ bool Password::ImproperWord(const std::vector<pwd_unit>& pwd_units)
  */
 bool Password::HaveInitialY(const std::vector<unsigned>& units)
 {
-	size_t vowel_count = 0;
-	size_t normal_vowel_count = 0;
+	unsigned vowel_count = 0;
+	unsigned normal_vowel_count = 0;
 
-	for (auto uit = units.begin(); uit != units.end(); uit++)
+	for (auto uit = units.cbegin(); uit != units.cend(); uit++)
 	{
 		/*
 		 * Count vowels.
@@ -302,7 +302,7 @@ bool Password::HaveInitialY(const std::vector<unsigned>& units)
 			 * Count the vowels that are not: 1. y, 2. at the start of
 			 * the word.
 			 */
-			if (!(Rules[*uit].flags & ALTERNATE_VOWEL) || (uit != units.begin()))
+			if (!(Rules[*uit].flags & ALTERNATE_VOWEL) || (uit != units.cbegin()))
 				normal_vowel_count++;
 		}
 	}
@@ -324,7 +324,7 @@ bool Password::HaveFinalSplit(const std::vector<unsigned>& units)
 	 *    Count all the vowels in the word.
 	 */
 	 //for (size_t unit_count = 0; unit_count < units.size(); unit_count++)
-	for (auto uit = units.begin(); uit != units.end(); uit++)
+	for (auto uit = units.cbegin(); uit != units.cend(); uit++)
 	{
 		if (Rules[*uit].flags & VOWEL)
 			vowel_count++;
@@ -347,20 +347,20 @@ bool Password::GetSymbolName(char symbol, std::string* name)
 	return true;
 }
 
-char Password::UpperChar(char ch)
-{
-	auto a = std::find(LowerChars.cbegin(), LowerChars.cend(), ch);
-	if (LowerChars.cend() == a)
-		return ch;
-	return *((a - LowerChars.cbegin()) + UpperChars.cbegin());
-}
+//char Password::UpperChar(char ch)
+//{
+//	auto a = std::find(LowerChars.cbegin(), LowerChars.cend(), ch);
+//	if (LowerChars.cend() == a)
+//		return ch;
+//	return *((a - LowerChars.cbegin()) + UpperChars.cbegin());
+//}
 
 bool Password::AreAllowedSymbolsIn(const std::string& strWord, const std::string& strExclude)
 {
 	return (strWord.find_first_of(strExclude) == std::string::npos);
 }
 
-size_t Password::GetWeight(int mode, const std::string& strIncludeSymbols)
+size_t Password::GetWeight(int mode, const std::string& strIncludeSymbols) const
 {
 	size_t Weight = 0;
 
@@ -374,7 +374,7 @@ size_t Password::GetWeight(int mode, const std::string& strIncludeSymbols)
 	return Weight;
 }
 
-size_t Password::GetWeightRandom(int mode, const std::string& strIncludeSymbols)
+size_t Password::GetWeightRandom(int mode, const std::string& strIncludeSymbols) const
 {
 	size_t Weight = 0;
 
