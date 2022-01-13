@@ -4,17 +4,18 @@
 #include "framework.h"
 
 #include <Windows.h>
-
 #include <io.h>
 #include <fcntl.h>
-#include <stdexcept>
 #include <tchar.h>
-#include <memory>
 #include <stdio.h>
+
+#include <stdexcept>
+#include <memory>
 #include <string>
 #include <iostream>		// cin, cout.
 #include <sstream>
 #include <cstdio>		// EOF.
+
 #include <boost/iostreams/concepts.hpp>
 #include <boost/iostreams/filter/stdio.hpp>
 #include <boost/iostreams/operations.hpp>

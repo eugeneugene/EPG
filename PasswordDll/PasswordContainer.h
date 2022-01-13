@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 #include "..\Fips181\Password.h"
 #include "PasswordError.h"
 
@@ -11,7 +12,7 @@ private:
 	std::unique_ptr<CPasswordError> m_password_error;
 
 public:
-	CPasswordContainer() : m_password(nullptr), m_password_error(nullptr)
+	CPasswordContainer(int Mode, const char* pIncludeSymbols, const char* pExcludeSymbols) : m_password(new CPassword(Mode, pIncludeSymbols, pExcludeSymbols)), m_password_error(nullptr)
 	{ }
 
 	CPassword* GetPassword()

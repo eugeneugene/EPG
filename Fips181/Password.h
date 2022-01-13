@@ -30,7 +30,7 @@ public:
 
 	bool GenerateWord(unsigned length);
 	bool GenerateRandomWord(unsigned length);
-	
+
 	void GetWord(std::_tstring& out) const
 	{
 		out.clear();
@@ -40,7 +40,7 @@ public:
 		}
 	}
 
-	void GetHyphenatedWord(std::_tstring& out) const
+	void GetRandomWord(std::_tstring& out) const
 	{
 		bool bFirst = true;
 		for (const auto& s : Syllables)
@@ -53,6 +53,21 @@ public:
 		}
 	}
 
+	unsigned GetLength() const
+	{
+		unsigned len = 0;
+		for (const auto& u : Units)
+			len += static_cast<unsigned>((*u.UnitCode()).length());
+		return len;
+	}
+
+	unsigned GetRandomLength() const
+	{
+		unsigned len = 0;
+		for (const auto& s : Syllables)
+			len += static_cast<unsigned>(s.length());
+		return len;
+	}
 
 private:
 	size_t GetWeight(int mode, const std::_tstring& strIncludeSymbols) const;
@@ -64,14 +79,6 @@ private:
 
 	static bool GetSymbolName(TCHAR symbol, std::_tstring& out);
 	static bool AreAllowedSymbolsIn(const std::_tstring& strWord, const std::_tstring& strExclude);
-
-	size_t GetLength() const
-	{
-		size_t len = 0;
-		for (const auto& p : Units)
-			len += (*p.UnitCode()).length();
-		return len;
-	}
 
 	bool IsAllowedSymbol(TCHAR ch) const
 	{
