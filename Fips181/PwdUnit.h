@@ -4,16 +4,16 @@
 #include <stdexcept>
 #include <algorithm>
 #include <iterator>
-#include "fips181_const.h"
+#include "..\Common\WideHelp.h"
 
 class PwdUnit
 {
 	unsigned unit;
-	std::string unit_code;
-	std::string symbol_name;
+	std::_tstring unit_code;
+	std::_tstring symbol_name;
 
 public:
-	PwdUnit(std::string _unit_code, std::string _symbol_name, bool _uppercase, unsigned _unit = UINT_MAX) : symbol_name(_symbol_name), unit(_unit)
+	PwdUnit(std::_tstring _unit_code, std::_tstring _symbol_name, bool _uppercase, unsigned _unit = UINT_MAX) : symbol_name(_symbol_name), unit(_unit)
 	{
 		if (_uppercase)
 			std::transform(_unit_code.cbegin(), _unit_code.cend(), std::back_inserter(unit_code), ::toupper);
@@ -21,7 +21,7 @@ public:
 			unit_code = _unit_code;
 	}
 
-	PwdUnit(char _unit_code, std::string _symbol_name, bool _uppercase, unsigned _unit = UINT_MAX) : symbol_name(_symbol_name), unit(_unit)
+	PwdUnit(TCHAR _unit_code, std::_tstring _symbol_name, bool _uppercase, unsigned _unit = UINT_MAX) : symbol_name(_symbol_name), unit(_unit)
 	{
 		if (_uppercase)
 			unit_code += ::toupper(_unit_code);
@@ -48,12 +48,12 @@ public:
 		return unit;
 	}
 
-	const std::string* UnitCode() const
+	const std::_tstring* UnitCode() const
 	{
 		return &unit_code;
 	}
 
-	const std::string* SymbolName() const
+	const std::_tstring* SymbolName() const
 	{
 		return &symbol_name;
 	}

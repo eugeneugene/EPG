@@ -5,6 +5,7 @@
 
 #include <Windows.h>
 #include <limits.h>
+#include <tchar.h>
 
 #include <array>
 #include <string>

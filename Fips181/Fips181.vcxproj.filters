@@ -24,9 +24,6 @@
     <ClInclude Include="fips181.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="fips181_const.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Password.h">
       <Filter>Header Files</Filter>
     </ClInclude>

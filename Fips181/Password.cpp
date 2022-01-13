@@ -1,11 +1,12 @@
 #include "pch.h"
 #include "Password.h"
+#include "..\Common\WideHelp.h"
 
-bool CPassword::GenerateWord(size_t len)
+bool CPassword::GenerateWord(unsigned length)
 {
 	unsigned tries = 0;
 
-	if (mode == 0 || len == 0)
+	if (mode == 0 || length == 0)
 		return false;
 
 	unsigned Weight = (unsigned)GetWeight(mode, strIncludeSymbols);
@@ -26,7 +27,7 @@ bool CPassword::GenerateWord(size_t len)
 		/*
 		** Find syllables until the entire word is constructed.
 		*/
-		while (GetLength() < len)
+		while (GetLength() < length)
 		{
 #ifndef _DEBUG
 			if (Timeout(start))
@@ -43,7 +44,7 @@ bool CPassword::GenerateWord(size_t len)
 					** Get the syllable and find its length.
 					*/
 					Syllable syllable;
-					if (!syllable.Generate((int)(len - GetLength())))
+					if (!syllable.Generate((int)(length - GetLength())))
 					{
 						tries = 0;
 						Units.clear();
@@ -51,11 +52,11 @@ bool CPassword::GenerateWord(size_t len)
 						Syllables.clear();
 						continue;
 					}
-					std::string new_syllable;
+					std::_tstring new_syllable;
 					syllable.GetSyllable(new_syllable);
 					size_t syllen = new_syllable.length();
 #ifdef _DEBUG
-					if (syllen > len - GetLength())
+					if (syllen > length - GetLength())
 						throw std::runtime_error("Internal state error");
 #endif
 					if (mode & ModeCO)
@@ -83,7 +84,7 @@ bool CPassword::GenerateWord(size_t len)
 					if (AreAllowedSymbolsIn(new_syllable, strExcludeSymbols) &&
 						!ImproperWord(units) &&
 						!(Units.empty() && HaveInitialY(*syllable.UnitsInSyllable())) &&
-						!((len == GetLength() + new_syllable.length()) && HaveFinalSplit(*syllable.UnitsInSyllable())))
+						!((length == GetLength() + new_syllable.length()) && HaveFinalSplit(*syllable.UnitsInSyllable())))
 					{
 						ProperUnits = units;
 						for (unsigned unit : *syllable.UnitsInSyllable())
@@ -121,7 +122,7 @@ bool CPassword::GenerateWord(size_t len)
 			** out the word arrays, and start from scratch.
 			*/
 			tries++;
-			if (tries > MaxRetries(len))
+			if (tries > MaxRetries(length))
 			{
 				tries = 0;
 				Units.clear();
@@ -131,7 +132,7 @@ bool CPassword::GenerateWord(size_t len)
 		}
 
 		/* if obligatory mode were left unused then try again */
-		if (GetLength() == len)
+		if (GetLength() == length)
 		{
 			if (o_mode)
 			{
@@ -148,9 +149,9 @@ bool CPassword::GenerateWord(size_t len)
 	return true;
 }
 
-bool CPassword::GenerateRandomWord(size_t len)
+bool CPassword::GenerateRandomWord(unsigned length)
 {
-	if (mode == 0 || len == 0)
+	if (mode == 0 || length == 0)
 		return false;
 
 	Units.clear();
@@ -168,7 +169,7 @@ bool CPassword::GenerateRandomWord(size_t len)
 		do
 		{
 			int p = GetRandomUINT(1, (UINT)Weight);
-			char ch = NULL;
+			TCHAR ch = NULL;
 			if (mode & ModeC)
 			{
 				p -= (int)UpperChars.size();
@@ -209,12 +210,12 @@ bool CPassword::GenerateRandomWord(size_t len)
 			if (p > 0)
 				ch = strIncludeSymbols[GetRandomUINT(0, (UINT)strIncludeSymbols.length() - 1)];
 
-			std::string name;
+			std::_tstring name;
 			if (!GetSymbolName(ch, name))
 				name = ch;
 			Units.push_back(PwdUnit(ch, name, false));
 			Syllables.push_back(name);
-		} while (GetLength() < len);
+		} while (GetLength() < length);
 		if (o_mode)
 		{
 			Units.clear();
@@ -337,7 +338,7 @@ bool CPassword::HaveFinalSplit(const std::vector<unsigned>& units)
 	return ((vowel_count == 1) && (Rules[units.back()].flags & NO_FINAL_SPLIT));
 }
 
-bool CPassword::GetSymbolName(char symbol, std::string& out)
+bool CPassword::GetSymbolName(TCHAR symbol, std::_tstring& out)
 {
 	auto p = std::find_if(SymbolNames.cbegin(), SymbolNames.cend(), [&, symbol](auto& s) { return (s.symbol == symbol); });
 
@@ -347,12 +348,12 @@ bool CPassword::GetSymbolName(char symbol, std::string& out)
 	return true;
 }
 
-bool CPassword::AreAllowedSymbolsIn(const std::string& strWord, const std::string& strExclude)
+bool CPassword::AreAllowedSymbolsIn(const std::_tstring& strWord, const std::_tstring& strExclude)
 {
 	return (strWord.find_first_of(strExclude) == std::string::npos);
 }
 
-size_t CPassword::GetWeight(int mode, const std::string& strIncludeSymbols) const
+size_t CPassword::GetWeight(int mode, const std::_tstring& strIncludeSymbols) const
 {
 	size_t Weight = 0;
 
@@ -366,7 +367,7 @@ size_t CPassword::GetWeight(int mode, const std::string& strIncludeSymbols) cons
 	return Weight;
 }
 
-size_t CPassword::GetWeightRandom(int mode, const std::string& strIncludeSymbols) const
+size_t CPassword::GetWeightRandom(int mode, const std::_tstring& strIncludeSymbols) const
 {
 	size_t Weight = 0;
 

@@ -1,13 +1,14 @@
 #include "pch.h"
 #include <array>
-#include "fips181_const.h"
+#include "fips181.h"
+#include "..\Common\WideHelp.h"
 
-const std::array<char, 26> LowerChars = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
-const std::array<char, 26> UpperChars = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
-const std::array<char, 6> Vowels = { 'a', 'e', 'i', 'o', 'u', 'y' };
-const std::array<char, 20> Consonants = { 'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z' };
-const std::array<char, 10> Numbers = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-const std::array<char, 25> Symbols = { '!', '#', '%', '&', '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '<', '=', '>', '@', '[', ']', '^', '_', '{', '}', '~' };
+const std::array<TCHAR, 26> LowerChars = { _T('a'), _T('b'), _T('c'), _T('d'), _T('e'), _T('f'), _T('g'), _T('h'), _T('i'), _T('j'), _T('k'), _T('l'), _T('m'), _T('n'), _T('o'), _T('p'), _T('q'), _T('r'), _T('s'), _T('t'), _T('u'), _T('v'), _T('w'), _T('x'), _T('y'), _T('z') };
+const std::array<TCHAR, 26> UpperChars = { _T('A'), _T('B'), _T('C'), _T('D'), _T('E'), _T('F'), _T('G'), _T('H'), _T('I'), _T('J'), _T('K'), _T('L'), _T('M'), _T('N'), _T('O'), _T('P'), _T('Q'), _T('R'), _T('S'), _T('T'), _T('U'), _T('V'), _T('W'), _T('X'), _T('Y'), _T('Z') };
+const std::array<TCHAR, 6> Vowels = { _T('a'), _T('e'), _T('i'), _T('o'), _T('u'), _T('y') };
+const std::array<TCHAR, 20> Consonants = { _T('b'), _T('c'), _T('d'), _T('f'), _T('g'), _T('h'), _T('j'), _T('k'), _T('l'), _T('m'), _T('n'), _T('p'), _T('q'), _T('r'), _T('s'), _T('t'), _T('v'), _T('w'), _T('x'), _T('z') };
+const std::array<TCHAR, 10> Numbers = { _T('0'), _T('1'), _T('2'), _T('3'), _T('4'), _T('5'), _T('6'), _T('7'), _T('8'), _T('9') };
+const std::array<TCHAR, 25> Symbols = { _T('!'), _T('#'), _T('%'), _T('&'), _T('('), _T(')'), _T('*'), _T('+'), _T('),'), _T('-'), _T('.'), _T('/'), _T(':'), _T(';'), _T('<'), _T('='), _T('>'), _T('@'), _T('['), _T(']'), _T('^'), _T('_'), _T('{'), _T('}'), _T('~') };
 
 /*
  * This is the standard random unit generating routine for
@@ -87,88 +88,88 @@ const std::array<unsigned, 12> vowel_rulers =
 const std::array<SymbolName, 43> SymbolNames =
 {
 	{
-		{ '1',	"ONE" },
-		{ '2',	"TWO" },
-		{ '3',	"THREE" },
-		{ '4',	"FOUR" },
-		{ '5',	"FIVE" },
-		{ '6',	"SIX" },
-		{ '7',	"SEVEN" },
-		{ '8',	"EIGHT" },
-		{ '9',	"NINE" },
-		{ '0',	"ZERO" },
-		{ '!',	"EXCLAMATION_POINT" },
-		{ '"',	"QUOTATION_MARK" },
-		{ '#',	"CROSSHATCH" },
-		{ '$',	"DOLLAR_SIGN" },
-		{ '%',	"PERCENT_SIGN" },
-		{ '&',	"AMPERSAND" },
-		{ '\'',	"APOSTROPHE" },
-		{ '(',	"LEFT_PARENTHESIS" },
-		{ ')',	"RIGHT_PARENTHESIS" },
-		{ '*',	"ASTERISK" },
-		{ '+',	"PLUS_SIGN" },
-		{ '.',	"PERIOD" },
-		{ '-',	"HYPHEN" },
-		{ ',',	"COMMA" },
-		{ '/',	"SLASH" },
-		{ ':',	"COLON" },
-		{ ';',	"SEMICOLON" },
-		{ '<',	"LESS_THAN" },
-		{ '=',	"EQUAL_SIGN" },
-		{ '>',	"GREATER_THAN" },
-		{ '?',	"QUESTION_MARK" },
-		{ '@',	"AT_SIGN" },
-		{ '[',	"LEFT_BRACKET" },
-		{ '\\',	"BACKSLASH" },
-		{ ']',	"RIGHT_BRACKET" },
-		{ '^',	"CIRCUMFLEX" },
-		{ '_',	"UNDERSCORE" },
-		{ '`',	"GRAVE" },
-		{ '{',	"LEFT_BRACE" },
-		{ '|',	"VERTICAL_BAR" },
-		{ '}',	"RIGHT_BRACE" },
-		{ '~',	"TILDE" }
+		{ _T('1'),	_T("ONE") },
+		{ _T('2'),	_T("TWO") },
+		{ _T('3'),	_T("THREE") },
+		{ _T('4'),	_T("FOUR") },
+		{ _T('5'),	_T("FIVE") },
+		{ _T('6'),	_T("SIX") },
+		{ _T('7'),	_T("SEVEN") },
+		{ _T('8'),	_T("EIGHT") },
+		{ _T('9'),	_T("NINE") },
+		{ _T('0'),	_T("ZERO") },
+		{ _T('!'),	_T("EXCLAMATION_POINT") },
+		{ _T('"'),	_T("QUOTATION_MARK") },
+		{ _T('#'),	_T("CROSSHATCH") },
+		{ _T('$'),	_T("DOLLAR_SIGN") },
+		{ _T('%'),	_T("PERCENT_SIGN") },
+		{ _T('&'),	_T("AMPERSAND") },
+		{ _T('\''),	_T("APOSTROPHE") },
+		{ _T('('),	_T("LEFT_PARENTHESIS") },
+		{ _T(')'),	_T("RIGHT_PARENTHESIS") },
+		{ _T('*'),	_T("ASTERISK") },
+		{ _T('+'),	_T("PLUS_SIGN") },
+		{ _T('.'),	_T("PERIOD") },
+		{ _T('-'),	_T("HYPHEN") },
+		{ _T('),'),	_T("COMMA") },
+		{ _T('/'),	_T("SLASH") },
+		{ _T(':'),	_T("COLON") },
+		{ _T(';'),	_T("SEMICOLON") },
+		{ _T('<'),	_T("LESS_THAN") },
+		{ _T('='),	_T("EQUAL_SIGN") },
+		{ _T('>'),	_T("GREATER_THAN") },
+		{ _T('?'),	_T("QUESTION_MARK") },
+		{ _T('@'),	_T("AT_SIGN") },
+		{ _T('['),	_T("LEFT_BRACKET") },
+		{ _T('\\'),	_T("BACKSLASH") },
+		{ _T(']'),	_T("RIGHT_BRACKET") },
+		{ _T('^'),	_T("CIRCUMFLEX") },
+		{ _T('_'),	_T("UNDERSCORE") },
+		{ _T('`'),	_T("GRAVE") },
+		{ _T('{'),	_T("LEFT_BRACE") },
+		{ _T('|'),	_T("VERTICAL_BAR") },
+		{ _T('}'),	_T("RIGHT_BRACE") },
+		{ _T('~'),	_T("TILDE") }
 	}
 };
 
 const std::array<Unit, 34> Rules =
 {
 	{
-		{ "a", 1, VOWEL },
-		{ "b", 1, NO_SPECIAL_RULE },
-		{ "c", 1, NO_SPECIAL_RULE },
-		{ "d", 1, NO_SPECIAL_RULE },
-		{ "e", 1, NO_FINAL_SPLIT | VOWEL },
-		{ "f", 1, NO_SPECIAL_RULE },
-		{ "g", 1, NO_SPECIAL_RULE },
-		{ "h", 1, NO_SPECIAL_RULE },
-		{ "i", 1, VOWEL },
-		{ "j", 1, NO_SPECIAL_RULE },
-		{ "k", 1, NO_SPECIAL_RULE },
-		{ "l", 1, NO_SPECIAL_RULE },
-		{ "m", 1, NO_SPECIAL_RULE },
-		{ "n", 1, NO_SPECIAL_RULE },
-		{ "o", 1, VOWEL },
-		{ "p", 1, NO_SPECIAL_RULE },
-		{ "r", 1, NO_SPECIAL_RULE },
-		{ "s", 1, NO_SPECIAL_RULE },
-		{ "t", 1, NO_SPECIAL_RULE },
-		{ "u", 1, VOWEL },
-		{ "v", 1, NO_SPECIAL_RULE },
-		{ "w", 1, NO_SPECIAL_RULE },
-		{ "x", 1, NOT_BEGIN_SYLLABLE },
-		{ "y", 1, ALTERNATE_VOWEL | VOWEL },
-		{ "z", 1, NO_SPECIAL_RULE },
-		{ "ch", 2, NO_SPECIAL_RULE },
-		{ "gh", 2, NO_SPECIAL_RULE },
-		{ "ph", 2, NO_SPECIAL_RULE },
-		{ "rh", 2, NO_SPECIAL_RULE },
-		{ "sh", 2, NO_SPECIAL_RULE },
-		{ "th", 2, NO_SPECIAL_RULE },
-		{ "wh", 2, NO_SPECIAL_RULE },
-		{ "qu", 2, NO_SPECIAL_RULE },
-		{ "ck", 2, NOT_BEGIN_SYLLABLE }
+		{ _T("a"), 1, VOWEL },
+		{ _T("b"), 1, NO_SPECIAL_RULE },
+		{ _T("c"), 1, NO_SPECIAL_RULE },
+		{ _T("d"), 1, NO_SPECIAL_RULE },
+		{ _T("e"), 1, NO_FINAL_SPLIT | VOWEL },
+		{ _T("f"), 1, NO_SPECIAL_RULE },
+		{ _T("g"), 1, NO_SPECIAL_RULE },
+		{ _T("h"), 1, NO_SPECIAL_RULE },
+		{ _T("i"), 1, VOWEL },
+		{ _T("j"), 1, NO_SPECIAL_RULE },
+		{ _T("k"), 1, NO_SPECIAL_RULE },
+		{ _T("l"), 1, NO_SPECIAL_RULE },
+		{ _T("m"), 1, NO_SPECIAL_RULE },
+		{ _T("n"), 1, NO_SPECIAL_RULE },
+		{ _T("o"), 1, VOWEL },
+		{ _T("p"), 1, NO_SPECIAL_RULE },
+		{ _T("r"), 1, NO_SPECIAL_RULE },
+		{ _T("s"), 1, NO_SPECIAL_RULE },
+		{ _T("t"), 1, NO_SPECIAL_RULE },
+		{ _T("u"), 1, VOWEL },
+		{ _T("v"), 1, NO_SPECIAL_RULE },
+		{ _T("w"), 1, NO_SPECIAL_RULE },
+		{ _T("x"), 1, NOT_BEGIN_SYLLABLE },
+		{ _T("y"), 1, ALTERNATE_VOWEL | VOWEL },
+		{ _T("z"), 1, NO_SPECIAL_RULE },
+		{ _T("ch"), 2, NO_SPECIAL_RULE },
+		{ _T("gh"), 2, NO_SPECIAL_RULE },
+		{ _T("ph"), 2, NO_SPECIAL_RULE },
+		{ _T("rh"), 2, NO_SPECIAL_RULE },
+		{ _T("sh"), 2, NO_SPECIAL_RULE },
+		{ _T("th"), 2, NO_SPECIAL_RULE },
+		{ _T("wh"), 2, NO_SPECIAL_RULE },
+		{ _T("qu"), 2, NO_SPECIAL_RULE },
+		{ _T("ck"), 2, NOT_BEGIN_SYLLABLE }
 	}
 };
 

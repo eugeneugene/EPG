@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "fips181_const.h"
 #include "fips181.h"
+#include "..\Common\WideHelp.h"
 
 /// <summary>
 /// Слог
@@ -21,7 +21,7 @@ public:
 		return &units_in_syllable;
 	}
 
-	void GetSyllable(std::string& out) const
+	void GetSyllable(std::_tstring& out) const
 	{
 		out.clear();
 		for (auto unit : units_in_syllable)

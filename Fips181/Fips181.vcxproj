@@ -156,7 +156,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="fips181.h" />
-    <ClInclude Include="fips181_const.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Password.h" />
     <ClInclude Include="pch.h" />
