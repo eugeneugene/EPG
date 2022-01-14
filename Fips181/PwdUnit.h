@@ -9,19 +9,12 @@
 class PwdUnit
 {
 	unsigned unit;
+	unsigned unit_len;
 	std::_tstring unit_code;
 	std::_tstring symbol_name;
 
 public:
-	PwdUnit(std::_tstring _unit_code, std::_tstring _symbol_name, bool _uppercase, unsigned _unit = UINT_MAX) : symbol_name(_symbol_name), unit(_unit)
-	{
-		if (_uppercase)
-			std::transform(_unit_code.cbegin(), _unit_code.cend(), std::back_inserter(unit_code), ::toupper);
-		else
-			unit_code = _unit_code;
-	}
-
-	PwdUnit(TCHAR _unit_code, std::_tstring _symbol_name, bool _uppercase, unsigned _unit = UINT_MAX) : symbol_name(_symbol_name), unit(_unit)
+	PwdUnit(TCHAR _unit_code, std::_tstring _symbol_name, bool _uppercase) : symbol_name(_symbol_name), unit(0), unit_len(1)
 	{
 		if (_uppercase)
 			unit_code += ::toupper(_unit_code);
@@ -38,6 +31,7 @@ public:
 			else
 				unit_code = Rules[_unit].unit_code;
 			symbol_name = Rules[_unit].unit_code;
+			unit_len = Rules[_unit].unit_len;
 		}
 		else
 			throw std::runtime_error("Invalid unit index");
@@ -46,6 +40,11 @@ public:
 	unsigned Unit() const
 	{
 		return unit;
+	}
+
+	unsigned UnitLen() const
+	{
+		return unit_len;
 	}
 
 	const std::_tstring* UnitCode() const

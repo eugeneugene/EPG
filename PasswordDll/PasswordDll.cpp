@@ -2,7 +2,7 @@
 #include "PasswordDll.h"
 #include "PasswordContainer.h"
 
-extern "C" PASSWORD_API PVOID __stdcall CreatePassword(int Mode, const WCHAR* pIncludeSymbols, const WCHAR* pExcludeSymbols)
+extern "C" PASSWORD_API PVOID __stdcall CreatePassword(int Mode, const WCHAR * pIncludeSymbols, const WCHAR * pExcludeSymbols)
 {
 	return new CPasswordContainer(Mode, pIncludeSymbols, pExcludeSymbols);
 }
@@ -67,9 +67,7 @@ extern "C" PASSWORD_API INT __stdcall GenerateWord(PVOID objptr, UINT length)
 		throw std::invalid_argument("Bloom Filter Container pointer cannot be null");
 	try
 	{
-		if (pc->GetPassword()->GenerateWord(length))
-			return pc->GetPassword()->GetLength();
-		return 0;
+		return pc->GetPassword()->GenerateWord(length);
 	}
 	catch (CWin32ErrorT& ex)
 	{
@@ -89,9 +87,7 @@ extern "C" PASSWORD_API INT __stdcall GenerateRandomWord(PVOID objptr, UINT leng
 		throw std::invalid_argument("Bloom Filter Container pointer cannot be null");
 	try
 	{
-		if (pc->GetPassword()->GenerateRandomWord(length))
-			return pc->GetPassword()->GetRandomLength();
-		return 0;
+		return pc->GetPassword()->GenerateRandomWord(length);
 	}
 	catch (CWin32ErrorT& ex)
 	{
@@ -112,7 +108,7 @@ extern "C" PASSWORD_API UINT __stdcall GetWordLength(PVOID objptr)
 	return pc->GetPassword()->GetLength();
 }
 
-extern "C" PASSWORD_API INT __stdcall GetWord(PVOID objptr, WCHAR* buffer, UINT length)
+extern "C" PASSWORD_API INT __stdcall GetWord(PVOID objptr, WCHAR * buffer, UINT length)
 {
 	CPasswordContainer* pc = (CPasswordContainer*)objptr;
 	if (!pc)
@@ -136,15 +132,15 @@ extern "C" PASSWORD_API INT __stdcall GetWord(PVOID objptr, WCHAR* buffer, UINT 
 	return -1;
 }
 
-extern "C" PASSWORD_API UINT __stdcall GetRandomWordLength(PVOID objptr)
+extern "C" PASSWORD_API UINT __stdcall GetHyphenatedLength(PVOID objptr)
 {
 	CPasswordContainer* pc = (CPasswordContainer*)objptr;
 	if (!pc)
 		throw std::invalid_argument("Password Container pointer cannot be null");
-	return pc->GetPassword()->GetRandomLength();
+	return pc->GetPassword()->GetHyphenatedLength();
 }
 
-extern "C" PASSWORD_API INT __stdcall GetRandomWord(PVOID objptr, WCHAR* buffer, UINT length)
+extern "C" PASSWORD_API INT __stdcall GetHyphenatedWord(PVOID objptr, WCHAR * buffer, UINT length)
 {
 	CPasswordContainer* pc = (CPasswordContainer*)objptr;
 	if (!pc)
@@ -152,7 +148,7 @@ extern "C" PASSWORD_API INT __stdcall GetRandomWord(PVOID objptr, WCHAR* buffer,
 	try
 	{
 		std::_tstring str;
-		pc->GetPassword()->GetRandomWord(str);
+		pc->GetPassword()->GetHyphenatedWord(str);
 		if (_tcscpy_s(buffer, length, str.c_str()))
 			throw CWin32ErrorT();
 		return 1;

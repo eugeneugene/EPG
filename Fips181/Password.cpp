@@ -52,9 +52,9 @@ bool CPassword::GenerateWord(unsigned length)
 						Syllables.clear();
 						continue;
 					}
-					std::_tstring new_syllable;
-					syllable.GetSyllable(new_syllable);
-					size_t syllen = new_syllable.length();
+					std::_tstring syllable_str;
+					syllable.GetSyllable(syllable_str);
+					size_t syllen = syllable_str.length();
 #ifdef _DEBUG
 					if (syllen > length - GetLength())
 						throw std::runtime_error("Internal state error");
@@ -65,7 +65,7 @@ bool CPassword::GenerateWord(unsigned length)
 						if (mode & ModeLO)
 							Upper = (bool)GetRandomUINT(0, 1);
 						if (Upper)
-							std::transform(new_syllable.cbegin(), new_syllable.cend(), new_syllable.begin(), ::toupper);
+							std::transform(syllable_str.cbegin(), syllable_str.cend(), syllable_str.begin(), ::toupper);
 					}
 
 					std::vector<PwdUnit> units(ProperUnits);
@@ -81,15 +81,15 @@ bool CPassword::GenerateWord(unsigned length)
 					** append the syllable to the hyphenated version of
 					** the word.
 					*/
-					if (AreAllowedSymbolsIn(new_syllable, strExcludeSymbols) &&
+					if (AreAllowedSymbolsIn(syllable_str, strExcludeSymbols) &&
 						!ImproperWord(units) &&
 						!(Units.empty() && HaveInitialY(*syllable.UnitsInSyllable())) &&
-						!((length == GetLength() + new_syllable.length()) && HaveFinalSplit(*syllable.UnitsInSyllable())))
+						!((length == GetLength() + syllable_str.length()) && HaveFinalSplit(*syllable.UnitsInSyllable())))
 					{
 						ProperUnits = units;
 						for (unsigned unit : *syllable.UnitsInSyllable())
 							Units.push_back(PwdUnit(unit, Upper));
-						Syllables.push_back(new_syllable);
+						Syllables.push_back(syllable_str);
 						o_mode &= ~(ModeCO | ModeLO);
 					}
 				}
@@ -132,7 +132,7 @@ bool CPassword::GenerateWord(unsigned length)
 		}
 
 		/* if obligatory mode were left unused then try again */
-		if (GetLength() == length)
+		if (GetLength() >= length)
 		{
 			if (o_mode)
 			{

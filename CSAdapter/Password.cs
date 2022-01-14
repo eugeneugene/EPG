@@ -10,17 +10,19 @@ namespace CSAdapter
 
         public enum Mode
         {
-            // Нестрогое присутствие
+            // Нестрогое присутствие (Используется с GenerateRandomWord)
             ModeLN = 0x01,  // abc
             ModeCN = 0x02,  // ABC
             ModeNN = 0x04,  // 012
             ModeSN = 0x08,  // !@#
-            // Строгое присутствие
+
+            // Строгое присутствие (Используется с GenerateWord)
             ModeLO = 0x10,
             ModeCO = 0x20,
             ModeNO = 0x40,
             ModeSO = 0x80,
-            // 
+
+            // Нестрогое присутствие (Используется с GenerateRandomWord)
             ModeL = ModeLO | ModeLN,
             ModeC = ModeCO | ModeCN,
             ModeN = ModeNO | ModeNN,
@@ -57,11 +59,11 @@ namespace CSAdapter
         [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetWord")]
         private static extern int _get_word([In] IntPtr PasswordContainer, [In, Out] StringBuilder lpString, [In] uint bufferLength);
 
-        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetRandomWordLength")]
-        private static extern uint _get_random_word_length([In] IntPtr PasswordContainer);
+        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetHyphenatedLength")]
+        private static extern uint _get_hyphenated_word_length([In] IntPtr PasswordContainer);
 
-        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetRandomWord")]
-        private static extern int _get_random_word([In] IntPtr PasswordContainer, [In, Out] StringBuilder lpString, [In] uint bufferLength);
+        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetHyphenated")]
+        private static extern int _get_hyphenated_word([In] IntPtr PasswordContainer, [In, Out] StringBuilder lpString, [In] uint bufferLength);
 
         private string GetErrorMessage()
         {
@@ -80,7 +82,7 @@ namespace CSAdapter
                 throw new InvalidOperationException("Error creating Bloom Filter");
         }
 
-        public string GenerateWord(uint Length)
+        public bool GenerateWord(uint Length)
         {
             var res = _generate_word(passwordContainer, Length);
             if (res < 0)
@@ -90,10 +92,12 @@ namespace CSAdapter
                     errorCode: _get_error_code(passwordContainer),
                     errorMessage: GetErrorMessage());
             }
-            if (res == 0)
-                return string.Empty;
-            StringBuilder stringBuilder = new(res + 1);
-            res = _get_word(passwordContainer, stringBuilder, (uint)stringBuilder.Capacity);
+            return res > 0;
+        }
+
+        public bool GenerateRandomWord(uint Length)
+        {
+            var res = _generate_random_word(passwordContainer, Length);
             if (res < 0)
             {
                 throw new PasswordException(
@@ -101,13 +105,17 @@ namespace CSAdapter
                     errorCode: _get_error_code(passwordContainer),
                     errorMessage: GetErrorMessage());
             }
-            return stringBuilder.ToString();
+            return res > 0;
         }
 
         public uint GetWordLength()
         {
             return _get_word_length(passwordContainer);
+        }
 
+        public uint GetHyphenatedWordLength()
+        {
+            return _get_hyphenated_word_length(passwordContainer);
         }
 
         public string GetWord()
@@ -125,41 +133,11 @@ namespace CSAdapter
             return stringBuilder.ToString();
         }
 
-        public string GenerateRandomWord(uint Length)
+        public string GetHyphenatedWord()
         {
-            var res = _generate_random_word(passwordContainer, Length);
-            if (res < 0)
-            {
-                throw new PasswordException(
-                    errorClass: (ErrorClass)_get_error_class(passwordContainer),
-                    errorCode: _get_error_code(passwordContainer),
-                    errorMessage: GetErrorMessage());
-            }
-            if (res == 0)
-                return string.Empty;
-            StringBuilder stringBuilder = new(res + 1);
-            res = _get_random_word(passwordContainer, stringBuilder, (uint)stringBuilder.Capacity);
-            if (res < 0)
-            {
-                throw new PasswordException(
-                    errorClass: (ErrorClass)_get_error_class(passwordContainer),
-                    errorCode: _get_error_code(passwordContainer),
-                    errorMessage: GetErrorMessage());
-            }
-            return stringBuilder.ToString();
-        }
-
-        public uint GetRandomWordLength()
-        {
-            return _get_random_word_length(passwordContainer);
-
-        }
-
-        public string GetRandomWord()
-        {
-            var Length = (int)_get_random_word_length(passwordContainer);
+            var Length = (int)_get_hyphenated_word_length(passwordContainer);
             StringBuilder stringBuilder = new(Length + 1);
-            var res = _get_random_word(passwordContainer, stringBuilder, (uint)stringBuilder.Capacity);
+            var res = _get_hyphenated_word(passwordContainer, stringBuilder, (uint)stringBuilder.Capacity);
             if (res < 0)
             {
                 throw new PasswordException(

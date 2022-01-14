@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CSAdapter\CSAdapter.csproj" />
+    <ProjectReference Include="..\PasswordDll\PasswordDll.vcxproj" />
   </ItemGroup>
 
 </Project>

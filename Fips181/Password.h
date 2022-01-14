@@ -43,7 +43,7 @@ public:
 		}
 	}
 
-	void GetRandomWord(std::_tstring& out) const
+	void GetHyphenatedWord(std::_tstring& out) const
 	{
 		bool bFirst = true;
 		for (const auto& s : Syllables)
@@ -60,15 +60,22 @@ public:
 	{
 		unsigned len = 0;
 		for (const auto& u : Units)
-			len += static_cast<unsigned>((*u.UnitCode()).length());
+			len += u.UnitLen();
 		return len;
 	}
 
-	unsigned GetRandomLength() const
+	unsigned GetHyphenatedLength() const
 	{
 		unsigned len = 0;
+		bool bFirst = true;
 		for (const auto& s : Syllables)
+		{
+			if (!bFirst)
+				len++;
+			else
+				bFirst = false;
 			len += static_cast<unsigned>(s.length());
+		}
 		return len;
 	}
 

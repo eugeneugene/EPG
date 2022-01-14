@@ -4,7 +4,6 @@
 #include "framework.h"
 
 #include <Windows.h>
-#include <limits.h>
 #include <tchar.h>
 
 #if !defined(_DEBUG)
