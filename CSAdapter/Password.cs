@@ -92,7 +92,7 @@ namespace CSAdapter
             }
             if (res == 0)
                 return string.Empty;
-            StringBuilder stringBuilder = new(res);
+            StringBuilder stringBuilder = new(res + 1);
             res = _get_word(passwordContainer, stringBuilder, (uint)stringBuilder.Capacity);
             if (res < 0)
             {
@@ -112,8 +112,8 @@ namespace CSAdapter
 
         public string GetWord()
         {
-            var Length = _get_word_length(passwordContainer);
-            StringBuilder stringBuilder = new((int)Length);
+            var Length = (int)_get_word_length(passwordContainer);
+            StringBuilder stringBuilder = new(Length + 1);
             var res = _get_word(passwordContainer, stringBuilder, (uint)stringBuilder.Capacity);
             if (res < 0)
             {
@@ -137,7 +137,7 @@ namespace CSAdapter
             }
             if (res == 0)
                 return string.Empty;
-            StringBuilder stringBuilder = new(res);
+            StringBuilder stringBuilder = new(res + 1);
             res = _get_random_word(passwordContainer, stringBuilder, (uint)stringBuilder.Capacity);
             if (res < 0)
             {
@@ -157,8 +157,8 @@ namespace CSAdapter
 
         public string GetRandomWord()
         {
-            var Length = _get_random_word_length(passwordContainer);
-            StringBuilder stringBuilder = new((int)Length);
+            var Length = (int)_get_random_word_length(passwordContainer);
+            StringBuilder stringBuilder = new(Length + 1);
             var res = _get_random_word(passwordContainer, stringBuilder, (uint)stringBuilder.Capacity);
             if (res < 0)
             {

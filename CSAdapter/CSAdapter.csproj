@@ -21,5 +21,20 @@
 	<ItemGroup>
 		<ProjectReference Include="..\BloomDll\BloomDll.vcxproj" />
 	</ItemGroup>
+	
+	<ItemGroup>
+		<Content Include="$(SolutionDir)x64/$(Configuration)/PasswordDll.dll">
+			<Link>PasswordDll.dll</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="$(SolutionDir)x64/$(Configuration)/PasswordDll.pdb">
+			<Link>PasswordDll.pdb</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\PasswordDll\PasswordDll.vcxproj" />
+	</ItemGroup>
 
 </Project>
