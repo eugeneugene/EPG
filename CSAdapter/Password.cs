@@ -62,7 +62,7 @@ namespace CSAdapter
         [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetHyphenatedLength")]
         private static extern uint _get_hyphenated_word_length([In] IntPtr PasswordContainer);
 
-        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetHyphenated")]
+        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetHyphenatedWord")]
         private static extern int _get_hyphenated_word([In] IntPtr PasswordContainer, [In, Out] StringBuilder lpString, [In] uint bufferLength);
 
         private string GetErrorMessage()

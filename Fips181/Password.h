@@ -38,9 +38,7 @@ public:
 	{
 		out.clear();
 		for (const auto& u : Units)
-		{
 			out += *u.UnitCode();
-		}
 	}
 
 	void GetHyphenatedWord(std::_tstring& out) const
