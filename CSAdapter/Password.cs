@@ -29,40 +29,40 @@ namespace CSAdapter
             ModeS = ModeSO | ModeSN,
         };
 
-        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "CreatePassword")]
+        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "CreatePassword")]
         private static extern IntPtr _create_password(Mode mode, [In] string IncludeSymbols, [In] string ExcludeSymbols);
 
-        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "DestroyPassword")]
+        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "DestroyPassword")]
         private static extern void _destroy_password([In] IntPtr PasswordContainer);
 
-        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetErrorClass")]
+        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "GetErrorClass")]
         private static extern int _get_error_class([In] IntPtr PasswordContainer);
 
-        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetErrorCode")]
+        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "GetErrorCode")]
         private static extern long _get_error_code([In] IntPtr PasswordContainer);
 
-        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetErrorMessage")]
+        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "GetErrorMessage")]
         private static extern int _get_error_message([In] IntPtr PasswordContainer, [In, Out] StringBuilder lpString, [In] uint bufferLength);
 
-        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetErrorMessageLength")]
+        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "GetErrorMessageLength")]
         private static extern uint _get_error_message_length([In] IntPtr PasswordContainer);
 
-        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GenerateWord")]
+        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "GenerateWord")]
         private static extern int _generate_word([In] IntPtr PasswordContainer, [In] uint Length);
 
-        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GenerateRandomWord")]
+        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "GenerateRandomWord")]
         private static extern int _generate_random_word([In] IntPtr PasswordContainer, [In] uint Length);
 
-        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetWordLength")]
+        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "GetWordLength")]
         private static extern uint _get_word_length([In] IntPtr PasswordContainer);
 
-        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetWord")]
+        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "GetWord")]
         private static extern int _get_word([In] IntPtr PasswordContainer, [In, Out] StringBuilder lpString, [In] uint bufferLength);
 
-        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetHyphenatedLength")]
+        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "GetHyphenatedLength")]
         private static extern uint _get_hyphenated_word_length([In] IntPtr PasswordContainer);
 
-        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetHyphenatedWord")]
+        [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "GetHyphenatedWord")]
         private static extern int _get_hyphenated_word([In] IntPtr PasswordContainer, [In, Out] StringBuilder lpString, [In] uint bufferLength);
 
         private string GetErrorMessage()

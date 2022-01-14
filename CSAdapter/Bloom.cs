@@ -8,64 +8,64 @@ namespace CSAdapter
         private readonly IntPtr bloomContainer;
         private bool disposedValue;
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "CreateBloom")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "CreateBloom")]
         private static extern IntPtr _create_bloom();
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "DestroyBloom")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "DestroyBloom")]
         private static extern void _destroy_bloom([In] IntPtr BloomContainer);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetErrorClass")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "GetErrorClass")]
         private static extern int _get_error_class([In] IntPtr BloomContainer);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetErrorCode")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "GetErrorCode")]
         private static extern long _get_error_code([In] IntPtr BloomContainer);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetErrorMessage")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "GetErrorMessage")]
         private static extern int _get_error_message([In] IntPtr BloomContainer, [In, Out] StringBuilder lpString, [In] uint bufferLength);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetErrorMessageLength")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "GetErrorMessageLength")]
         private static extern uint _get_error_message_length([In] IntPtr BloomContainer);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "Create")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "Create")]
         private static extern int _create([In] IntPtr BloomContainer, [In] string FileName);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "Open")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "Open")]
         private static extern int _open([In] IntPtr BloomContainer, [In] string FileName);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "Store")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "Store")]
         private static extern int _store([In] IntPtr BloomContainer);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "Load")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "Load")]
         private static extern int _load([In] IntPtr BloomContainer);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "Close")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "Close")]
         private static extern int _close([In] IntPtr BloomContainer);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "Abort")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "Abort")]
         private static extern int _abort([In] IntPtr BloomContainer);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "Allocate")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "Allocate")]
         private static extern int _allocate([In] IntPtr BloomContainer, [In] uint Elements);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "PutString")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "PutString")]
         private static extern int _put_string([In] IntPtr BloomContainer, [In] string String);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "PutArray")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "PutArray")]
         private static extern int _put_array([In] IntPtr BloomContainer, [In] byte[] buffer, [In] uint length);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "CheckString")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "CheckString")]
         private static extern int _check_string([In] IntPtr BloomContainer, [In] string String);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "CheckArray")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "CheckArray")]
         private static extern int _check_array([In] IntPtr BloomContainer, [In] byte[] buffer, [In] uint length);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "HeaderVersion")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "HeaderVersion")]
         private static extern ushort _header_version([In] IntPtr Bloom);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "HeaderSize")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "HeaderSize")]
         private static extern uint _header_size([In] IntPtr Bloom);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "HeaderHashFunc")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "HeaderHashFunc")]
         private static extern byte _header_hash_func([In] IntPtr Bloom);
 
         private string GetErrorMessage()

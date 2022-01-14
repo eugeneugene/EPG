@@ -35,7 +35,7 @@ namespace BloomCS_Test
         public void Words1000Included()
         {
             //string included = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            using Password password = new(Password.Mode.ModeL /*| Password.Mode.ModeCO*/, string.Empty, string.Empty);
+            using Password password = new(Password.Mode.ModeL | Password.Mode.ModeC, string.Empty, string.Empty);
             Assert.IsNotNull(password);
 
             for (int i = 0; i < 1000; i++)

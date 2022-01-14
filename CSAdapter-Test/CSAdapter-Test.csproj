@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BloomDll\BloomDll.vcxproj" />
     <ProjectReference Include="..\CSAdapter\CSAdapter.csproj" />
     <ProjectReference Include="..\PasswordDll\PasswordDll.vcxproj" />
   </ItemGroup>
