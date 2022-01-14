@@ -7,24 +7,24 @@
 class CBloomError
 {
 public:
-	enum class BloomErrorClass { BLOOM_NOERROR, BLOOM_WIN32ERROR, BLOOM_LIBERROR, BLOOM_STDERROR };
+	enum class BloomErrorClass { BLOOM_NOERROR, BLOOM_WIN32ERROR, BLOOM_STDERROR, BLOOM_LIBERROR };
 
 private:
 	BloomErrorClass error_class;
-	long error_code;
+	LONG error_code;
 	std::_tstring error_message;
 
 public:
-	CBloomError() : error_class(BloomErrorClass::BLOOM_NOERROR), error_code(0L)
+	CBloomError() : error_class(BloomErrorClass::BLOOM_NOERROR), error_code(0)
 	{ }
 
-	CBloomError(CWin32ErrorT& win32error) : error_class(BloomErrorClass::BLOOM_WIN32ERROR), error_code(win32error.ErrorCode()), error_message(toTstring(win32error.Description()))
+	CBloomError(const CWin32ErrorT& win32error) : error_class(BloomErrorClass::BLOOM_WIN32ERROR), error_code(win32error.ErrorCode()), error_message(toTstring(win32error.Description()))
 	{ }
 
-	CBloomError(bloom_exception& ex) : error_class(BloomErrorClass::BLOOM_LIBERROR), error_code(static_cast<long>(ex.error())), error_message(toTstring(ex.what()))
+	CBloomError(const bloom_exception& ex) : error_class(BloomErrorClass::BLOOM_LIBERROR), error_code(static_cast<long>(ex.error())), error_message(toTstring(ex.what()))
 	{ }
 
-	CBloomError(std::exception& ex) : error_class(BloomErrorClass::BLOOM_STDERROR), error_code(0L), error_message(toTstring(ex.what()))
+	CBloomError(const std::exception& ex) : error_class(BloomErrorClass::BLOOM_STDERROR), error_code(0), error_message(toTstring(ex.what()))
 	{ }
 
 	BloomErrorClass get_error_class()
@@ -35,12 +35,12 @@ public:
 	{
 		return error_code;
 	}
-	const TCHAR* get_error_message()
+	const WCHAR* get_error_message()
 	{
 		return error_message.c_str();
 	}
-	const size_t get_error_message_len()
+	const UINT get_error_message_len()
 	{
-		return error_message.length();
+		return static_cast<UINT>(error_message.length());
 	}
 };

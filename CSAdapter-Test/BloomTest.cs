@@ -1,4 +1,4 @@
-using BloomCS;
+using CSAdapter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Diagnostics;
 

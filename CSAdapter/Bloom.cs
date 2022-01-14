@@ -1,78 +1,78 @@
 ﻿using System.Runtime.InteropServices;
 using System.Text;
 
-namespace BloomCS
+namespace CSAdapter
 {
     public class Bloom : IDisposable
     {
         private readonly IntPtr bloomContainer;
         private bool disposedValue;
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "CreateBloom")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "CreateBloom")]
         private static extern IntPtr _create_bloom();
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "DestroyBloom")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "DestroyBloom")]
         private static extern void _destroy_bloom([In] IntPtr BloomContainer);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "GetErrorClass")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetErrorClass")]
         private static extern int _get_error_class([In] IntPtr BloomContainer);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "GetErrorCode")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetErrorCode")]
         private static extern long _get_error_code([In] IntPtr BloomContainer);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "GetErrorMessage")]
-        private static extern int _get_error_message([In] IntPtr BloomContainer, [In, Out] StringBuilder lpString, [In] ulong bufferLength);
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetErrorMessage")]
+        private static extern int _get_error_message([In] IntPtr BloomContainer, [In, Out] StringBuilder lpString, [In] uint bufferLength);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "GetErrorMessageLength")]
-        private static extern ulong _get_error_message_length([In] IntPtr BloomContainer);
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetErrorMessageLength")]
+        private static extern uint _get_error_message_length([In] IntPtr BloomContainer);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "Create")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "Create")]
         private static extern int _create([In] IntPtr BloomContainer, [In] string FileName);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "Open")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "Open")]
         private static extern int _open([In] IntPtr BloomContainer, [In] string FileName);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "Store")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "Store")]
         private static extern int _store([In] IntPtr BloomContainer);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "Load")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "Load")]
         private static extern int _load([In] IntPtr BloomContainer);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "Close")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "Close")]
         private static extern int _close([In] IntPtr BloomContainer);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "Abort")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "Abort")]
         private static extern int _abort([In] IntPtr BloomContainer);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "Allocate")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "Allocate")]
         private static extern int _allocate([In] IntPtr BloomContainer, [In] uint Elements);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "PutString")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "PutString")]
         private static extern int _put_string([In] IntPtr BloomContainer, [In] string String);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "PutArray")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "PutArray")]
         private static extern int _put_array([In] IntPtr BloomContainer, [In] byte[] buffer, [In] uint length);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "CheckString")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "CheckString")]
         private static extern int _check_string([In] IntPtr BloomContainer, [In] string String);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "CheckArray")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "CheckArray")]
         private static extern int _check_array([In] IntPtr BloomContainer, [In] byte[] buffer, [In] uint length);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "HeaderVersion")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "HeaderVersion")]
         private static extern ushort _header_version([In] IntPtr Bloom);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "HeaderSize")]
-        private static extern ulong _header_size([In] IntPtr Bloom);
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "HeaderSize")]
+        private static extern uint _header_size([In] IntPtr Bloom);
 
-        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "HeaderHashFunc")]
+        [DllImport("BloomDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.Cdecl, EntryPoint = "HeaderHashFunc")]
         private static extern byte _header_hash_func([In] IntPtr Bloom);
 
         private string GetErrorMessage()
         {
             var length = (int)_get_error_message_length(bloomContainer);
             StringBuilder buffer = new(length + 1);
-            if (_get_error_message(bloomContainer, buffer, (ulong)buffer.Capacity) > 0)
+            if (_get_error_message(bloomContainer, buffer, (uint)buffer.Capacity) > 0)
                 return buffer.ToString();
 
             return string.Empty;
@@ -91,7 +91,7 @@ namespace BloomCS
             if (res < 0)
             {
                 throw new BloomException(
-                    errorClass: (BloomErrorClass)_get_error_class(bloomContainer),
+                    errorClass: (ErrorClass)_get_error_class(bloomContainer),
                     errorCode: _get_error_code(bloomContainer),
                     errorMessage: GetErrorMessage());
             }
@@ -103,7 +103,7 @@ namespace BloomCS
             if (res < 0)
             {
                 throw new BloomException(
-                    errorClass: (BloomErrorClass)_get_error_class(bloomContainer),
+                    errorClass: (ErrorClass)_get_error_class(bloomContainer),
                     errorCode: _get_error_code(bloomContainer),
                     errorMessage: GetErrorMessage());
             }
@@ -115,7 +115,7 @@ namespace BloomCS
             if (res < 0)
             {
                 throw new BloomException(
-                    errorClass: (BloomErrorClass)_get_error_class(bloomContainer),
+                    errorClass: (ErrorClass)_get_error_class(bloomContainer),
                     errorCode: _get_error_code(bloomContainer),
                     errorMessage: GetErrorMessage());
             }
@@ -127,7 +127,7 @@ namespace BloomCS
             if (res < 0)
             {
                 throw new BloomException(
-                    errorClass: (BloomErrorClass)_get_error_class(bloomContainer),
+                    errorClass: (ErrorClass)_get_error_class(bloomContainer),
                     errorCode: _get_error_code(bloomContainer),
                     errorMessage: GetErrorMessage());
             }
@@ -139,7 +139,7 @@ namespace BloomCS
             if (res < 0)
             {
                 throw new BloomException(
-                    errorClass: (BloomErrorClass)_get_error_class(bloomContainer),
+                    errorClass: (ErrorClass)_get_error_class(bloomContainer),
                     errorCode: _get_error_code(bloomContainer),
                     errorMessage: GetErrorMessage());
             }
@@ -151,7 +151,7 @@ namespace BloomCS
             if (res < 0)
             {
                 throw new BloomException(
-                    errorClass: (BloomErrorClass)_get_error_class(bloomContainer),
+                    errorClass: (ErrorClass)_get_error_class(bloomContainer),
                     errorCode: _get_error_code(bloomContainer),
                     errorMessage: GetErrorMessage());
             }
@@ -163,7 +163,7 @@ namespace BloomCS
             if (res < 0)
             {
                 throw new BloomException(
-                    errorClass: (BloomErrorClass)_get_error_class(bloomContainer),
+                    errorClass: (ErrorClass)_get_error_class(bloomContainer),
                     errorCode: _get_error_code(bloomContainer),
                     errorMessage: GetErrorMessage());
             }
@@ -175,7 +175,7 @@ namespace BloomCS
             if (res < 0)
             {
                 throw new BloomException(
-                    errorClass: (BloomErrorClass)_get_error_class(bloomContainer),
+                    errorClass: (ErrorClass)_get_error_class(bloomContainer),
                     errorCode: _get_error_code(bloomContainer),
                     errorMessage: GetErrorMessage());
             }
@@ -187,7 +187,7 @@ namespace BloomCS
             if (res < 0)
             {
                 throw new BloomException(
-                    errorClass: (BloomErrorClass)_get_error_class(bloomContainer),
+                    errorClass: (ErrorClass)_get_error_class(bloomContainer),
                     errorCode: _get_error_code(bloomContainer),
                     errorMessage: GetErrorMessage());
             }
@@ -199,7 +199,7 @@ namespace BloomCS
             if (res < 0)
             {
                 throw new BloomException(
-                    errorClass: (BloomErrorClass)_get_error_class(bloomContainer),
+                    errorClass: (ErrorClass)_get_error_class(bloomContainer),
                     errorCode: _get_error_code(bloomContainer),
                     errorMessage: GetErrorMessage());
             }
@@ -212,7 +212,7 @@ namespace BloomCS
             if (res < 0)
             {
                 throw new BloomException(
-                    errorClass: (BloomErrorClass)_get_error_class(bloomContainer),
+                    errorClass: (ErrorClass)_get_error_class(bloomContainer),
                     errorCode: _get_error_code(bloomContainer),
                     errorMessage: GetErrorMessage());
             }
@@ -238,13 +238,11 @@ namespace BloomCS
 
         ~Bloom()
         {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: false);
         }
 
         public void Dispose()
         {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }

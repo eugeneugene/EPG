@@ -1,6 +1,9 @@
 #pragma once
-#include <string>
-#include <limits.h>
+
+#if !defined(_DEBUG)
+#include <sys\timeb.h>
+#endif
+
 #include "fips181.h"
 #include "rand.h"
 #include "Syllable.h"

@@ -7,6 +7,7 @@
 #include <tchar.h>
 
 #include <memory>
+#include <string>
 #include <stdexcept>
 
 #if defined(_DEBUG)

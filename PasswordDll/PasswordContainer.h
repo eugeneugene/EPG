@@ -12,7 +12,7 @@ private:
 	std::unique_ptr<CPasswordError> m_password_error;
 
 public:
-	CPasswordContainer(int Mode, const char* pIncludeSymbols, const char* pExcludeSymbols) : m_password(new CPassword(Mode, pIncludeSymbols, pExcludeSymbols)), m_password_error(nullptr)
+	CPasswordContainer(int Mode, const WCHAR* pIncludeSymbols, const WCHAR* pExcludeSymbols) : m_password(new CPassword(Mode, pIncludeSymbols, pExcludeSymbols)), m_password_error(nullptr)
 	{ }
 
 	CPassword* GetPassword()

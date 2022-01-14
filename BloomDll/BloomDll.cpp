@@ -2,12 +2,12 @@
 #include "BloomDll.h"
 #include "BloomContainer.h"
 
-extern "C" BLOOM_API void* __stdcall CreateBloom()
+extern "C" BLOOM_API PVOID __stdcall CreateBloom()
 {
 	return new CBloomContainer();
 }
 
-extern "C" BLOOM_API void __stdcall DestroyBloom(void* objptr)
+extern "C" BLOOM_API VOID __stdcall DestroyBloom(PVOID objptr)
 {
 	CBloomContainer* bc = (CBloomContainer*)objptr;
 	if (!bc)
@@ -15,7 +15,7 @@ extern "C" BLOOM_API void __stdcall DestroyBloom(void* objptr)
 	delete bc;
 }
 
-extern "C" BLOOM_API INT __stdcall GetErrorClass(void* objptr)
+extern "C" BLOOM_API INT __stdcall GetErrorClass(PVOID objptr)
 {
 	CBloomContainer* bc = (CBloomContainer*)objptr;
 	if (!bc)
@@ -26,7 +26,7 @@ extern "C" BLOOM_API INT __stdcall GetErrorClass(void* objptr)
 	return static_cast<int>(bloom_error->get_error_class());
 }
 
-extern "C" BLOOM_API LONG __stdcall GetErrorCode(void* objptr)
+extern "C" BLOOM_API LONG __stdcall GetErrorCode(PVOID objptr)
 {
 	CBloomContainer* bc = (CBloomContainer*)objptr;
 	if (!bc)
@@ -37,7 +37,7 @@ extern "C" BLOOM_API LONG __stdcall GetErrorCode(void* objptr)
 	return bloom_error->get_error_code();
 }
 
-extern "C" BLOOM_API INT __stdcall GetErrorMessage(void* objptr, WCHAR * buffer, INT64 length)
+extern "C" BLOOM_API INT __stdcall GetErrorMessage(PVOID objptr, WCHAR * buffer, UINT length)
 {
 	CBloomContainer* bc = (CBloomContainer*)objptr;
 	if (!bc)
@@ -49,7 +49,7 @@ extern "C" BLOOM_API INT __stdcall GetErrorMessage(void* objptr, WCHAR * buffer,
 	return 1;
 }
 
-extern "C" BLOOM_API INT64 __stdcall GetErrorMessageLength(void* objptr)
+extern "C" BLOOM_API UINT __stdcall GetErrorMessageLength(PVOID objptr)
 {
 	CBloomContainer* bc = (CBloomContainer*)objptr;
 	if (!bc)
@@ -60,7 +60,7 @@ extern "C" BLOOM_API INT64 __stdcall GetErrorMessageLength(void* objptr)
 	return bloom_error->get_error_message_len();
 }
 
-extern "C" BLOOM_API INT __stdcall Create(void* objptr, const WCHAR * filename)
+extern "C" BLOOM_API INT __stdcall Create(PVOID objptr, const WCHAR * filename)
 {
 	CBloomContainer* bc = (CBloomContainer*)objptr;
 	if (!bc)
@@ -85,7 +85,7 @@ extern "C" BLOOM_API INT __stdcall Create(void* objptr, const WCHAR * filename)
 	return -1;
 }
 
-extern "C" BLOOM_API INT __stdcall Open(void* objptr, const WCHAR * filename)
+extern "C" BLOOM_API INT __stdcall Open(PVOID objptr, const WCHAR * filename)
 {
 	CBloomContainer* bc = (CBloomContainer*)objptr;
 	if (!bc)
@@ -110,7 +110,7 @@ extern "C" BLOOM_API INT __stdcall Open(void* objptr, const WCHAR * filename)
 	return -1;
 }
 
-extern "C" BLOOM_API INT __stdcall Store(void* objptr)
+extern "C" BLOOM_API INT __stdcall Store(PVOID objptr)
 {
 	CBloomContainer* bc = (CBloomContainer*)objptr;
 	if (!bc)
@@ -135,7 +135,7 @@ extern "C" BLOOM_API INT __stdcall Store(void* objptr)
 	return -1;
 }
 
-extern "C" BLOOM_API INT __stdcall Load(void* objptr)
+extern "C" BLOOM_API INT __stdcall Load(PVOID objptr)
 {
 	CBloomContainer* bc = (CBloomContainer*)objptr;
 	if (!bc)
@@ -160,7 +160,7 @@ extern "C" BLOOM_API INT __stdcall Load(void* objptr)
 	return -1;
 }
 
-extern "C" BLOOM_API INT __stdcall Close(void* objptr)
+extern "C" BLOOM_API INT __stdcall Close(PVOID objptr)
 {
 	CBloomContainer* bc = (CBloomContainer*)objptr;
 	if (!bc)
@@ -185,7 +185,7 @@ extern "C" BLOOM_API INT __stdcall Close(void* objptr)
 	return -1;
 }
 
-extern "C" BLOOM_API INT __stdcall Abort(void* objptr)
+extern "C" BLOOM_API INT __stdcall Abort(PVOID objptr)
 {
 	CBloomContainer* bc = (CBloomContainer*)objptr;
 	if (!bc)
@@ -210,7 +210,7 @@ extern "C" BLOOM_API INT __stdcall Abort(void* objptr)
 	return -1;
 }
 
-extern "C" BLOOM_API INT __stdcall Allocate(void* objptr, unsigned elements)
+extern "C" BLOOM_API INT __stdcall Allocate(PVOID objptr, UINT elements)
 {
 	CBloomContainer* bc = (CBloomContainer*)objptr;
 	if (!bc)
@@ -235,7 +235,7 @@ extern "C" BLOOM_API INT __stdcall Allocate(void* objptr, unsigned elements)
 	return -1;
 }
 
-extern "C" BLOOM_API INT __stdcall PutString(void* objptr, const WCHAR * string)
+extern "C" BLOOM_API INT __stdcall PutString(PVOID objptr, const WCHAR * string)
 {
 	CBloomContainer* bc = (CBloomContainer*)objptr;
 	if (!bc)
@@ -260,7 +260,7 @@ extern "C" BLOOM_API INT __stdcall PutString(void* objptr, const WCHAR * string)
 	return -1;
 }
 
-extern "C" BLOOM_API INT __stdcall PutArray(void* objptr, const BYTE * buffer, unsigned length)
+extern "C" BLOOM_API INT __stdcall PutArray(PVOID objptr, const BYTE * buffer, UINT length)
 {
 	CBloomContainer* bc = (CBloomContainer*)objptr;
 	if (!bc)
@@ -285,7 +285,7 @@ extern "C" BLOOM_API INT __stdcall PutArray(void* objptr, const BYTE * buffer, u
 	return -1;
 }
 
-extern "C" BLOOM_API BOOL __stdcall CheckString(void* objptr, const WCHAR * string)
+extern "C" BLOOM_API BOOL __stdcall CheckString(PVOID objptr, const WCHAR * string)
 {
 	CBloomContainer* bc = (CBloomContainer*)objptr;
 	if (!bc)
@@ -309,7 +309,7 @@ extern "C" BLOOM_API BOOL __stdcall CheckString(void* objptr, const WCHAR * stri
 	return -1;
 }
 
-extern "C" BLOOM_API BOOL __stdcall CheckArray(void* objptr, const BYTE * buffer, unsigned length)
+extern "C" BLOOM_API BOOL __stdcall CheckArray(PVOID objptr, const BYTE * buffer, UINT length)
 {
 	CBloomContainer* bc = (CBloomContainer*)objptr;
 	if (!bc)
@@ -333,7 +333,7 @@ extern "C" BLOOM_API BOOL __stdcall CheckArray(void* objptr, const BYTE * buffer
 	return -1;
 }
 
-extern "C" BLOOM_API USHORT __stdcall HeaderVersion(void* objptr)
+extern "C" BLOOM_API USHORT __stdcall HeaderVersion(PVOID objptr)
 {
 	CBloomContainer* bc = (CBloomContainer*)objptr;
 	if (!bc)
@@ -341,7 +341,7 @@ extern "C" BLOOM_API USHORT __stdcall HeaderVersion(void* objptr)
 	return bc->GetBloom()->GetHeader().Version();
 }
 
-extern "C" BLOOM_API ULONG __stdcall HeaderSize(void* objptr)
+extern "C" BLOOM_API UINT __stdcall HeaderSize(PVOID objptr)
 {
 	CBloomContainer* bc = (CBloomContainer*)objptr;
 	if (!bc)
@@ -349,7 +349,7 @@ extern "C" BLOOM_API ULONG __stdcall HeaderSize(void* objptr)
 	return bc->GetBloom()->GetHeader().Size();
 }
 
-extern "C" BLOOM_API BYTE __stdcall HeaderHashFunc(void* objptr)
+extern "C" BLOOM_API BYTE __stdcall HeaderHashFunc(PVOID objptr)
 {
 	CBloomContainer* bc = (CBloomContainer*)objptr;
 	if (!bc)

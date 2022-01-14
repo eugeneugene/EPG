@@ -7,6 +7,10 @@
 #include <limits.h>
 #include <tchar.h>
 
+#if !defined(_DEBUG)
+#include <sys\timeb.h>
+#endif
+
 #include <array>
 #include <string>
 #include <vector>

@@ -8,7 +8,7 @@ const std::array<TCHAR, 26> UpperChars = { _T('A'), _T('B'), _T('C'), _T('D'), _
 const std::array<TCHAR, 6> Vowels = { _T('a'), _T('e'), _T('i'), _T('o'), _T('u'), _T('y') };
 const std::array<TCHAR, 20> Consonants = { _T('b'), _T('c'), _T('d'), _T('f'), _T('g'), _T('h'), _T('j'), _T('k'), _T('l'), _T('m'), _T('n'), _T('p'), _T('q'), _T('r'), _T('s'), _T('t'), _T('v'), _T('w'), _T('x'), _T('z') };
 const std::array<TCHAR, 10> Numbers = { _T('0'), _T('1'), _T('2'), _T('3'), _T('4'), _T('5'), _T('6'), _T('7'), _T('8'), _T('9') };
-const std::array<TCHAR, 25> Symbols = { _T('!'), _T('#'), _T('%'), _T('&'), _T('('), _T(')'), _T('*'), _T('+'), _T('),'), _T('-'), _T('.'), _T('/'), _T(':'), _T(';'), _T('<'), _T('='), _T('>'), _T('@'), _T('['), _T(']'), _T('^'), _T('_'), _T('{'), _T('}'), _T('~') };
+const std::array<TCHAR, 25> Symbols = { _T('!'), _T('#'), _T('%'), _T('&'), _T('('), _T(')'), _T('*'), _T('+'), _T(')'), _T('-'), _T('.'), _T('/'), _T(':'), _T(';'), _T('<'), _T('='), _T('>'), _T('@'), _T('['), _T(']'), _T('^'), _T('_'), _T('{'), _T('}'), _T('~') };
 
 /*
  * This is the standard random unit generating routine for
@@ -111,7 +111,7 @@ const std::array<SymbolName, 43> SymbolNames =
 		{ _T('+'),	_T("PLUS_SIGN") },
 		{ _T('.'),	_T("PERIOD") },
 		{ _T('-'),	_T("HYPHEN") },
-		{ _T('),'),	_T("COMMA") },
+		{ _T(')'),	_T("COMMA") },
 		{ _T('/'),	_T("SLASH") },
 		{ _T(':'),	_T("COLON") },
 		{ _T(';'),	_T("SEMICOLON") },
