@@ -12,7 +12,7 @@ namespace BloomCS_Test
         public void Words1000Excluded()
         {
             string excluded = "lIO01";
-            using Password password = new(Password.Mode.ModeLO, string.Empty, excluded);
+            using Password password = new(Password.Modes.LowersForced, string.Empty, excluded);
             Assert.IsNotNull(password);
 
             for (int i = 0; i < 1000; i++)
@@ -34,8 +34,8 @@ namespace BloomCS_Test
         [TestMethod]
         public void Words1000Included()
         {
-            //string included = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            using Password password = new(Password.Mode.ModeL | Password.Mode.ModeC, string.Empty, string.Empty);
+            string included = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            using Password password = new(Password.Modes.LowersForced | Password.Modes.CapitalsForced, string.Empty, string.Empty);
             Assert.IsNotNull(password);
 
             for (int i = 0; i < 1000; i++)
@@ -50,7 +50,7 @@ namespace BloomCS_Test
                 Assert.AreEqual(10, word.Length);
                 uint l1 = password.GetWordLength();
                 Assert.AreEqual(10u, l1);
-                //Assert.IsTrue(word.Contains(included));
+                Assert.IsTrue(word.IndexOfAny(included.ToCharArray()) >= 0);
             }
         }
     }

@@ -5,31 +5,37 @@
 #include <algorithm>
 #include <iterator>
 #include "..\Common\WideHelp.h"
+#include "Password.h"
 
 class PwdUnit
 {
 	unsigned unit;
 	unsigned unit_len;
-	std::_tstring unit_code;
+	TCHAR unit_code[3];
 	std::_tstring symbol_name;
 
 public:
-	PwdUnit(TCHAR _unit_code, std::_tstring _symbol_name, bool _uppercase) : symbol_name(_symbol_name), unit(0), unit_len(1)
+	PwdUnit(TCHAR _unit_code, const std::_tstring& _symbol_name, bool _uppercase) : symbol_name(_symbol_name), unit(0), unit_len(1)
 	{
+		ZeroMemory(unit_code, sizeof(unit_code));
 		if (_uppercase)
-			unit_code += ::toupper(_unit_code);
+			unit_code[0] = ::UpperChar(_unit_code);
 		else
-			unit_code += _unit_code;
+			unit_code[0] = _unit_code;
 	}
 
 	PwdUnit(unsigned _unit, bool _uppercase) : unit(_unit)
 	{
 		if (_unit < Rules.size())
 		{
-			if (_uppercase)
-				std::transform(std::cbegin(Rules[_unit].unit_code), std::cend(Rules[_unit].unit_code), std::back_inserter(unit_code), ::toupper);
-			else
-				unit_code = Rules[_unit].unit_code;
+			ZeroMemory(unit_code, sizeof(unit_code));
+			for (unsigned i = 0; i < Rules[_unit].unit_len; i++)
+			{
+				if (_uppercase)
+					unit_code[i] = ::UpperChar(Rules[_unit].unit_code[i]);
+				else
+					unit_code[i] = Rules[_unit].unit_code[i];
+			}
 			symbol_name = Rules[_unit].unit_code;
 			unit_len = Rules[_unit].unit_len;
 		}
@@ -47,9 +53,9 @@ public:
 		return unit_len;
 	}
 
-	const std::_tstring* UnitCode() const
+	const TCHAR* UnitCode() const
 	{
-		return &unit_code;
+		return unit_code;
 	}
 
 	const std::_tstring* SymbolName() const

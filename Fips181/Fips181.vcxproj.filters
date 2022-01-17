@@ -30,10 +30,10 @@
     <ClInclude Include="PwdUnit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rand.h">
+    <ClInclude Include="Syllable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Syllable.h">
+    <ClInclude Include="PasswordMode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -47,7 +47,7 @@
     <ClCompile Include="Password.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="rand.cpp">
+    <ClCompile Include="fips181.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Syllable.cpp">

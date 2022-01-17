@@ -8,29 +8,10 @@ namespace CSAdapter
         private readonly IntPtr passwordContainer;
         private bool disposedValue;
 
-        public enum Mode
-        {
-            // Нестрогое присутствие (Используется с GenerateRandomWord)
-            ModeLN = 0x01,  // abc
-            ModeCN = 0x02,  // ABC
-            ModeNN = 0x04,  // 012
-            ModeSN = 0x08,  // !@#
-
-            // Строгое присутствие (Используется с GenerateWord)
-            ModeLO = 0x10,
-            ModeCO = 0x20,
-            ModeNO = 0x40,
-            ModeSO = 0x80,
-
-            // Нестрогое присутствие (Используется с GenerateRandomWord)
-            ModeL = ModeLO | ModeLN,
-            ModeC = ModeCO | ModeCN,
-            ModeN = ModeNO | ModeNN,
-            ModeS = ModeSO | ModeSN,
-        };
+        public enum Modes { NoMode = 0, Lowers = 0x01, LowersForced = 0x11, Capitals = 0x02, CapitalsForced = 0x22, Numerals = 0x04, NumeralsForced = 0x44, Symbols = 0x08, SymbolsForced = 0x88 };
 
         [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "CreatePassword")]
-        private static extern IntPtr _create_password(Mode mode, [In] string IncludeSymbols, [In] string ExcludeSymbols);
+        private static extern IntPtr _create_password(int mode, [In] string IncludeSymbols, [In] string ExcludeSymbols);
 
         [DllImport("PasswordDll.dll", CharSet = CharSet.Unicode, SetLastError = true, CallingConvention = CallingConvention.StdCall, EntryPoint = "DestroyPassword")]
         private static extern void _destroy_password([In] IntPtr PasswordContainer);
@@ -75,9 +56,9 @@ namespace CSAdapter
             return string.Empty;
         }
 
-        public Password(Mode mode, string includeSymbols, string excludeSymbols)
+        public Password(Modes mode, string includeSymbols, string excludeSymbols)
         {
-            passwordContainer = _create_password(mode, includeSymbols, excludeSymbols);
+            passwordContainer = _create_password((int)mode, includeSymbols, excludeSymbols);
             if (passwordContainer == IntPtr.Zero)
                 throw new InvalidOperationException("Error creating Bloom Filter");
         }

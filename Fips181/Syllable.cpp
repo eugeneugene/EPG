@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Syllable.h"
-#include "rand.h"
+#include "fips181.h"
 
 /*
  * Generate next unit to password, making sure that it follows

@@ -5,7 +5,7 @@
 #endif
 
 #include "fips181.h"
-#include "rand.h"
+#include "PasswordMode.h"
 #include "Syllable.h"
 #include "PwdUnit.h"
 #include "..\Common\Win32ErrorEx.h"
@@ -19,16 +19,23 @@ private:
 	std::vector<PwdUnit> Units;
 	std::vector<PwdUnit> ProperUnits;
 	std::vector<std::_tstring> Syllables;
-	int mode;
+	CPasswordMode mode;
+	CPasswordMode forcedmodes;
 	std::_tstring strIncludeSymbols;
 	std::_tstring strExcludeSymbols;
 
 public:
-	CPassword(int _mode, const std::_tstring&& _strIncludeSymbols, const std::_tstring&& _strExcludeSymbols) : mode(_mode), strIncludeSymbols(_strIncludeSymbols), strExcludeSymbols(_strExcludeSymbols)
+	CPassword(Modes modes, const std::_tstring&& _strIncludeSymbols, const std::_tstring&& _strExcludeSymbols) : mode(modes),
+		forcedmodes(mode& CPasswordMode(Modes::LowersForced + Modes::CapitalsForced + Modes::NumeralsForced + Modes::SymbolsForced - Modes::Lowers + Modes::Capitals + Modes::Numerals + Modes::Symbols)),
+		strIncludeSymbols(_strIncludeSymbols), strExcludeSymbols(_strExcludeSymbols)
 	{ }
-	CPassword(int _mode, const std::_tstring& _strIncludeSymbols, const std::_tstring& _strExcludeSymbols) : mode(_mode), strIncludeSymbols(_strIncludeSymbols), strExcludeSymbols(_strExcludeSymbols)
+	CPassword(Modes modes, const std::_tstring& _strIncludeSymbols, const std::_tstring& _strExcludeSymbols) : mode(modes),
+		forcedmodes(mode& CPasswordMode(Modes::LowersForced + Modes::CapitalsForced + Modes::NumeralsForced + Modes::SymbolsForced - Modes::Lowers + Modes::Capitals + Modes::Numerals + Modes::Symbols)),
+		strIncludeSymbols(_strIncludeSymbols), strExcludeSymbols(_strExcludeSymbols)
 	{ }
-	CPassword(int _mode, const TCHAR* pIncludeSymbols, const TCHAR* pExcludeSymbols) : mode(_mode), strIncludeSymbols(pIncludeSymbols), strExcludeSymbols(pExcludeSymbols)
+	CPassword(Modes modes, const TCHAR* pIncludeSymbols, const TCHAR* pExcludeSymbols) : mode(modes),
+		forcedmodes(mode& CPasswordMode(Modes::LowersForced + Modes::CapitalsForced + Modes::NumeralsForced + Modes::SymbolsForced - Modes::Lowers + Modes::Capitals + Modes::Numerals + Modes::Symbols)),
+		strIncludeSymbols(pIncludeSymbols), strExcludeSymbols(pExcludeSymbols)
 	{ }
 
 	bool GenerateWord(unsigned length);
@@ -38,7 +45,10 @@ public:
 	{
 		out.clear();
 		for (const auto& u : Units)
-			out += *u.UnitCode();
+		{
+			for (unsigned i = 0; i < u.UnitLen(); i++)
+				out += u.UnitCode()[i];
+		}
 	}
 
 	void GetHyphenatedWord(std::_tstring& out) const
@@ -78,8 +88,8 @@ public:
 	}
 
 private:
-	size_t GetWeight(int mode, const std::_tstring& strIncludeSymbols) const;
-	size_t GetWeightRandom(int mode, const std::_tstring& strIncludeSymbols) const;
+	size_t GetWeight() const;
+	size_t GetWeightRandom() const;
 
 	static bool ImproperWord(const std::vector<PwdUnit>& units);
 	static bool HaveInitialY(const std::vector<unsigned>& units);
@@ -118,5 +128,5 @@ private:
 	static long IO_Validate0(long result);
 	static bool Timeout(_timeb& start);
 #endif
-};
+	};
 

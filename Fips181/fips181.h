@@ -1,19 +1,7 @@
 #pragma once
-
-constexpr int ModeLN = 0x01; // abc
-constexpr int ModeCN = 0x02; // ABC
-constexpr int ModeNN = 0x04; // 012
-constexpr int ModeSN = 0x08; // !@#
-
-constexpr int ModeLO = 0x10;
-constexpr int ModeCO = 0x20;
-constexpr int ModeNO = 0x40;
-constexpr int ModeSO = 0x80;
-
-constexpr int ModeL = ModeLO | ModeLN;
-constexpr int ModeC = ModeCO | ModeCN;
-constexpr int ModeN = ModeNO | ModeNN;
-constexpr int ModeS = ModeSO | ModeSN;
+#include <Windows.h>
+#include <tchar.h>
+#include <array>
 
 constexpr int TIMEOUT = 1000;
 
@@ -52,7 +40,7 @@ struct SymbolName
 struct Unit
 {
 	const TCHAR unit_code[3];
-	const int unit_len;
+	const unsigned unit_len;
 	const unsigned flags;
 };
 
@@ -62,3 +50,6 @@ extern const std::array<unsigned, 12> vowel_rulers;
 extern const std::array<SymbolName, 43> SymbolNames;
 extern const std::array<Unit, 34> Rules;
 extern const std::array<std::array<int, 34>, 34> Digram;
+
+UINT GetRandomUINT(UINT min, UINT max);
+TCHAR UpperChar(TCHAR ch);

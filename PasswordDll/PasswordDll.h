@@ -21,5 +21,5 @@ extern "C" PASSWORD_API INT __stdcall GenerateWord(PVOID objptr, UINT length);
 extern "C" PASSWORD_API INT __stdcall GenerateRandomWord(PVOID objptr, UINT length);
 extern "C" PASSWORD_API UINT __stdcall GetWordLength(PVOID objptr);
 extern "C" PASSWORD_API INT __stdcall GetWord(PVOID objptr, WCHAR * buffer, UINT length);
-extern "C" PASSWORD_API UINT __stdcall GetRandomWordLength(PVOID objptr);
-extern "C" PASSWORD_API INT __stdcall GetRandomWord(PVOID objptr, WCHAR * buffer, UINT length);
+extern "C" PASSWORD_API UINT __stdcall GetHyphenatedLength(PVOID objptr);
+extern "C" PASSWORD_API INT __stdcall GetHyphenatedWord(PVOID objptr, WCHAR * buffer, UINT length);

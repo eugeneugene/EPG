@@ -4,7 +4,7 @@
 
 extern "C" PASSWORD_API PVOID __stdcall CreatePassword(int Mode, const WCHAR * pIncludeSymbols, const WCHAR * pExcludeSymbols)
 {
-	return new CPasswordContainer(Mode, pIncludeSymbols, pExcludeSymbols);
+	return new CPasswordContainer(static_cast<Modes>(Mode), pIncludeSymbols, pExcludeSymbols);
 }
 
 extern "C" PASSWORD_API VOID __stdcall DestroyPassword(PVOID objptr)

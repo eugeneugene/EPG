@@ -89,9 +89,9 @@
     <ClInclude Include="fips181.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Password.h" />
+    <ClInclude Include="PasswordMode.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PwdUnit.h" />
-    <ClInclude Include="rand.h" />
     <ClInclude Include="Syllable.h" />
   </ItemGroup>
   <ItemGroup>
@@ -101,7 +101,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="rand.cpp" />
+    <ClCompile Include="fips181.cpp" />
     <ClCompile Include="Syllable.cpp" />
   </ItemGroup>
   <ItemGroup>

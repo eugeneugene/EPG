@@ -11,11 +11,14 @@ _STD_END
 
 #if defined(_UNICODE)
 #define to_tstring(a) std::to_wstring(a)
-//#define to_tstring(a) toWideString(a)
+#define to_tupper towupper
+#define to_tlower towlower
 using _tostringstream = std::wostringstream;
 #else
 #define to_tstring(a) std::to_string(a)
 using _tostringstream = std::ostringstream;
+#define to_tupper toupper
+#define to_tlower tolower
 #endif
 
 extern std::wstring toWideString(const char* pStr, int len = -1);

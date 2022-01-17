@@ -6,10 +6,13 @@ bool CPassword::GenerateWord(unsigned length)
 {
 	unsigned tries = 0;
 
-	if (mode == 0 || length == 0)
+	if (length == 0)
 		return false;
 
-	unsigned Weight = (unsigned)GetWeight(mode, strIncludeSymbols);
+	if (mode.IsClear())
+		return false;
+
+	unsigned Weight = (unsigned)GetWeight();
 	if (Weight == 0)
 		return false;
 
@@ -23,7 +26,7 @@ bool CPassword::GenerateWord(unsigned length)
 	Syllables.clear();
 	do
 	{
-		unsigned o_mode = (mode & (ModeNO | ModeSO | ModeCO | ModeLO));
+		auto forced = forcedmodes;
 		/*
 		** Find syllables until the entire word is constructed.
 		*/
@@ -34,7 +37,7 @@ bool CPassword::GenerateWord(unsigned length)
 				return false;
 #endif
 			int p = GetRandomUINT(1, Weight);
-			if (mode & (ModeCO | ModeLO))
+			if (mode.IsSet(Modes::Capitals) || mode.IsSet(Modes::Lowers))
 			{
 				p -= (int)WeightCL;
 				if (p <= 0)
@@ -59,14 +62,15 @@ bool CPassword::GenerateWord(unsigned length)
 					if (syllen > length - GetLength())
 						throw std::runtime_error("Internal state error");
 #endif
-					if (mode & ModeCO)
+					if (mode.IsSet(Modes::CapitalsForced))
 					{
-						Upper = true;
-						if (mode & ModeLO)
+						if (mode.IsSet(Modes::LowersForced))
 							Upper = (bool)GetRandomUINT(0, 1);
-						if (Upper)
-							std::transform(syllable_str.cbegin(), syllable_str.cend(), syllable_str.begin(), ::toupper);
+						else
+							Upper = true;
 					}
+					if (Upper)
+						std::transform(syllable_str.cbegin(), syllable_str.cend(), syllable_str.begin(), ::UpperChar);
 
 					std::vector<PwdUnit> units(ProperUnits);
 					for (unsigned unit : *syllable.UnitsInSyllable())
@@ -90,26 +94,29 @@ bool CPassword::GenerateWord(unsigned length)
 						for (unsigned unit : *syllable.UnitsInSyllable())
 							Units.push_back(PwdUnit(unit, Upper));
 						Syllables.push_back(syllable_str);
-						o_mode &= ~(ModeCO | ModeLO);
+						if (Upper)
+							forced -= Modes::CapitalsForced;
+						else
+							forced -= Modes::LowersForced;
 					}
 				}
-				if ((mode & ModeN) && p > 0)
+				if (mode.IsSet(Modes::Numerals) && p > 0)
 				{
 					p -= (int)Numbers.size();
 					if (p <= 0)
 					{
 						if (AddRandomSymbols(Numbers))
-							o_mode &= ~ModeNO;
+							forced -= Modes::NumeralsForced;
 					}
 
 				}
-				if ((mode & ModeS) && p > 0)
+				if (mode.IsSet(Modes::Symbols) && p > 0)
 				{
 					p -= (int)Symbols.size();
 					if (p <= 0)
 					{
 						if (AddRandomSymbols(Symbols))
-							o_mode &= ~ModeSO;
+							forced -= Modes::SymbolsForced;
 					}
 				}
 				if (p > 0)
@@ -134,7 +141,7 @@ bool CPassword::GenerateWord(unsigned length)
 		/* if obligatory mode were left unused then try again */
 		if (GetLength() >= length)
 		{
-			if (o_mode)
+			if (!forced.IsClear())
 			{
 				tries = 0;
 				Units.clear();
@@ -151,60 +158,63 @@ bool CPassword::GenerateWord(unsigned length)
 
 bool CPassword::GenerateRandomWord(unsigned length)
 {
-	if (mode == 0 || length == 0)
+	if (length == 0)
+		return false;
+
+	if (mode.IsClear())
 		return false;
 
 	Units.clear();
 	ProperUnits.clear();
 	Syllables.clear();
 
-	size_t Weight = GetWeightRandom(mode, strIncludeSymbols);
+	size_t Weight = GetWeightRandom();
 	if (Weight == 0)
 		return false;
 
 	do
 	{
-		int o_mode = (mode & (ModeNO | ModeSO | ModeCO | ModeLO));
+		auto forced = forcedmodes;
 
 		do
 		{
 			int p = GetRandomUINT(1, (UINT)Weight);
 			TCHAR ch = NULL;
-			if (mode & ModeC)
+			if (mode.IsSet(Modes::Capitals))
 			{
 				p -= (int)UpperChars.size();
 				if (p <= 0)
 				{
 					ch = UpperChars[GetRandomUINT(0, (UINT)UpperChars.size() - 1)];
-					o_mode &= ~ModeCO;
+					forced -= Modes::CapitalsForced;
 				}
 			}
-			if ((mode & ModeL) && p > 0)
+			if (mode.IsSet(Modes::Lowers) && p > 0)
 			{
 				p -= (int)LowerChars.size();
 				if (p <= 0)
 				{
 					ch = LowerChars[GetRandomUINT(0, (UINT)LowerChars.size() - 1)];
-					o_mode &= ~ModeLO;
+					forced -= Modes::LowersForced;
 				}
 			}
-			if ((mode & ModeN) && p > 0)
+			if (mode.IsSet(Modes::Numerals) && p > 0)
 			{
 				p -= (int)Numbers.size();
 				if (p <= 0)
 				{
 					ch = Numbers[GetRandomUINT(0, (UINT)Numbers.size() - 1)];
-					o_mode &= ~ModeNO;
+					forced -= Modes::NumeralsForced;
 				}
 
 			}
-			if ((mode & ModeS) && p > 0)
+			if (mode.IsSet(Modes::Symbols) && p > 0)
 			{
 				p -= (int)Symbols.size();
 				if (p <= 0)
 				{
 					ch = Symbols[GetRandomUINT(0, (UINT)Symbols.size() - 1)];
-					o_mode &= ~ModeSO;
+					forced -= Modes::SymbolsForced;
 				}
 			}
 			if (p > 0)
@@ -216,7 +226,7 @@ bool CPassword::GenerateRandomWord(unsigned length)
 			Units.push_back(PwdUnit(ch, name, false));
 			Syllables.push_back(name);
 		} while (GetLength() < length);
-		if (o_mode)
+		if (!forced.IsClear())
 		{
 			Units.clear();
 			Syllables.clear();
@@ -353,31 +363,31 @@ bool CPassword::AreAllowedSymbolsIn(const std::_tstring& strWord, const std::_ts
 	return (strWord.find_first_of(strExclude) == std::string::npos);
 }
 
-size_t CPassword::GetWeight(int mode, const std::_tstring& strIncludeSymbols) const
+size_t CPassword::GetWeight() const
 {
 	size_t Weight = 0;
 
-	if (mode & (ModeCO | ModeLO))
+	if (mode.IsSet(Modes::Lowers) || mode.IsSet(Modes::Capitals))
 		Weight += WeightCL;
-	if (mode & ModeN)
+	if (mode.IsSet(Modes::Numerals))
 		Weight += Numbers.size();
-	if (mode & ModeS)
+	if (mode.IsSet(Modes::Symbols))
 		Weight += Symbols.size();
 	Weight += strIncludeSymbols.length();
 	return Weight;
 }
 
-size_t CPassword::GetWeightRandom(int mode, const std::_tstring& strIncludeSymbols) const
+size_t CPassword::GetWeightRandom() const
 {
 	size_t Weight = 0;
 
-	if (mode & ModeC)
+	if (mode.IsSet(Modes::Capitals))
 		Weight += UpperChars.size();
-	if (mode & ModeL)
+	if (mode.IsSet(Modes::Lowers))
 		Weight += LowerChars.size();
-	if (mode & ModeN)
+	if (mode.IsSet(Modes::Numerals))
 		Weight += Numbers.size();
-	if (mode & ModeS)
+	if (mode.IsSet(Modes::Symbols))
 		Weight += Symbols.size();
 	Weight += strIncludeSymbols.length();
 	return Weight;
