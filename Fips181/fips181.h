@@ -24,7 +24,7 @@ extern const std::array<TCHAR, 26> UpperChars;
 extern const std::array<TCHAR, 6> Vowels;
 extern const std::array<TCHAR, 20> Consonants;
 extern const std::array<TCHAR, 10> Numbers;
-extern const std::array<TCHAR, 25> Symbols;
+extern const std::array<TCHAR, 32> Symbols;
 
 constexpr auto MAX_UNACCEPTABLE = 20;
 

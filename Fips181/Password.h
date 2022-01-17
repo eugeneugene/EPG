@@ -26,15 +26,15 @@ private:
 
 public:
 	CPassword(Modes modes, const std::_tstring&& _strIncludeSymbols, const std::_tstring&& _strExcludeSymbols) : mode(modes),
-		forcedmodes(mode& CPasswordMode(Modes::LowersForced + Modes::CapitalsForced + Modes::NumeralsForced + Modes::SymbolsForced - Modes::Lowers + Modes::Capitals + Modes::Numerals + Modes::Symbols)),
+		forcedmodes(modes& (Modes::LowersForced - Modes::Lowers) + (Modes::CapitalsForced - Modes::Capitals) + (Modes::NumeralsForced - Modes::Numerals) + (Modes::SymbolsForced - Modes::Symbols)),
 		strIncludeSymbols(_strIncludeSymbols), strExcludeSymbols(_strExcludeSymbols)
 	{ }
 	CPassword(Modes modes, const std::_tstring& _strIncludeSymbols, const std::_tstring& _strExcludeSymbols) : mode(modes),
-		forcedmodes(mode& CPasswordMode(Modes::LowersForced + Modes::CapitalsForced + Modes::NumeralsForced + Modes::SymbolsForced - Modes::Lowers + Modes::Capitals + Modes::Numerals + Modes::Symbols)),
+		forcedmodes(modes& (Modes::LowersForced - Modes::Lowers) + (Modes::CapitalsForced - Modes::Capitals) + (Modes::NumeralsForced - Modes::Numerals) + (Modes::SymbolsForced - Modes::Symbols)),
 		strIncludeSymbols(_strIncludeSymbols), strExcludeSymbols(_strExcludeSymbols)
 	{ }
 	CPassword(Modes modes, const TCHAR* pIncludeSymbols, const TCHAR* pExcludeSymbols) : mode(modes),
-		forcedmodes(mode& CPasswordMode(Modes::LowersForced + Modes::CapitalsForced + Modes::NumeralsForced + Modes::SymbolsForced - Modes::Lowers + Modes::Capitals + Modes::Numerals + Modes::Symbols)),
+		forcedmodes(modes& (Modes::LowersForced - Modes::Lowers) + (Modes::CapitalsForced - Modes::Capitals) + (Modes::NumeralsForced - Modes::Numerals) + (Modes::SymbolsForced - Modes::Symbols)),
 		strIncludeSymbols(pIncludeSymbols), strExcludeSymbols(pExcludeSymbols)
 	{ }
 
@@ -128,5 +128,5 @@ private:
 	static long IO_Validate0(long result);
 	static bool Timeout(_timeb& start);
 #endif
-	};
+};
 
