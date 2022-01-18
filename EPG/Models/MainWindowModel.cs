@@ -1,4 +1,5 @@
 ﻿using EPG.Code;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -6,6 +7,12 @@ namespace EPG.Models
 {
     public class MainWindowModel : INotifyPropertyChanged
     {
+        public MainWindowModel()
+        {
+            DataCollection = new();
+            DataCollection.CollectionChanged += DataCollectionChanged;
+        }
+
         public void FromSettings(EPGSettings settings)
         {
             PasswordMode = settings.PasswordMode;
@@ -25,6 +32,13 @@ namespace EPG.Models
             Filter = settings.Filter;
         }
 
+        public ObservableCollection<DataItem> DataCollection { get; }
+
+        private void DataCollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            NotifyPropertyChanged(nameof(DataCollection));
+        }
+
         private PasswordMode? passwordMode;
         public PasswordMode? PasswordMode
         {
@@ -35,6 +49,24 @@ namespace EPG.Models
                 {
                     passwordMode = value;
                     NotifyPropertyChanged(nameof(PasswordMode));
+
+                    if (passwordMode is not null && passwordMode == Models.PasswordMode.Pronounceable)
+                    {
+                        if (smallSymbols is null && capitalSymbols is null)
+                        {
+                            SmallSymbols = true;
+                            CapitalSymbols = true;
+                        }
+                    }
+
+                    if (SmallSymbols is null)
+                        SmallSymbols = false;
+                    if (CapitalSymbols is null)
+                        CapitalSymbols = false;
+                    if (Numerals is null)
+                        Numerals = false;
+                    if (SpecialSymbols is null)
+                        SpecialSymbols = false;
                 }
             }
         }
@@ -105,6 +137,12 @@ namespace EPG.Models
                 {
                     smallSymbols = value;
                     NotifyPropertyChanged(nameof(SmallSymbols));
+
+                    if (PasswordMode is not null && PasswordMode == Models.PasswordMode.Pronounceable)
+                    {
+                        if (!(smallSymbols ?? false) && !(capitalSymbols ?? false))
+                            CapitalSymbols = true;
+                    }
                 }
             }
         }
@@ -119,6 +157,12 @@ namespace EPG.Models
                 {
                     capitalSymbols = value;
                     NotifyPropertyChanged(nameof(CapitalSymbols));
+
+                    if (PasswordMode is not null && PasswordMode == Models.PasswordMode.Pronounceable)
+                    {
+                        if (!(capitalSymbols ?? false) && !(smallSymbols ?? false))
+                            SmallSymbols = true;
+                    }
                 }
             }
         }
@@ -222,6 +266,7 @@ namespace EPG.Models
         }
 
         private string? filter;
+
         public string? Filter
         {
             get => filter;
@@ -243,5 +288,22 @@ namespace EPG.Models
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+    }
+
+    public enum BloomFilterResult { NOTFOUND, FOUND, FOUNDPARANOID };
+    public class DataItem
+    {
+        public DataItem(string password, string? hyphenatedPassword, BloomFilterResult? bloomFilterResult, decimal? passwordQuality)
+        {
+            Password = password;
+            HyphenatedPassword = hyphenatedPassword;
+            BloomFilterResult = bloomFilterResult;
+            PasswordQuality = passwordQuality;
+        }
+
+        public string Password { get; }
+        public string? HyphenatedPassword { get; }
+        public BloomFilterResult? BloomFilterResult { get; }
+        public decimal? PasswordQuality { get; }
     }
 }

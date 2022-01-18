@@ -18,6 +18,7 @@
         <localcodeconverters:UIntConverter x:Key="UIntConverter" />
         <localcodeconverters:ShowHyphenatedEnabledConverter x:Key="ShowHyphenatedEnabledConverter" />
         <localcodeconverters:GenerateEnabledConverter x:Key="GenerateEnabledConverter" />
+        <localcodeconverters:DataCollectionVisibleConverter x:Key="DataCollectionVisibleConverter" />
     </Window.Resources>
     <StackPanel>
         <Menu VerticalAlignment="Top">
@@ -137,28 +138,28 @@
                     Margin="3"
                     Content="Small symbols"
                     IsChecked="{Binding Path=SmallSymbols}"
-                    IsThreeState="True" />
+                    IsThreeState="{Binding Path=PasswordMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static localmodels:PasswordMode.Random}}" />
                 <CheckBox
                     Grid.Row="1"
                     Grid.Column="0"
                     Margin="3"
                     Content="Capital symbols"
                     IsChecked="{Binding Path=CapitalSymbols}"
-                    IsThreeState="True" />
+                    IsThreeState="{Binding Path=PasswordMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static localmodels:PasswordMode.Random}}" />
                 <CheckBox
                     Grid.Row="0"
                     Grid.Column="1"
                     Margin="3"
                     Content="Numerals"
                     IsChecked="{Binding Path=Numerals}"
-                    IsThreeState="True" />
+                    IsThreeState="{Binding Path=PasswordMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static localmodels:PasswordMode.Random}}" />
                 <CheckBox
                     Grid.Row="1"
                     Grid.Column="1"
                     Margin="3"
                     Content="Special symbols"
                     IsChecked="{Binding Path=SpecialSymbols}"
-                    IsThreeState="True" />
+                    IsThreeState="{Binding Path=PasswordMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static localmodels:PasswordMode.Random}}" />
                 <Grid Grid.Row="0" Grid.Column="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="110" />
@@ -231,6 +232,6 @@
                     IsChecked="{Binding Path=CalculateQuality}" />
             </Grid>
         </GroupBox>
-        <DataGrid Visibility="Hidden" />
+        <DataGrid ItemsSource="{Binding Path=DataCollection}" Visibility="{Binding Path=DataCollection, Converter={StaticResource DataCollectionVisibleConverter}}" />
     </StackPanel>
 </Window>
