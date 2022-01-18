@@ -24,9 +24,10 @@ bool CPassword::GenerateWord(unsigned length)
 	Units.clear();
 	ProperUnits.clear();
 	Syllables.clear();
+
 	do
 	{
-		auto forced = forcedmodes;
+		auto forced = forcedmode;
 		/*
 		** Find syllables until the entire word is constructed.
 		*/
@@ -42,7 +43,6 @@ bool CPassword::GenerateWord(unsigned length)
 				p -= (int)WeightCL;
 				if (p <= 0)
 				{
-					bool Upper = false;
 					/*
 					** Get the syllable and find its length.
 					*/
@@ -62,13 +62,8 @@ bool CPassword::GenerateWord(unsigned length)
 					if (syllen > length - GetLength())
 						throw std::runtime_error("Internal state error");
 #endif
-					if (mode.IsSet(Modes::CapitalsForced))
-					{
-						if (mode.IsSet(Modes::LowersForced))
-							Upper = (bool)GetRandomUINT(0, 1);
-						else
-							Upper = true;
-					}
+					bool Upper = GetUpper();
+
 					if (Upper)
 						std::transform(syllable_str.cbegin(), syllable_str.cend(), syllable_str.begin(), ::UpperChar);
 
@@ -174,7 +169,7 @@ bool CPassword::GenerateRandomWord(unsigned length)
 
 	do
 	{
-		auto forced = forcedmodes;
+		auto forced = forcedmode;
 
 		do
 		{
@@ -226,6 +221,7 @@ bool CPassword::GenerateRandomWord(unsigned length)
 			Units.push_back(PwdUnit(ch, name, false));
 			Syllables.push_back(name);
 		} while (GetLength() < length);
+
 		if (!forced.IsClear())
 		{
 			Units.clear();
@@ -234,6 +230,124 @@ bool CPassword::GenerateRandomWord(unsigned length)
 		else
 			return true;
 	} while (true);
+}
+
+void CPassword::GetWord(std::_tstring& out) const
+{
+	out.clear();
+	for (const auto& u : Units)
+	{
+		for (unsigned i = 0; i < u.UnitLen(); i++)
+			out += u.UnitCode()[i];
+	}
+}
+
+void CPassword::GetHyphenatedWord(std::_tstring& out) const
+{
+	bool bFirst = true;
+	for (const auto& s : Syllables)
+	{
+		if (!bFirst)
+			out += chHyphen;
+		else
+			bFirst = false;
+		out += s;
+	}
+}
+
+unsigned CPassword::GetLength() const
+{
+	unsigned len = 0;
+	for (const auto& u : Units)
+		len += u.UnitLen();
+	return len;
+}
+
+unsigned CPassword::GetHyphenatedLength() const
+{
+	unsigned len = 0;
+	bool bFirst = true;
+	for (const auto& s : Syllables)
+	{
+		if (!bFirst)
+			len++;
+		else
+			bFirst = false;
+		len += static_cast<unsigned>(s.length());
+	}
+	return len;
+}
+
+size_t CPassword::GetWeight() const
+{
+	size_t Weight = 0;
+
+	if (mode.IsSet(Modes::Lowers) || mode.IsSet(Modes::Capitals))
+		Weight += WeightCL;
+	if (mode.IsSet(Modes::Numerals))
+		Weight += Numbers.size();
+	if (mode.IsSet(Modes::Symbols))
+		Weight += Symbols.size();
+	Weight += strIncludeSymbols.length();
+
+	return Weight;
+}
+
+size_t CPassword::GetWeightRandom() const
+{
+	size_t Weight = 0;
+
+	if (mode.IsSet(Modes::Capitals))
+		Weight += UpperChars.size();
+	if (mode.IsSet(Modes::Lowers))
+		Weight += LowerChars.size();
+	if (mode.IsSet(Modes::Numerals))
+		Weight += Numbers.size();
+	if (mode.IsSet(Modes::Symbols))
+		Weight += Symbols.size();
+	Weight += strIncludeSymbols.length();
+
+	return Weight;
+}
+
+inline bool CPassword::IsAllowedSymbol(TCHAR ch) const
+{
+	return strExcludeSymbols.find(ch, 0) == std::_tstring::npos;
+}
+
+inline bool CPassword::GetUpper() const
+{
+	if (!mode.IsSet(Modes::Lowers))
+		return mode.IsSet(Modes::Capitals);
+	return mode.IsSet(Modes::Capitals) ? (bool)GetRandomUINT(0, 1) : false;
+}
+
+void CPassword::FixMode()
+{
+	if (mode.IsSet(Modes::LowersForced))
+		mode += Modes::Lowers;
+	if (mode.IsSet(Modes::CapitalsForced))
+		mode += Modes::Capitals;
+	if (mode.IsSet(Modes::NumeralsForced))
+		mode += Modes::Numerals;
+	if (mode.IsSet(Modes::SymbolsForced))
+		mode += Modes::Symbols;
+}
+
+template<typename T>
+inline bool CPassword::AddRandomSymbols(const T& Symbols)
+{
+	if (Symbols.empty())
+		return false;
+	TCHAR symbol = Symbols[GetRandomUINT(0, (UINT)Symbols.size() - 1)];
+	if (!IsAllowedSymbol(symbol))
+		return false;
+	std::_tstring name;
+	if (!GetSymbolName(symbol, name))
+		name = symbol;
+	Units.push_back(PwdUnit(symbol, name, false));
+	Syllables.push_back(name);
+	return true;
 }
 
 /*
@@ -246,7 +360,7 @@ bool CPassword::GenerateRandomWord(unsigned length)
  * the individual letters, so three consecutive units can have
  * the length of 6 at most.
  */
-bool CPassword::ImproperWord(const std::vector<PwdUnit>& pwd_units)
+/* static */ bool CPassword::ImproperWord(const std::vector<PwdUnit>& pwd_units)
 {
 	for (size_t unit_count = 0; unit_count < pwd_units.size(); unit_count++)
 	{
@@ -295,7 +409,7 @@ bool CPassword::ImproperWord(const std::vector<PwdUnit>& pwd_units)
  * y starts a word and is the only vowel in the first syllable.
  * The word ycl is one example.  We discard words like these.
  */
-bool CPassword::HaveInitialY(const std::vector<unsigned>& units)
+/* static */ bool CPassword::HaveInitialY(const std::vector<unsigned>& units)
 {
 	unsigned vowel_count = 0;
 	unsigned normal_vowel_count = 0;
@@ -317,6 +431,7 @@ bool CPassword::HaveInitialY(const std::vector<unsigned>& units)
 				normal_vowel_count++;
 		}
 	}
+
 	return ((vowel_count <= 1) && (normal_vowel_count == 0));
 }
 
@@ -327,7 +442,7 @@ bool CPassword::HaveInitialY(const std::vector<unsigned>& units)
  * vowel at the end of the word or syllables like ble will
  * be generated.
  */
-bool CPassword::HaveFinalSplit(const std::vector<unsigned>& units)
+/* static */ bool CPassword::HaveFinalSplit(const std::vector<unsigned>& units)
 {
 	size_t vowel_count = 0;
 
@@ -348,7 +463,7 @@ bool CPassword::HaveFinalSplit(const std::vector<unsigned>& units)
 	return ((vowel_count == 1) && (Rules[units.back()].flags & NO_FINAL_SPLIT));
 }
 
-bool CPassword::GetSymbolName(TCHAR symbol, std::_tstring& out)
+/* static */ bool CPassword::GetSymbolName(TCHAR symbol, std::_tstring& out)
 {
 	auto p = std::find_if(SymbolNames.cbegin(), SymbolNames.cend(), [&, symbol](auto& s) { return (s.symbol == symbol); });
 
@@ -358,39 +473,14 @@ bool CPassword::GetSymbolName(TCHAR symbol, std::_tstring& out)
 	return true;
 }
 
-bool CPassword::AreAllowedSymbolsIn(const std::_tstring& strWord, const std::_tstring& strExclude)
+/* static */ inline unsigned CPassword::MaxRetries(size_t len)
+{
+	return (unsigned)(4 * len + Rules.size());
+}
+
+/* static */ inline bool CPassword::AreAllowedSymbolsIn(const std::_tstring& strWord, const std::_tstring& strExclude)
 {
 	return (strWord.find_first_of(strExclude) == std::string::npos);
-}
-
-size_t CPassword::GetWeight() const
-{
-	size_t Weight = 0;
-
-	if (mode.IsSet(Modes::Lowers) || mode.IsSet(Modes::Capitals))
-		Weight += WeightCL;
-	if (mode.IsSet(Modes::Numerals))
-		Weight += Numbers.size();
-	if (mode.IsSet(Modes::Symbols))
-		Weight += Symbols.size();
-	Weight += strIncludeSymbols.length();
-	return Weight;
-}
-
-size_t CPassword::GetWeightRandom() const
-{
-	size_t Weight = 0;
-
-	if (mode.IsSet(Modes::Capitals))
-		Weight += UpperChars.size();
-	if (mode.IsSet(Modes::Lowers))
-		Weight += LowerChars.size();
-	if (mode.IsSet(Modes::Numerals))
-		Weight += Numbers.size();
-	if (mode.IsSet(Modes::Symbols))
-		Weight += Symbols.size();
-	Weight += strIncludeSymbols.length();
-	return Weight;
 }
 
 #if !defined(_DEBUG)
