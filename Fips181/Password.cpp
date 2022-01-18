@@ -317,9 +317,11 @@ inline bool CPassword::IsAllowedSymbol(TCHAR ch) const
 
 inline bool CPassword::GetUpper() const
 {
+	if (!mode.IsSet(Modes::Capitals))
+		return false;
 	if (!mode.IsSet(Modes::Lowers))
-		return mode.IsSet(Modes::Capitals);
-	return mode.IsSet(Modes::Capitals) ? (bool)GetRandomUINT(0, 1) : false;
+		return true;
+	return (bool)GetRandomUINT(0, 1);
 }
 
 void CPassword::FixMode()
