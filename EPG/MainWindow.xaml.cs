@@ -1,5 +1,7 @@
 ﻿using CSAdapter;
+using EPG.Code;
 using EPG.Models;
+using Itenso.Configuration;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Diagnostics;
@@ -12,15 +14,25 @@ namespace EPG
 {
     public partial class MainWindow : Window
     {
-        private readonly MainWindowModel model = new();
-        private readonly EPGSettings settings = new();
         private readonly IHostApplicationLifetime _applicationLifetime;
-        private readonly Random random = new(DateTime.Now.Millisecond);
+        private readonly Random random;
 
+        private readonly MainWindowModel model;
+        private readonly EPGSettings settings;
+        private readonly EPGSettingsProvider settingsProvider;
+        private readonly ApplicationSettings applicationSettings;
         public MainWindow(IHostApplicationLifetime applicationLifetime)
         {
             _applicationLifetime = applicationLifetime ?? throw new Exception(nameof(applicationLifetime));
+
+            model = new();
+            settings = new();
+            settingsProvider = new();
+            applicationSettings = new ApplicationSettings(settings, settingsProvider);
+            applicationSettings.Load();
             model.FromSettings(settings);
+            random = new(DateTime.Now.Millisecond);
+
             InitializeComponent();
             _applicationLifetime.ApplicationStopping.Register(() => Close(), true);
         }
@@ -33,7 +45,7 @@ namespace EPG
         private void WindowClosed(object sender, EventArgs e)
         {
             settings.FromModel(model);
-            settings.Save();
+            applicationSettings.Save();
         }
 
         private void CommandGenerateExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -161,13 +173,13 @@ namespace EPG
             {
                 var res1 = bloom.CheckString(password.ToLowerInvariant());
                 if (res1)
-                    return BloomFilterResult.FOUNDPARANOID;
+                    return BloomFilterResult.UNSAFE;
                 var res2 = bloom.CheckString(password.ToUpperInvariant());
                 if (res2)
-                    return BloomFilterResult.FOUNDPARANOID;
+                    return BloomFilterResult.UNSAFE;
                 var res3 = bloom.CheckString(string.Concat(password[0].ToString().ToUpper(), password.AsSpan(1)));
                 if (res3)
-                    return BloomFilterResult.FOUNDPARANOID;
+                    return BloomFilterResult.UNSAFE;
             }
             return BloomFilterResult.NOTFOUND;
         }

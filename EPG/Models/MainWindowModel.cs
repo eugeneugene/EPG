@@ -23,10 +23,10 @@ namespace EPG.Models
             NumberOfPasswords = settings.NumberOfPasswords;
             MinimumLength = settings.MinimumLength;
             MaximumLength = settings.MaximumLength;
-            SmallSymbols = settings.SmallSymbols;
-            CapitalSymbols = settings.CapitalSymbols;
-            Numerals = settings.Numerals;
-            SpecialSymbols = settings.SpecialSymbols;
+            SmallSymbols = ToBoolNull(settings.SmallSymbols);
+            CapitalSymbols = ToBoolNull(settings.CapitalSymbols);
+            Numerals = ToBoolNull(settings.Numerals);
+            SpecialSymbols = ToBoolNull(settings.SpecialSymbols);
             Exclude = settings.Exclude;
             Include = settings.Include;
             EnableBloom = settings.EnableBloom;
@@ -297,6 +297,16 @@ namespace EPG.Models
                 return;
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private static bool? ToBoolNull(ThreeStateValue value)
+        {
+            return value switch
+            {
+                ThreeStateValue.True => true,
+                ThreeStateValue.False => false,
+                _ => null,
+            };
         }
     }
 }

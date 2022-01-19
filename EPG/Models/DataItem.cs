@@ -1,7 +1,5 @@
 ﻿namespace EPG.Models
 {
-    public enum BloomFilterResult { NOTFOUND, FOUND, FOUNDPARANOID };
-
     public class DataItem
     {
         public DataItem(string password, string? hyphenatedPassword, BloomFilterResult? bloomFilterResult, decimal? passwordQuality)

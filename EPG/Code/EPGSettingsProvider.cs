@@ -10,6 +10,8 @@ namespace EPG.Code
     {
         private static string GetUserSettingsPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EPG", "EPG.config");
 
+        public override string Name => nameof(EPGSettingsProvider);
+        
         public override SettingsPropertyValueCollection GetPropertyValues(SettingsContext context, SettingsPropertyCollection properties)
         {
             try

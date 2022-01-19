@@ -1,15 +1,10 @@
-﻿using EPG.Code;
+﻿using Itenso.Configuration;
 using System.Configuration;
 
 namespace EPG.Models
 {
-    [SettingsProvider(typeof(EPGSettingsProvider))]
     public sealed class EPGSettings : ApplicationSettingsBase
     {
-        private static readonly EPGSettings _instance = (EPGSettings)Synchronized(new EPGSettings());
-
-        public static EPGSettings Instance => _instance;
-
         public void FromModel(MainWindowModel model)
         {
             PasswordMode = model.PasswordMode;
@@ -17,10 +12,10 @@ namespace EPG.Models
             NumberOfPasswords = model.NumberOfPasswords;
             MinimumLength = model.MinimumLength;
             MaximumLength = model.MaximumLength;
-            SmallSymbols = model.SmallSymbols;
-            CapitalSymbols = model.CapitalSymbols;
-            Numerals = model.Numerals;
-            SpecialSymbols = model.SpecialSymbols;
+            SmallSymbols = ToThreeStateValue(model.SmallSymbols);
+            CapitalSymbols = ToThreeStateValue(model.CapitalSymbols);
+            Numerals = ToThreeStateValue(model.Numerals);
+            SpecialSymbols = ToThreeStateValue(model.SpecialSymbols);
             Exclude = model.Exclude;
             Include = model.Include;
             EnableBloom = model.EnableBloom;
@@ -30,132 +25,61 @@ namespace EPG.Models
             AutoClear = model.AutoClear;
         }
 
-        [UserScopedSetting()]
-        [DefaultSettingValue(null)]
-        public PasswordMode? PasswordMode
-        {
-            get => (PasswordMode?)this[nameof(PasswordMode)];
-            set => this[nameof(PasswordMode)] = value;
-        }
+        [PropertySetting(DefaultValue = null)]
+        public PasswordMode? PasswordMode { get; set; }
 
-        [UserScopedSetting()]
-        [DefaultSettingValue("false")]
-        public bool ShowHyphenated
-        {
-            get => (bool)this[nameof(ShowHyphenated)];
-            set => this[nameof(ShowHyphenated)] = value;
-        }
+        [PropertySetting(DefaultValue = false)]
+        public bool ShowHyphenated { get; set; }
 
-        [UserScopedSetting()]
-        [DefaultSettingValue("0")]
-        public uint NumberOfPasswords
-        {
-            get => (uint)this[nameof(NumberOfPasswords)];
-            set => this[nameof(NumberOfPasswords)] = value;
-        }
+        [PropertySetting(DefaultValue = 0)]
+        public uint NumberOfPasswords { get; set; }
 
-        [UserScopedSetting()]
-        [DefaultSettingValue("0")]
-        public uint MinimumLength
-        {
-            get => (uint)this[nameof(MinimumLength)];
-            set => this[nameof(MinimumLength)] = value;
-        }
+        [PropertySetting(DefaultValue = 0)]
+        public uint MinimumLength { get; set; }
 
-        [UserScopedSetting()]
-        [DefaultSettingValue("0")]
-        public uint MaximumLength
-        {
-            get => (uint)this[nameof(MaximumLength)];
-            set => this[nameof(MaximumLength)] = value;
-        }
+        [PropertySetting(DefaultValue = 0)]
+        public uint MaximumLength { get; set; }
 
-        [UserScopedSetting()]
-        [DefaultSettingValue(null)]
-        public bool? SmallSymbols
-        {
-            get => (bool?)this[nameof(SmallSymbols)];
-            set => this[nameof(SmallSymbols)] = value;
-        }
+        [PropertySetting(DefaultValue = ThreeStateValue.Null)]
+        public ThreeStateValue SmallSymbols { get; set; }
 
-        [UserScopedSetting()]
-        [DefaultSettingValue(null)]
-        public bool? CapitalSymbols
-        {
-            get => (bool?)this[nameof(CapitalSymbols)];
-            set => this[nameof(CapitalSymbols)] = value;
-        }
+        [PropertySetting(DefaultValue = ThreeStateValue.Null)]
+        public ThreeStateValue CapitalSymbols { get; set; }
 
-        [UserScopedSetting()]
-        [DefaultSettingValue(null)]
-        public bool? Numerals
-        {
-            get => (bool?)this[nameof(Numerals)];
-            set => this[nameof(Numerals)] = value;
-        }
+        [PropertySetting(DefaultValue = ThreeStateValue.Null)]
+        public ThreeStateValue Numerals { get; set; }
 
-        [UserScopedSetting()]
-        [DefaultSettingValue(null)]
-        public bool? SpecialSymbols
-        {
-            get => (bool?)this[nameof(SpecialSymbols)];
-            set => this[nameof(SpecialSymbols)] = value;
-        }
+        [PropertySetting(DefaultValue = ThreeStateValue.Null)]
+        public ThreeStateValue SpecialSymbols { get; set; }
 
-        [UserScopedSetting()]
-        [DefaultSettingValue(null)]
-        public string? Exclude
-        {
-            get => (string?)this[nameof(Exclude)];
-            set => this[nameof(Exclude)] = value;
-        }
+        [PropertySetting(DefaultValue = "")]
+        public string? Exclude { get; set; }
 
-        [UserScopedSetting()]
-        [DefaultSettingValue(null)]
-        public string? Include
-        {
-            get => (string?)this[nameof(Include)];
-            set => this[nameof(Include)] = value;
-        }
+        [PropertySetting(DefaultValue = "")]
+        public string? Include { get; set; }
 
-        [UserScopedSetting()]
-        [DefaultSettingValue("false")]
-        public bool EnableBloom
-        {
-            get => (bool)this[nameof(EnableBloom)];
-            set => this[nameof(EnableBloom)] = value;
-        }
+        [PropertySetting(DefaultValue = false)]
+        public bool EnableBloom { get; set; }
 
-        [UserScopedSetting()]
-        [DefaultSettingValue("false")]
-        public bool ParanoidCheck
-        {
-            get => (bool)this[nameof(ParanoidCheck)];
-            set => this[nameof(ParanoidCheck)] = value;
-        }
+        [PropertySetting(DefaultValue = false)]
+        public bool ParanoidCheck { get; set; }
 
-        [UserScopedSetting()]
-        [DefaultSettingValue("false")]
-        public bool CalculateQuality
-        {
-            get => (bool)this[nameof(CalculateQuality)];
-            set => this[nameof(CalculateQuality)] = value;
-        }
+        [PropertySetting(DefaultValue = false)]
+        public bool CalculateQuality { get; set; }
 
-        [UserScopedSetting()]
-        [DefaultSettingValue(null)]
-        public string? Filter
-        {
-            get => (string?)this[nameof(Filter)];
-            set => this[nameof(Filter)] = value;
-        }
+        [PropertySetting(DefaultValue = "")]
+        public string? Filter { get; set; }
 
-        [UserScopedSetting()]
-        [DefaultSettingValue("false")]
-        public bool AutoClear
+        [PropertySetting(DefaultValue = false)]
+        public bool AutoClear { get; set; }
+        private static ThreeStateValue ToThreeStateValue(bool? value)
         {
-            get => (bool)this[nameof(AutoClear)];
-            set => this[nameof(AutoClear)] = value;
+            return value switch
+            {
+                true => ThreeStateValue.True,
+                false => ThreeStateValue.False,
+                _ => ThreeStateValue.Null,
+            };
         }
     }
 }
