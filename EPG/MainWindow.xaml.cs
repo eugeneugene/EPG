@@ -2,8 +2,11 @@
 using EPG.Models;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Diagnostics;
+using System.Text;
 using System.Windows;
 using System.Windows.Input;
+using WpfNotification;
 
 namespace EPG
 {
@@ -74,32 +77,63 @@ namespace EPG
             model.ResultModel.EnableBloom = model.EnableBloom;
             model.ResultModel.CalculateQuality = model.CalculateQuality;
 
-            Password password = new(modes, model.Include ?? string.Empty, model.Exclude ?? string.Empty);
-            for (uint i = 0; i < model.NumberOfPasswords; i++)
+            try
             {
-                uint length = (uint)random.Next((int)model.MinimumLength, (int)model.MaximumLength);
-                switch (model.PasswordMode)
+                Password password = new(modes, model.Include ?? string.Empty, model.Exclude ?? string.Empty);
+                Bloom? bloom = null;
+                if (model.EnableBloom && !string.IsNullOrEmpty(model.Filter))
                 {
-                    case PasswordMode.Pronounceable:
-                        {
-                            if (!password.GenerateWord(length))
-                                return;
-                            string pass = password.GetWord();
-                            string hpass = string.Empty;
-                            if (model.ShowHyphenated)
-                                hpass = password.GetHyphenatedWord();
-                            model.ResultModel.DataCollection.Add(new(pass, hpass, null, null));
-                        }
-                        break;
-                    case PasswordMode.Random:
-                        {
-                            if (!password.GenerateWord(length))
-                                return;
-                            string pass = password.GetWord();
-                            model.ResultModel.DataCollection.Add(new(pass, null, null, null));
-                        }
-                        break;
+                    bloom = new();
+                    bloom.Open(model.Filter);
+                    bloom.Load();
                 }
+                for (uint i = 0; i < model.NumberOfPasswords; i++)
+                {
+                    uint length = (uint)random.Next((int)model.MinimumLength, (int)model.MaximumLength);
+                    switch (model.PasswordMode)
+                    {
+                        case PasswordMode.Pronounceable:
+                            {
+                                if (!password.GenerateWord(length))
+                                    return;
+                                string pass = password.GetWord();
+                                string hpass = string.Empty;
+                                if (model.ShowHyphenated)
+                                    hpass = password.GetHyphenatedWord();
+                                BloomFilterResult? bloomFilterResult = null;
+                                if (bloom is not null)
+                                    bloomFilterResult = CheckBloom(bloom, pass);
+                                model.ResultModel.DataCollection.Add(new(pass, hpass, bloomFilterResult, null));
+                            }
+                            break;
+                        case PasswordMode.Random:
+                            {
+                                if (!password.GenerateWord(length))
+                                    return;
+                                string pass = password.GetWord();
+                                BloomFilterResult? bloomFilterResult = null;
+                                if (bloom is not null)
+                                    bloomFilterResult = CheckBloom(bloom, pass);
+                                model.ResultModel.DataCollection.Add(new(pass, null, bloomFilterResult, null));
+                            }
+                            break;
+                    }
+                }
+                bloom?.Dispose();
+            }
+            catch (Exception ex)
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine("Exception: " + ex.Message);
+                while (ex.InnerException != null)
+                {
+                    ex = ex.InnerException;
+                    sb.AppendLine("InnerException: " + ex.Message);
+                }
+
+                var popup = new PopupWindow("Exception", sb.ToString(), NotificationType.Error);
+                popup.Show();
+                Debug.WriteLine(ex.ToString());
             }
         }
 
@@ -111,6 +145,31 @@ namespace EPG
         private void ClearExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             model.ResultModel.DataCollection.Clear();
+        }
+
+        private BloomFilterResult CheckBloom(Bloom bloom, string password)
+        {
+            if (bloom is null)
+                throw new ArgumentNullException(nameof(bloom));
+            if (string.IsNullOrEmpty(password))
+                throw new ArgumentNullException(nameof(password));
+
+            bool bloomres = bloom.CheckString(password);
+            if (bloomres)
+                return BloomFilterResult.FOUND;
+            if (model.ParanoidCheck)
+            {
+                var res1 = bloom.CheckString(password.ToLowerInvariant());
+                if (res1)
+                    return BloomFilterResult.FOUNDPARANOID;
+                var res2 = bloom.CheckString(password.ToUpperInvariant());
+                if (res2)
+                    return BloomFilterResult.FOUNDPARANOID;
+                var res3 = bloom.CheckString(string.Concat(password[0].ToString().ToUpper(), password.AsSpan(1)));
+                if (res3)
+                    return BloomFilterResult.FOUNDPARANOID;
+            }
+            return BloomFilterResult.NOTFOUND;
         }
     }
 }

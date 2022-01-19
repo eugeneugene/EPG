@@ -1,0 +1,118 @@
+﻿<Window
+    x:Class="WpfNotification.PopupWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="NotificationWindow"
+    x:ClassModifier="public"
+    ShowActivated="False"
+    ShowInTaskbar="False"
+    Style="{DynamicResource PopupWindow}">
+
+    <Window.Resources>
+        <ResourceDictionary Source="/WpfNotification;component/Styles/ToastStyle.xaml" />
+    </Window.Resources>
+
+    <Grid>
+        <Border x:Name="borderBackground" Style="{DynamicResource PopupBorder}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="30" />
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Image
+                    x:Name="imageLeft"
+                    Grid.RowSpan="3"
+                    Grid.Column="0"
+                    Style="{DynamicResource PopupImageLeft}" />
+
+                <Image
+                    x:Name="imageRight"
+                    Grid.RowSpan="2"
+                    Grid.Column="2"
+                    MouseUp="ImageMouseUp"
+                    Style="{DynamicResource PopupImageRight}" />
+
+                <TextBlock
+                    x:Name="TextBoxTitle"
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Style="{DynamicResource PopupTextBoxTitle}"
+                    Text="A Request has been Added" />
+
+                <TextBlock
+                    x:Name="TextBoxShortDescription"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Grid.ColumnSpan="2"
+                    Style="{DynamicResource PopupTextBoxShortDescription}"
+                    Text="A Request has been Added" />
+
+                <Button
+                    x:Name="buttonView"
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    Click="ButtonViewClick"
+                    Content="Click Here to View"
+                    Style="{StaticResource NotificationLinkButton}"
+                    Visibility="Collapsed" />
+            </Grid>
+        </Border>
+
+        <!--  Animation  -->
+        <!--  Пока не получается переместить этот блок в отдельный файл стилей (проблема с вызовом метода Completed)  -->
+        <Grid.Triggers>
+            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                <BeginStoryboard x:Name="StoryboardLoad">
+                    <Storyboard>
+                        <DoubleAnimation
+                            Storyboard.TargetProperty="(UIElement.Opacity)"
+                            From="0.0"
+                            To="1.0"
+                            Duration="0:0:1" />
+                        <DoubleAnimation
+                            BeginTime="0:0:5"
+                            Completed="DoubleAnimationCompleted"
+                            Storyboard.TargetProperty="(UIElement.Opacity)"
+                            From="1.0"
+                            To="0.0"
+                            Duration="0:0:3" />
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+
+            <EventTrigger RoutedEvent="Mouse.MouseLeave">
+                <BeginStoryboard x:Name="StoryboardFade">
+                    <Storyboard>
+                        <DoubleAnimation
+                            BeginTime="0:0:2"
+                            Completed="DoubleAnimationCompleted"
+                            Storyboard.TargetProperty="(UIElement.Opacity)"
+                            From="1.0"
+                            To="0.0"
+                            Duration="0:0:5" />
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+
+            <EventTrigger RoutedEvent="Mouse.MouseEnter">
+                <EventTrigger.Actions>
+                    <RemoveStoryboard BeginStoryboardName="StoryboardLoad" />
+                    <RemoveStoryboard BeginStoryboardName="StoryboardFade" />
+                </EventTrigger.Actions>
+            </EventTrigger>
+        </Grid.Triggers>
+
+        <Grid.RenderTransform>
+            <ScaleTransform ScaleY="1" />
+        </Grid.RenderTransform>
+    </Grid>
+</Window>

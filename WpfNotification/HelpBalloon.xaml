@@ -1,0 +1,22 @@
+﻿<UserControl
+    x:Class="WpfNotification.HelpBalloon"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Name="HelpBalloonControl"
+    d:DesignHeight="20"
+    d:DesignWidth="20"
+    Background="Transparent"
+    mc:Ignorable="d">
+
+    <Image
+        x:Name="imageControl"
+        Width="20"
+        Height="20"
+        Cursor="Hand"
+        IsManipulationEnabled="True"
+        MouseEnter="ImageMouseEnter"
+        Source="Resources/help.png" />
+
+</UserControl>
