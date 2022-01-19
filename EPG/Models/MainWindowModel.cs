@@ -1,6 +1,4 @@
-﻿using EPG.Code;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace EPG.Models
@@ -9,8 +7,13 @@ namespace EPG.Models
     {
         public MainWindowModel()
         {
-            DataCollection = new();
-            DataCollection.CollectionChanged += DataCollectionChanged;
+            ResultModel = new();
+            ResultModel.PropertyChanged += ResultModelPropertyChanged;
+        }
+
+        private void ResultModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            NotifyPropertyChanged(nameof(ResultModel) + "." + e.PropertyName);
         }
 
         public void FromSettings(EPGSettings settings)
@@ -30,14 +33,10 @@ namespace EPG.Models
             ParanoidCheck = settings.ParanoidCheck;
             CalculateQuality = settings.CalculateQuality;
             Filter = settings.Filter;
+            AutoClear = settings.AutoClear;
         }
 
-        public ObservableCollection<DataItem> DataCollection { get; }
-
-        private void DataCollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            NotifyPropertyChanged(nameof(DataCollection));
-        }
+        public ResultModel ResultModel { get; }
 
         private PasswordMode? passwordMode;
         public PasswordMode? PasswordMode
@@ -63,10 +62,6 @@ namespace EPG.Models
                         SmallSymbols = false;
                     if (CapitalSymbols is null)
                         CapitalSymbols = false;
-                    if (Numerals is null)
-                        Numerals = false;
-                    if (SpecialSymbols is null)
-                        SpecialSymbols = false;
                 }
             }
         }
@@ -280,6 +275,21 @@ namespace EPG.Models
             }
         }
 
+        private bool autoClear;
+
+        public bool AutoClear
+        {
+            get => autoClear;
+            set
+            {
+                if (autoClear != value)
+                {
+                    autoClear = value;
+                    NotifyPropertyChanged(nameof(AutoClear));
+                }
+            }
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
         private void NotifyPropertyChanged([CallerMemberName] string? propertyName = null)
         {
@@ -288,22 +298,5 @@ namespace EPG.Models
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-    }
-
-    public enum BloomFilterResult { NOTFOUND, FOUND, FOUNDPARANOID };
-    public class DataItem
-    {
-        public DataItem(string password, string? hyphenatedPassword, BloomFilterResult? bloomFilterResult, decimal? passwordQuality)
-        {
-            Password = password;
-            HyphenatedPassword = hyphenatedPassword;
-            BloomFilterResult = bloomFilterResult;
-            PasswordQuality = passwordQuality;
-        }
-
-        public string Password { get; }
-        public string? HyphenatedPassword { get; }
-        public BloomFilterResult? BloomFilterResult { get; }
-        public decimal? PasswordQuality { get; }
     }
 }

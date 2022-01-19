@@ -8,4 +8,35 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    <Style x:Key="DataGridDefaultStyle" TargetType="{x:Type DataGrid}">
+        <Setter Property="HorizontalContentAlignment" Value="Right" />
+        <Setter Property="AutoGenerateColumns" Value="False" />
+        <Setter Property="CanUserAddRows" Value="True" />
+        <Setter Property="CanUserDeleteRows" Value="True" />
+        <Setter Property="CanUserReorderColumns" Value="False" />
+        <Setter Property="CanUserResizeColumns" Value="True" />
+        <Setter Property="CanUserResizeRows" Value="False" />
+        <Setter Property="CanUserSortColumns" Value="False" />
+        <Setter Property="SelectionMode" Value="Extended" />
+        <Setter Property="SelectionUnit" Value="CellOrRowHeader" />
+        <Setter Property="FontFamily" Value="Lucida Console" />
+    </Style>
+    <Style
+        x:Key="DataGridHeaderDefaultStyle"
+        BasedOn="{StaticResource {x:Type DataGridColumnHeader}}"
+        TargetType="{x:Type DataGridColumnHeader}">
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <TextBlock
+                        FontWeight="Bold"
+                        Text="{Binding}"
+                        TextAlignment="Center"
+                        TextWrapping="Wrap" />
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

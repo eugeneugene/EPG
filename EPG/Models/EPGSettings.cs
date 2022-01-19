@@ -1,7 +1,7 @@
-﻿using EPG.Models;
+﻿using EPG.Code;
 using System.Configuration;
 
-namespace EPG.Code
+namespace EPG.Models
 {
     [SettingsProvider(typeof(EPGSettingsProvider))]
     public sealed class EPGSettings : ApplicationSettingsBase
@@ -27,6 +27,7 @@ namespace EPG.Code
             ParanoidCheck = model.ParanoidCheck;
             CalculateQuality = model.CalculateQuality;
             Filter = model.Filter;
+            AutoClear = model.AutoClear;
         }
 
         [UserScopedSetting()]
@@ -147,6 +148,14 @@ namespace EPG.Code
         {
             get => (string?)this[nameof(Filter)];
             set => this[nameof(Filter)] = value;
+        }
+
+        [UserScopedSetting()]
+        [DefaultSettingValue("false")]
+        public bool AutoClear
+        {
+            get => (bool)this[nameof(AutoClear)];
+            set => this[nameof(AutoClear)] = value;
         }
     }
 }

@@ -1,18 +1,16 @@
-﻿using EPG.Models;
-using System;
-using System.Collections.ObjectModel;
+﻿using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
 namespace EPG.Converters
 {
-    internal class DataCollectionVisibleConverter : IValueConverter
+    internal class ColumnVisibleConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is ObservableCollection<DataItem> collection)
-                return collection.Count > 0 ? Visibility.Visible : Visibility.Hidden;
+            if (value is bool val)
+                return val ? Visibility.Visible : Visibility.Hidden;
             return Binding.DoNothing;
         }
 
