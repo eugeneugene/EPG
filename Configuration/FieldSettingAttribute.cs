@@ -4,23 +4,17 @@
 // language   : c#
 // environment: .NET 2.0
 // --------------------------------------------------------------------------
-using System;
-
-namespace Itenso.Configuration
+namespace EPG.Configuration
 {
+    // ------------------------------------------------------------------------
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+    public class FieldSettingAttribute : Attribute
+    {
+        // ----------------------------------------------------------------------
+        public string Name { get; set; }
 
-	// ------------------------------------------------------------------------
-	[AttributeUsage( AttributeTargets.Field, AllowMultiple = false )]
-	public class FieldSettingAttribute : Attribute
-	{
-
-		// ----------------------------------------------------------------------
-		public string Name { get; set; }
-
-		// ----------------------------------------------------------------------
-		public object DefaultValue { get; set; }
-
-	} // class FieldSettingAttribute
-
-} // namespace Itenso.Configuration
+        // ----------------------------------------------------------------------
+        public object DefaultValue { get; set; }
+    } // class FieldSettingAttribute
+} // namespace EPG.Configuration
 // -- EOF -------------------------------------------------------------------

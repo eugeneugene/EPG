@@ -4,96 +4,91 @@
 // language   : c#
 // environment: .NET 2.0
 // --------------------------------------------------------------------------
-using System;
 using System.Windows.Controls;
 
-namespace Itenso.Configuration
+namespace EPG.Configuration
 {
+    // ------------------------------------------------------------------------
+    [Serializable]
+    internal class GridViewColumnSetting
+    {
+        // ----------------------------------------------------------------------
+        public GridViewColumnSetting(GridViewColumn gridViewColumn, int index, int displayIndex)
+        {
+            if (gridViewColumn == null)
+            {
+                throw new ArgumentNullException(nameof(gridViewColumn));
+            }
 
-	// ------------------------------------------------------------------------
-	[Serializable]
-	internal class GridViewColumnSetting
-	{
+            this.index = index;
+            this.displayIndex = displayIndex;
+            width = gridViewColumn.Width;
+        } // GridViewColumnSetting
 
-		// ----------------------------------------------------------------------
-		public GridViewColumnSetting( GridViewColumn gridViewColumn, int index, int displayIndex )
-		{
-			if ( gridViewColumn == null )
-			{
-				throw new ArgumentNullException( "gridViewColumn" );
-			}
+        // ----------------------------------------------------------------------
+        public int Index
+        {
+            get { return index; }
+        } // Index
 
-			this.index = index;
-			this.displayIndex = displayIndex;
-			width = gridViewColumn.Width;
-		} // GridViewColumnSetting
+        // ----------------------------------------------------------------------
+        public int DisplayIndex
+        {
+            get { return displayIndex; }
+        } // DisplayIndex
 
-		// ----------------------------------------------------------------------
-		public int Index
-		{
-			get { return index; }
-		} // Index
+        // ----------------------------------------------------------------------
+        public double Width
+        {
+            get { return width; }
+        } // Width
 
-		// ----------------------------------------------------------------------
-		public int DisplayIndex
-		{
-			get { return displayIndex; }
-		} // DisplayIndex
+        // ----------------------------------------------------------------------
+        public override bool Equals(object obj)
+        {
+            if (obj == this)
+            {
+                return true;
+            }
 
-		// ----------------------------------------------------------------------
-		public double Width
-		{
-			get { return width; }
-		} // Width
+            if (obj is not GridViewColumnSetting compare)
+            {
+                return false;
+            }
 
-		// ----------------------------------------------------------------------
-		public override bool Equals( object obj )
-		{
-			if ( obj == this )
-			{
-				return true;
-			}
+            return
+                int.Equals(index, compare.index) &&
+                int.Equals(displayIndex, compare.displayIndex) &&
+                double.Equals(width, compare.width);
+        } // Equals
 
-			GridViewColumnSetting compare = obj as GridViewColumnSetting;
-			if ( compare == null )
-			{
-				return false;
-			}
+        // ----------------------------------------------------------------------
+        public override int GetHashCode()
+        {
+            int hash = GetType().GetHashCode();
+            hash = AddHashCode(hash, index);
+            hash = AddHashCode(hash, displayIndex);
+            hash = AddHashCode(hash, width);
+            return hash;
+        } // GetHashCode
 
-			return
-				int.Equals( index, compare.index ) &&
-				int.Equals( displayIndex,compare.displayIndex ) &&
-				double.Equals( width, compare.width );
-		} // Equals
+        // ----------------------------------------------------------------------
+        private static int AddHashCode(int hash, object obj)
+        {
+            int combinedHash = obj != null ? obj.GetHashCode() : 0;
+            if (hash != 0)
+            {
+                combinedHash += hash * 31;
+            }
+            return combinedHash;
+        } // AddHashCode
 
-		// ----------------------------------------------------------------------
-		public override int GetHashCode()
-		{
-			int hash = GetType().GetHashCode();
-			hash = AddHashCode( hash, index );
-			hash = AddHashCode( hash, displayIndex );
-			hash = AddHashCode( hash, width );
-			return hash;
-		} // GetHashCode
+        // ----------------------------------------------------------------------
+        // members
+        private readonly int index;
+        private readonly int displayIndex;
+        private readonly double width;
 
-		// ----------------------------------------------------------------------
-		private static int AddHashCode( int hash, object obj )
-		{
-			int combinedHash = obj != null ? obj.GetHashCode() : 0;
-			if ( hash != 0 )
-			{
-				combinedHash += hash * 31;
-			}
-			return combinedHash;
-		} // AddHashCode
-
-		// ----------------------------------------------------------------------
-		// members
-		private readonly int index;
-		private readonly int displayIndex;
-		private readonly double width;
-
-	} // class GridViewColumnSetting
-
-} // namespace Itenso.Configuration
+    } // class GridViewColumnSetting
+} // namespace EPG.Configuration
 // -- EOF -------------------------------------------------------------------

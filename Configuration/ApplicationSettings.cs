@@ -8,13 +8,11 @@
 using System.Collections.Specialized;
 using System.Configuration;
 
-namespace Itenso.Configuration
+namespace EPG.Configuration
 {
-
     // ------------------------------------------------------------------------
     public class ApplicationSettings : ApplicationSettingsBase
     {
-
         // ----------------------------------------------------------------------
         public event SettingValueCancelEventHandler SettingSaving;
         public event SettingValueCancelEventHandler SettingLoading;
@@ -214,28 +212,19 @@ namespace Itenso.Configuration
         // ----------------------------------------------------------------------
         protected virtual void OnCollectingSetting(SettingCollectorCancelEventArgs e)
         {
-            if (CollectingSetting != null)
-            {
-                CollectingSetting(this, e);
-            }
+            CollectingSetting?.Invoke(this, e);
         } // OnCollectingSetting
 
         // ----------------------------------------------------------------------
         private void UserSettingSaving(object sender, SettingValueCancelEventArgs e)
         {
-            if (SettingSaving != null)
-            {
-                SettingSaving(sender, e);
-            }
+            SettingSaving?.Invoke(sender, e);
         } // UserSettingSaving
 
         // ----------------------------------------------------------------------
         private void UserSettingLoading(object sender, SettingValueCancelEventArgs e)
         {
-            if (SettingLoading != null)
-            {
-                SettingLoading(sender, e);
-            }
+            SettingLoading?.Invoke(sender, e);
         } // UserSettingLoading
 
         // ----------------------------------------------------------------------
@@ -252,6 +241,5 @@ namespace Itenso.Configuration
         private readonly ValueSetting upgradeSettings;
 
     } // class ApplicationSettings
-
-} // namespace Itenso.Configuration
+} // namespace EPG.Configuration
 // -- EOF -------------------------------------------------------------------

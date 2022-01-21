@@ -4,100 +4,95 @@
 // language   : c#
 // environment: .NET 2.0
 // --------------------------------------------------------------------------
-using System;
 using System.Configuration;
 
-namespace Itenso.Configuration
+namespace EPG.Configuration
 {
+    // ------------------------------------------------------------------------
+    public abstract class ValueSettingBase : Setting
+    {
+        // ----------------------------------------------------------------------
+        protected ValueSettingBase(string name) :            this(name, null)
+        {
+        } // ValueSettingBase
 
-	// ------------------------------------------------------------------------
-	public abstract class ValueSettingBase : Setting
-	{
+        // ----------------------------------------------------------------------
+        protected ValueSettingBase(string name, object defaultValue)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
 
-		// ----------------------------------------------------------------------
-		protected ValueSettingBase( string name ) :
-			this( name, null )
-		{
-		} // ValueSettingBase
+            this.name = name;
+            DefaultValue = defaultValue;
+            SerializeAs = SettingsSerializeAs.String;
+        } // ValueSettingBase
 
-		// ----------------------------------------------------------------------
-		protected ValueSettingBase( string name, object defaultValue )
-		{
-			if ( string.IsNullOrEmpty( name ) )
-			{
-				throw new ArgumentNullException( "name" );
-			}
+        // ----------------------------------------------------------------------
+        public string Name
+        {
+            get { return name; }
+        } // Name
 
-			this.name = name;
-			DefaultValue = defaultValue;
-			SerializeAs = SettingsSerializeAs.String;
-		} // ValueSettingBase
+        // ----------------------------------------------------------------------
+        public object DefaultValue { get; set; }
 
-		// ----------------------------------------------------------------------
-		public string Name
-		{
-			get { return name; }
-		} // Name
+        // ----------------------------------------------------------------------
+        public SettingsSerializeAs SerializeAs { get; set; }
 
-		// ----------------------------------------------------------------------
-		public object DefaultValue { get; set; }
+        // ----------------------------------------------------------------------
+        public bool LoadUndefinedValue { get; set; }
 
-		// ----------------------------------------------------------------------
-		public SettingsSerializeAs SerializeAs { get; set; }
+        // ----------------------------------------------------------------------
+        public bool SaveUndefinedValue { get; set; }
 
-		// ----------------------------------------------------------------------
-		public bool LoadUndefinedValue { get; set; }
+        // ----------------------------------------------------------------------
+        public bool HasValue
+        {
+            get { return Value != null; }
+        } // HasValue
 
-		// ----------------------------------------------------------------------
-		public bool SaveUndefinedValue { get; set; }
+        // ----------------------------------------------------------------------
+        public override bool HasChanged
+        {
+            get
+            {
+                object originalValue = OriginalValue;
+                object value = Value;
 
-		// ----------------------------------------------------------------------
-		public bool HasValue
-		{
-			get { return Value != null; }
-		} // HasValue
+                if (originalValue == value)
+                {
+                    return false;
+                }
 
-		// ----------------------------------------------------------------------
-		public override bool HasChanged
-		{
-			get
-			{
-				object originalValue = OriginalValue;
-				object value = Value;
+                return originalValue == null || !originalValue.Equals(value);
+            }
+        } // HasChanged
 
-				if ( originalValue == value )
-				{
-					return false;
-				}
+        // ----------------------------------------------------------------------
+        public abstract object OriginalValue
+        {
+            get;
+        } // OriginalValue
 
-				return originalValue == null || !originalValue.Equals( value );
-			}
-		} // HasChanged
+        // ----------------------------------------------------------------------
+        public abstract object Value
+        {
+            get;
+            set;
+        } // Value
 
-		// ----------------------------------------------------------------------
-		public abstract object OriginalValue
-		{
-			get;
-		} // OriginalValue
+        // ----------------------------------------------------------------------
+        public override string ToString()
+        {
+            return string.Concat(name, "=", Value);
+        } // ToString
 
-		// ----------------------------------------------------------------------
-		public abstract object Value
-		{
-			get;
-			set;
-		} // Value
+        // ----------------------------------------------------------------------
+        // members
+        private readonly string name;
 
-		// ----------------------------------------------------------------------
-		public override string ToString()
-		{
-			return string.Concat( name, "=", Value );
-		} // ToString
-
-		// ----------------------------------------------------------------------
-		// members
-		private readonly string name;
-
-	} // class ValueSettingBase
-
-} // namespace Itenso.Configuration
+    } // class ValueSettingBase
+} // namespace EPG.Configuration
 // -- EOF -------------------------------------------------------------------

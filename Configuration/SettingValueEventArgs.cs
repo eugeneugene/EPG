@@ -4,74 +4,62 @@
 // language   : c#
 // environment: .NET 2.0
 // --------------------------------------------------------------------------
-using System;
 
-namespace Itenso.Configuration
+namespace EPG.Configuration
 {
+    // ------------------------------------------------------------------------
+    public delegate void SettingValueEventHandler(object sender, SettingValueEventArgs e);
 
-	// ------------------------------------------------------------------------
-	public delegate void SettingValueEventHandler( object sender, SettingValueEventArgs e );
+    // ------------------------------------------------------------------------
+    public class SettingValueEventArgs : EventArgs
+    {
+        // ----------------------------------------------------------------------
+        public SettingValueEventArgs(ISetting setting, string name, object value)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
 
-	// ------------------------------------------------------------------------
-	public class SettingValueEventArgs : EventArgs
-	{
+            this.setting = setting ?? throw new ArgumentNullException(nameof(setting));
+            this.name = name;
+            this.value = value ?? throw new ArgumentNullException(nameof(value));
+            TargetValue = value;
+        } // SettingValueEventArgs
 
-		// ----------------------------------------------------------------------
-		public SettingValueEventArgs( ISetting setting, string name, object value )
-		{
-			if ( setting == null )
-			{
-				throw new ArgumentNullException( "setting" );
-			}
-			if ( string.IsNullOrEmpty( name ) )
-			{
-				throw new ArgumentNullException( "name" );
-			}
-			if ( value == null )
-			{
-				throw new ArgumentNullException( "value" );
-			}
+        // ----------------------------------------------------------------------
+        public ISetting Setting
+        {
+            get { return setting; }
+        } // Setting
 
-			this.setting = setting;
-			this.name = name;
-			this.value = value;
-			TargetValue = value;
-		} // SettingValueEventArgs
+        // ----------------------------------------------------------------------
+        public string Name
+        {
+            get { return name; }
+        } // Name
 
-		// ----------------------------------------------------------------------
-		public ISetting Setting
-		{
-			get { return setting; }
-		} // Setting
+        // ----------------------------------------------------------------------
+        public bool HasValue
+        {
+            get { return value != null; }
+        } // HasValue
 
-		// ----------------------------------------------------------------------
-		public string Name
-		{
-			get { return name; }
-		} // Name
+        // ----------------------------------------------------------------------
+        public object Value
+        {
+            get { return value; }
+        } // Value
 
-		// ----------------------------------------------------------------------
-		public bool HasValue
-		{
-			get { return value != null; }
-		} // HasValue
+        // ----------------------------------------------------------------------
+        public object TargetValue { get; set; }
 
-		// ----------------------------------------------------------------------
-		public object Value
-		{
-			get { return value; }
-		} // Value
+        // ----------------------------------------------------------------------
+        // members
+        private readonly ISetting setting;
+        private readonly string name;
+        private readonly object value;
 
-		// ----------------------------------------------------------------------
-		public object TargetValue { get; set; }
-
-		// ----------------------------------------------------------------------
-		// members
-		private readonly ISetting setting;
-		private readonly string name;
-		private readonly object value;
-
-	} // class SettingValueEventArgs
-
-} // namespace Itenso.Configuration
+    } // class SettingValueEventArgs
+} // namespace EPG.Configuration
 // -- EOF -------------------------------------------------------------------

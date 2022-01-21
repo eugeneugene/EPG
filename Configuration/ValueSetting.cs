@@ -4,115 +4,108 @@
 // language   : c#
 // environment: .NET 2.0
 // --------------------------------------------------------------------------
-using System;
 
-namespace Itenso.Configuration
+namespace EPG.Configuration
 {
+    // ------------------------------------------------------------------------
+    public class ValueSetting : ValueSettingBase
+    {
+        // ----------------------------------------------------------------------
+        public ValueSetting(string name, Type valueType) : this(name, valueType, null, null)
+        {
+        } // ValueSetting
 
-	// ------------------------------------------------------------------------
-	public class ValueSetting : ValueSettingBase
-	{
+        // ----------------------------------------------------------------------
+        public ValueSetting(string name, Type valueType, object value) : this(name, valueType, value, null)
+        {
+        } // ValueSetting
 
-		// ----------------------------------------------------------------------
-		public ValueSetting( string name, Type valueType ) :
-			this( name, valueType, null, null )
-		{
-		} // ValueSetting
+        // ----------------------------------------------------------------------
+        public ValueSetting(string name, Type valueType, object value, object defaultValue) : base(name, defaultValue)
+        {
+            if (valueType == null)
+            {
+                throw new ArgumentNullException(nameof(valueType));
+            }
+            if (defaultValue != null && defaultValue.GetType() != valueType)
+            {
+                throw new ArgumentException(null, nameof(defaultValue));
+            }
 
-		// ----------------------------------------------------------------------
-		public ValueSetting( string name, Type valueType, object value ) :
-			this( name, valueType, value, null )
-		{
-		} // ValueSetting
+            this.valueType = valueType;
+            ChangeValue(value);
+        } // ValueSetting
 
-		// ----------------------------------------------------------------------
-		public ValueSetting( string name, Type valueType, object value, object defaultValue ) :
-			base( name, defaultValue )
-		{
-			if ( valueType == null )
-			{
-				throw new ArgumentNullException( "valueType" );
-			}
-			if ( defaultValue != null && defaultValue.GetType() != valueType )
-			{
-				throw new ArgumentException( "defaultValue" );
-			}
+        // ----------------------------------------------------------------------
+        public override object OriginalValue
+        {
+            get { return LoadValue(Name, valueType, SerializeAs, DefaultValue); }
+        } // OriginalValue
 
-			this.valueType = valueType;
-			ChangeValue( value );
-		} // ValueSetting
+        // ----------------------------------------------------------------------
+        public override object Value
+        {
+            get { return value; }
+            set { ChangeValue(value); }
+        } // Value
 
-		// ----------------------------------------------------------------------
-		public override object OriginalValue
-		{
-			get { return LoadValue( Name, valueType, SerializeAs, DefaultValue ); }
-		} // OriginalValue
+        // ----------------------------------------------------------------------
+        public override void Load()
+        {
+            try
+            {
+                object originalValue = OriginalValue;
+                if (originalValue == null && LoadUndefinedValue == false)
+                {
+                    return;
+                }
+                Value = originalValue;
+            }
+            catch
+            {
+                if (ThrowOnErrorLoading)
+                {
+                    throw;
+                }
+            }
+        } // Load
 
-		// ----------------------------------------------------------------------
-		public override object Value
-		{
-			get { return value; }
-			set { ChangeValue( value ); }
-		} // Value
+        // ----------------------------------------------------------------------
+        public override void Save()
+        {
+            try
+            {
+                object toSaveValue = Value;
+                if (toSaveValue == null && SaveUndefinedValue == false)
+                {
+                    return;
+                }
+                SaveValue(Name, valueType, SerializeAs, toSaveValue, DefaultValue);
+            }
+            catch
+            {
+                if (ThrowOnErrorSaving)
+                {
+                    throw;
+                }
+            }
+        } // Save
 
-		// ----------------------------------------------------------------------
-		public override void Load()
-		{
-			try
-			{
-				object originalValue = OriginalValue;
-				if ( originalValue == null && LoadUndefinedValue == false )
-				{
-					return;
-				}
-				Value = originalValue;
-			}
-			catch
-			{
-				if ( ThrowOnErrorLoading )
-				{
-					throw;
-				}
-			}
-		} // Load
+        // ----------------------------------------------------------------------
+        private void ChangeValue(object newValue)
+        {
+            if (newValue != null && newValue.GetType() != valueType)
+            {
+                throw new ArgumentException(null, nameof(newValue));
+            }
+            value = newValue;
+        } // ChangeValue
 
-		// ----------------------------------------------------------------------
-		public override void Save()
-		{
-			try
-			{
-				object toSaveValue = Value;
-				if ( toSaveValue == null && SaveUndefinedValue == false )
-				{
-					return;
-				}
-				SaveValue( Name, valueType, SerializeAs, toSaveValue, DefaultValue );
-			}
-			catch
-			{
-				if ( ThrowOnErrorSaving )
-				{
-					throw;
-				}
-			}
-		} // Save
+        // ----------------------------------------------------------------------
+        // members
+        private readonly Type valueType;
+        private object value;
 
-		// ----------------------------------------------------------------------
-		private void ChangeValue( object newValue )
-		{
-			if ( newValue != null && newValue.GetType() != valueType )
-			{
-				throw new ArgumentException( "newValue" );
-			}
-			value = newValue;
-		} // ChangeValue
-
-		// ----------------------------------------------------------------------
-		// members
-		private readonly Type valueType;
-		private object value;
-
-	} // class ValueSetting
-
-} // namespace Itenso.Configuration
+    } // class ValueSetting
+} // namespace EPG.Configuration
 // -- EOF -------------------------------------------------------------------

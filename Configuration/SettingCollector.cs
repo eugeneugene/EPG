@@ -4,37 +4,32 @@
 // language   : c#
 // environment: .NET 2.0
 // --------------------------------------------------------------------------
-namespace Itenso.Configuration
+namespace EPG.Configuration
 {
+    // ------------------------------------------------------------------------
+    public abstract class SettingCollector : ISettingCollector
+    {
+        // ----------------------------------------------------------------------
+        public event SettingCollectorCancelEventHandler CollectingSetting;
 
-	// ------------------------------------------------------------------------
-	public abstract class SettingCollector : ISettingCollector
-	{
+        // ----------------------------------------------------------------------
+        public ApplicationSettings ApplicationSettings { get; set; }
 
-		// ----------------------------------------------------------------------
-		public event SettingCollectorCancelEventHandler CollectingSetting;
+        // ----------------------------------------------------------------------
+        public abstract void Collect();
 
+        // ----------------------------------------------------------------------
+        protected virtual bool OnCollectingSetting(object element)
+        {
+            if (CollectingSetting != null)
+            {
+                SettingCollectorCancelEventArgs e = new(element);
+                CollectingSetting(this, e);
+                return e.Cancel == false;
+            }
 
-		// ----------------------------------------------------------------------
-		public ApplicationSettings ApplicationSettings { get; set; }
-
-		// ----------------------------------------------------------------------
-		public abstract void Collect();
-
-		// ----------------------------------------------------------------------
-		protected virtual bool OnCollectingSetting( object element )
-		{
-			if ( CollectingSetting != null )
-			{
-				SettingCollectorCancelEventArgs e = new SettingCollectorCancelEventArgs( element );
-				CollectingSetting( this, e );
-				return e.Cancel == false;
-			}
-
-			return true;
-		} // OnCollectingSetting
-
-	} // class SettingCollector
-
-} // namespace Itenso.Configuration
+            return true;
+        } // OnCollectingSetting
+    } // class SettingCollector
+} // namespace EPG.Configuration
 // -- EOF -------------------------------------------------------------------

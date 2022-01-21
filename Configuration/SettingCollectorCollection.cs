@@ -4,104 +4,92 @@
 // language   : c#
 // environment: .NET 2.0
 // --------------------------------------------------------------------------
-using System;
 using System.Collections;
 
-namespace Itenso.Configuration
+namespace EPG.Configuration
 {
+    // ------------------------------------------------------------------------
+    public sealed class SettingCollectorCollection : IEnumerable
+    {
+        // ----------------------------------------------------------------------
+        public event SettingCollectorCancelEventHandler CollectingSetting;
 
-	// ------------------------------------------------------------------------
-	public sealed class SettingCollectorCollection : IEnumerable
-	{
+        // ----------------------------------------------------------------------
+        public SettingCollectorCollection(ApplicationSettings applicationSettings)
+        {
+            this.applicationSettings = applicationSettings ?? throw new ArgumentNullException(nameof(applicationSettings));
+        } // SettingCollectorCollection
 
-		// ----------------------------------------------------------------------
-		public event SettingCollectorCancelEventHandler CollectingSetting;
+        // ----------------------------------------------------------------------
+        public ApplicationSettings ApplicationSettings
+        {
+            get { return applicationSettings; }
+        } // ApplicationSettings
 
-		// ----------------------------------------------------------------------
-		public SettingCollectorCollection( ApplicationSettings applicationSettings )
-		{
-			if ( applicationSettings == null )
-			{
-				throw new ArgumentNullException( "applicationSettings" );
-			}
+        // ----------------------------------------------------------------------
+        public int Count
+        {
+            get { return settingCollectors.Count; }
+        } // Count
 
-			this.applicationSettings = applicationSettings;
-		} // SettingCollectorCollection
+        // ----------------------------------------------------------------------
+        public IEnumerator GetEnumerator()
+        {
+            return settingCollectors.GetEnumerator();
+        } // GetEnumerator
 
-		// ----------------------------------------------------------------------
-		public ApplicationSettings ApplicationSettings
-		{
-			get { return applicationSettings; }
-		} // ApplicationSettings
+        // ----------------------------------------------------------------------
+        public void Add(ISettingCollector setting)
+        {
+            if (setting == null)
+            {
+                throw new ArgumentNullException(nameof(setting));
+            }
+            setting.ApplicationSettings = applicationSettings;
+            setting.CollectingSetting += SettingCollectingSetting;
+            settingCollectors.Add(setting);
+        } // Add
 
-		// ----------------------------------------------------------------------
-		public int Count
-		{
-			get { return settingCollectors.Count; }
-		} // Count
+        // ----------------------------------------------------------------------
+        public void Remove(ISettingCollector setting)
+        {
+            if (setting == null)
+            {
+                throw new ArgumentNullException(nameof(setting));
+            }
+            setting.CollectingSetting -= SettingCollectingSetting;
+            settingCollectors.Remove(setting);
+        } // Remove
 
-		// ----------------------------------------------------------------------
-		public IEnumerator GetEnumerator()
-		{
-			return settingCollectors.GetEnumerator();
-		} // GetEnumerator
+        // ----------------------------------------------------------------------
+        public void Clear()
+        {
+            foreach (ISettingCollector settingCollector in settingCollectors)
+            {
+                Remove(settingCollector);
+            }
+        } // Clear
 
-		// ----------------------------------------------------------------------
-		public void Add( ISettingCollector setting )
-		{
-			if ( setting == null )
-			{
-				throw new ArgumentNullException( "setting" );
-			}
-			setting.ApplicationSettings = applicationSettings;
-			setting.CollectingSetting += SettingCollectingSetting;
-			settingCollectors.Add( setting );
-		} // Add
+        // ----------------------------------------------------------------------
+        public void Collect()
+        {
+            foreach (ISettingCollector settingCollector in settingCollectors)
+            {
+                settingCollector.Collect();
+            }
+        } // Collect
 
-		// ----------------------------------------------------------------------
-		public void Remove( ISettingCollector setting )
-		{
-			if ( setting == null )
-			{
-				throw new ArgumentNullException( "setting" );
-			}
-			setting.CollectingSetting -= SettingCollectingSetting;
-			settingCollectors.Remove( setting );
-		} // Remove
+        // ----------------------------------------------------------------------
+        private void SettingCollectingSetting(object sender, SettingCollectorCancelEventArgs e)
+        {
+            CollectingSetting?.Invoke(this, e);
+        } // SettingCollectingSetting
 
-		// ----------------------------------------------------------------------
-		public void Clear()
-		{
-			foreach ( ISettingCollector settingCollector in settingCollectors )
-			{
-				Remove( settingCollector );
-			}
-		} // Clear
+        // ----------------------------------------------------------------------
+        // members
+        private readonly ArrayList settingCollectors = new();
+        private readonly ApplicationSettings applicationSettings;
 
-		// ----------------------------------------------------------------------
-		public void Collect()
-		{
-			foreach ( ISettingCollector settingCollector in settingCollectors )
-			{
-				settingCollector.Collect();
-			}
-		} // Collect
-
-		// ----------------------------------------------------------------------
-		private void SettingCollectingSetting( object sender, SettingCollectorCancelEventArgs e )
-		{
-			if ( CollectingSetting != null )
-			{
-				CollectingSetting( this, e );
-			}
-		} // SettingCollectingSetting
-
-		// ----------------------------------------------------------------------
-		// members
-		private readonly ArrayList settingCollectors = new ArrayList();
-		private readonly ApplicationSettings applicationSettings;
-
-	} // class SettingCollectorCollection
-
-} // namespace Itenso.Configuration
+    } // class SettingCollectorCollection
+} // namespace EPG.Configuration
 // -- EOF -------------------------------------------------------------------

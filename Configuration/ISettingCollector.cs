@@ -5,23 +5,21 @@
 // environment: .NET 2.0
 // --------------------------------------------------------------------------
 
-namespace Itenso.Configuration
+namespace EPG.Configuration
 {
+    // ------------------------------------------------------------------------
+    public interface ISettingCollector
+    {
 
-	// ------------------------------------------------------------------------
-	public interface ISettingCollector
-	{
+        // ----------------------------------------------------------------------
+        event SettingCollectorCancelEventHandler CollectingSetting;
 
-		// ----------------------------------------------------------------------
-		event SettingCollectorCancelEventHandler CollectingSetting;
+        // ----------------------------------------------------------------------
+        ApplicationSettings ApplicationSettings { get; set; }
 
-		// ----------------------------------------------------------------------
-		ApplicationSettings ApplicationSettings { get; set; }
+        // ----------------------------------------------------------------------
+        void Collect();
 
-		// ----------------------------------------------------------------------
-		void Collect();
-
-	} // interface ISettingCollector
-
-} // namespace Itenso.Configuration
+    } // interface ISettingCollector
+} // namespace EPG.Configuration
 // -- EOF -------------------------------------------------------------------

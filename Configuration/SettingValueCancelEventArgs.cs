@@ -4,82 +4,68 @@
 // language   : c#
 // environment: .NET 2.0
 // --------------------------------------------------------------------------
-using System;
 using System.ComponentModel;
 
-namespace Itenso.Configuration
+namespace EPG.Configuration
 {
+    // ------------------------------------------------------------------------
+    public delegate void SettingValueCancelEventHandler(object sender, SettingValueCancelEventArgs e);
+    // ------------------------------------------------------------------------
+    public class SettingValueCancelEventArgs : CancelEventArgs
+    {
 
-	// ------------------------------------------------------------------------
-	public delegate void SettingValueCancelEventHandler( object sender, SettingValueCancelEventArgs e );
+        // ----------------------------------------------------------------------
+        public SettingValueCancelEventArgs(ISetting setting, string name, object value) : this(setting, name, value, false)
+        {
+        } // SettingValueCancelEventArgs
 
-	// ------------------------------------------------------------------------
-	public class SettingValueCancelEventArgs : CancelEventArgs
-	{
+        // ----------------------------------------------------------------------
+        public SettingValueCancelEventArgs(ISetting setting, string name, object value, bool cancel) : base(cancel)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
 
-		// ----------------------------------------------------------------------
-		public SettingValueCancelEventArgs( ISetting setting, string name, object value ) :
-			this( setting, name, value, false )
-		{
-		} // SettingValueCancelEventArgs
+            this.setting = setting ?? throw new ArgumentNullException(nameof(setting));
+            this.name = name;
+            this.value = value ?? throw new ArgumentNullException(nameof(value));
+            TargetValue = value;
+        } // SettingValueCancelEventArgs
 
-		// ----------------------------------------------------------------------
-		public SettingValueCancelEventArgs( ISetting setting, string name, object value, bool cancel ) :
-			base( cancel )
-		{
-			if ( setting == null )
-			{
-				throw new ArgumentNullException( "setting" );
-			}
-			if ( string.IsNullOrEmpty( name ) )
-			{
-				throw new ArgumentNullException( "name" );
-			}
-			if ( value == null )
-			{
-				throw new ArgumentNullException( "value" );
-			}
+        // ----------------------------------------------------------------------
+        public ISetting Setting
+        {
+            get { return setting; }
+        } // Setting
 
-			this.setting = setting;
-			this.name = name;
-			this.value = value;
-			TargetValue = value;
-		} // SettingValueCancelEventArgs
+        // ----------------------------------------------------------------------
+        public string Name
+        {
+            get { return name; }
+        } // Name
 
-		// ----------------------------------------------------------------------
-		public ISetting Setting
-		{
-			get { return setting; }
-		} // Setting
+        // ----------------------------------------------------------------------
+        public bool HasValue
+        {
+            get { return value != null; }
+        } // HasValue
 
-		// ----------------------------------------------------------------------
-		public string Name
-		{
-			get { return name; }
-		} // Name
+        // ----------------------------------------------------------------------
+        public object Value
+        {
+            get { return value; }
+        } // Value
 
-		// ----------------------------------------------------------------------
-		public bool HasValue
-		{
-			get { return value != null; }
-		} // HasValue
+        // ----------------------------------------------------------------------
+        public object TargetValue { get; set; }
 
-		// ----------------------------------------------------------------------
-		public object Value
-		{
-			get { return value; }
-		} // Value
+        // ----------------------------------------------------------------------
+        // members
+        private readonly ISetting setting;
+        private readonly string name;
+        private readonly object value;
 
-		// ----------------------------------------------------------------------
-		public object TargetValue { get; set; }
-
-		// ----------------------------------------------------------------------
-		// members
-		private readonly ISetting setting;
-		private readonly string name;
-		private readonly object value;
-
-	} // class SettingValueCancelEventArgs
-
-} // namespace Itenso.Configuration
+    } // class SettingValueCancelEventArgs
+} // namespace EPG.Configuration
 // -- EOF -------------------------------------------------------------------

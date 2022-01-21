@@ -1,4 +1,4 @@
-﻿using Itenso.Configuration;
+﻿using EPG.Configuration;
 using System.Configuration;
 
 namespace EPG.Models

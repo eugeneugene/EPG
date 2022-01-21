@@ -5,17 +5,13 @@
 // environment: .NET 2.0
 // --------------------------------------------------------------------------
 
-namespace Itenso.Configuration
+namespace EPG.Configuration
 {
-
-	// ------------------------------------------------------------------------
-	public enum SettingScope
-	{
-
-		Application,
-		User,
-
-	} // enum SettingScope
-
-} // namespace Itenso.Configuration
+    // ------------------------------------------------------------------------
+    public enum SettingScope
+    {
+        Application,
+        User,
+    } // enum SettingScope
+} // namespace EPG.Configuration
 // -- EOF -------------------------------------------------------------------

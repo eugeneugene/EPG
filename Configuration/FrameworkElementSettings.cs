@@ -4,198 +4,182 @@
 // language   : c#
 // environment: .NET 3.0
 // --------------------------------------------------------------------------
-using System;
-using System.Windows;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Windows;
 
-namespace Itenso.Configuration
+namespace EPG.Configuration
 {
+    // ------------------------------------------------------------------------
+    public class FrameworkElementSettings : ApplicationSettings
+    {
+        // ----------------------------------------------------------------------
+        public static readonly DependencyProperty SettingsProperty =
+            DependencyProperty.RegisterAttached(
+                "Settings",
+                typeof(string),
+                typeof(FrameworkElementSettings),
+                new FrameworkPropertyMetadata(OnFrameworkElementSettingsChanged));
 
-	// ------------------------------------------------------------------------
-	public class FrameworkElementSettings : ApplicationSettings
-	{
+        // ----------------------------------------------------------------------
+        public static readonly DependencyProperty CollectedSettingProperty =
+            DependencyProperty.RegisterAttached(
+                "CollectedSetting",
+                typeof(DependencyProperty),
+                typeof(FrameworkElementSettings),
+                new FrameworkPropertyMetadata(OnCollectedSettingChanged));
 
-		// ----------------------------------------------------------------------
-		public static readonly DependencyProperty SettingsProperty =
-			DependencyProperty.RegisterAttached(
-				"Settings",
-				typeof( string ),
-				typeof( FrameworkElementSettings ),
-				new FrameworkPropertyMetadata( OnFrameworkElementSettingsChanged ) );
+        // ----------------------------------------------------------------------
+        public static readonly DependencyProperty ExcludeElementProperty = DependencyProperty.RegisterAttached(
+            "ExcludeElement",
+            typeof(bool),
+            typeof(FrameworkElementSettings));
 
-		// ----------------------------------------------------------------------
-		public static readonly DependencyProperty CollectedSettingProperty =
-			DependencyProperty.RegisterAttached(
-				"CollectedSetting",
-				typeof( DependencyProperty ),
-				typeof( FrameworkElementSettings ),
-				new FrameworkPropertyMetadata( OnCollectedSettingChanged ) );
+        // ----------------------------------------------------------------------
+        public FrameworkElementSettings(FrameworkElement frameworkElement) : this(frameworkElement, frameworkElement.GetType().Name)
+        {
+        } // FrameworkElementSettings
 
-		// ----------------------------------------------------------------------
-		public static readonly DependencyProperty ExcludeElementProperty = DependencyProperty.RegisterAttached(
-			"ExcludeElement",
-			typeof( bool ),
-			typeof( FrameworkElementSettings ) );
+        // ----------------------------------------------------------------------
+        public FrameworkElementSettings(FrameworkElement frameworkElement, string settingsKey) : base(settingsKey)
+        {
+            this.frameworkElement = frameworkElement ?? throw new ArgumentNullException(nameof(frameworkElement));
+            this.frameworkElement.Initialized += FrameworkElementInitialized;
+        } // FrameworkElementSettings
 
-		// ----------------------------------------------------------------------
-		public FrameworkElementSettings( FrameworkElement frameworkElement ) :
-			this( frameworkElement, frameworkElement.GetType().Name )
-		{
-		} // FrameworkElementSettings
+        // ----------------------------------------------------------------------
+        public FrameworkElement FrameworkElement
+        {
+            get { return frameworkElement; }
+        } // FrameworkElement
 
-		// ----------------------------------------------------------------------
-		public FrameworkElementSettings( FrameworkElement frameworkElement, string settingsKey ) :
-			base( settingsKey )
-		{
-			if ( frameworkElement == null )
-			{
-				throw new ArgumentNullException( "frameworkElement" );
-			}
+        // ----------------------------------------------------------------------
+        public bool SaveOnClose
+        {
+            get { return saveOnClose; }
+            set { saveOnClose = value; }
+        } // SaveOnClose
 
-			this.frameworkElement = frameworkElement;
-			this.frameworkElement.Initialized += FrameworkElementInitialized;
-		} // FrameworkElementSettings
+        // ----------------------------------------------------------------------
+        private Window ParentWindow
+        {
+            get
+            {
+                DependencyObject control = frameworkElement;
+                while (control != null)
+                {
+                    if (control is Window)
+                    {
+                        return control as Window;
+                    }
 
-		// ----------------------------------------------------------------------
-		public FrameworkElement FrameworkElement
-		{
-			get { return frameworkElement; }
-		} // FrameworkElement
+                    control = LogicalTreeHelper.GetParent(control);
+                }
 
-		// ----------------------------------------------------------------------
-		public bool SaveOnClose
-		{
-			get { return saveOnClose; }
-			set { saveOnClose = value; }
-		} // SaveOnClose
+                return null;
+            }
+        } // ParentWindow
 
-		// ----------------------------------------------------------------------
-		private Window ParentWindow
-		{
-			get
-			{
-				DependencyObject control = frameworkElement;
-				while ( control != null )
-				{
-					if ( control is Window )
-					{
-						return control as Window;
-					}
+        // ----------------------------------------------------------------------
+        public static string GetSettings(DependencyObject dependencyObject)
+        {
+            return dependencyObject.GetValue(SettingsProperty) as string;
+        } // SetSettings
 
-					control = LogicalTreeHelper.GetParent( control );
-				}
+        // ----------------------------------------------------------------------
+        public static void SetSettings(DependencyObject dependencyObject, string settingsKey)
+        {
+            dependencyObject.SetValue(SettingsProperty, settingsKey);
+        } // SetSettings
 
-				return null;
-			}
-		} // ParentWindow
+        // ----------------------------------------------------------------------
+        private void FrameworkElementInitialized(object sender, EventArgs e)
+        {
+            Window window = ParentWindow;
+            if (window == null)
+            {
+                throw new InvalidOperationException();
+            }
 
-		// ----------------------------------------------------------------------
-		public static string GetSettings( DependencyObject dependencyObject )
-		{
-			return dependencyObject.GetValue( SettingsProperty ) as string;
-		} // SetSettings
+            // subscribe to the parent window events
+            window.Loaded += WindowLoaded;
+            window.Closing += WindowClosing;
+        } // FrameworkElementSettings
 
-		// ----------------------------------------------------------------------
-		public static void SetSettings( DependencyObject dependencyObject, string settingsKey )
-		{
-			dependencyObject.SetValue( SettingsProperty, settingsKey );
-		} // SetSettings
+        // ----------------------------------------------------------------------
+        private void WindowLoaded(object sender, RoutedEventArgs e)
+        {
+            Load();
+        } // WindowLoaded
 
-		// ----------------------------------------------------------------------
-		private void FrameworkElementInitialized( object sender, EventArgs e )
-		{
-			Window window = ParentWindow;
-			if ( window == null )
-			{
-				throw new InvalidOperationException();
-			}
+        // ----------------------------------------------------------------------
+        private void WindowClosing(object sender, CancelEventArgs e)
+        {
+            if (saveOnClose == false)
+            {
+                return;
+            }
+            Save();
+        } // WindowClosing
 
-			// subscribe to the parent window events
-			window.Loaded += WindowLoaded;
-			window.Closing += WindowClosing;
-		} // FrameworkElementSettings
+        // ----------------------------------------------------------------------
+        private static void OnFrameworkElementSettingsChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+        {
+            if (dependencyObject is not FrameworkElement frameworkElement)
+            {
+                Debug.WriteLine("FrameworkElementSettings: invalid framework element");
+                return;
+            }
 
-		// ----------------------------------------------------------------------
-		private void WindowLoaded( object sender, RoutedEventArgs e )
-		{
-			Load();
-		} // WindowLoaded
+            if (frameworkElement.GetValue(DependencyPropertySetting.ApplicationSettingsProperty) != null)
+            {
+                return; // framework-element contains already an application setting
+            }
 
-		// ----------------------------------------------------------------------
-		private void WindowClosing( object sender, CancelEventArgs e )
-		{
-			if ( saveOnClose == false )
-			{
-				return;
-			}
-			Save();
-		} // WindowClosing
+            string settingsKey = e.NewValue as string;
+            if (string.IsNullOrEmpty(settingsKey))
+            {
+                Debug.WriteLine("FrameworkElementSettings: missing framework element settings key");
+                return;
+            }
 
-		// ----------------------------------------------------------------------
-		private static void OnFrameworkElementSettingsChanged( DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e )
-		{
-			FrameworkElement frameworkElement = dependencyObject as FrameworkElement;
-			if ( frameworkElement == null )
-			{
-				Debug.WriteLine( "FrameworkElementSettings: invalid framework element" );
-				return;
-			}
+            // create and attach the application settings to the framework-element
+            FrameworkElementSettings frameworkElementSettings = new(frameworkElement, settingsKey);
+            frameworkElement.SetValue(DependencyPropertySetting.ApplicationSettingsProperty, frameworkElementSettings);
+        } // OnFrameworkElementSettingsChanged
 
-			if ( frameworkElement.GetValue( DependencyPropertySetting.ApplicationSettingsProperty ) != null )
-			{
-				return; // framework-element contains already an application setting
-			}
+        // ----------------------------------------------------------------------
+        private static void OnCollectedSettingChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+        {
+            if (dependencyObject is not FrameworkElement frameworkElement)
+            {
+                Debug.WriteLine("FrameworkElementSettings: invalid framework element");
+                return;
+            }
 
-			string settingsKey = e.NewValue as string;
-			if ( string.IsNullOrEmpty( settingsKey ) )
-			{
-				Debug.WriteLine( "FrameworkElementSettings: missing framework element settings key" );
-				return;
-			}
+            if (e.NewValue is not DependencyProperty dependencyProperty)
+            {
+                Debug.WriteLine("FrameworkElementSettings: missing dependency property");
+                return;
+            }
 
-			// create and attach the application settings to the framework-element
-			FrameworkElementSettings frameworkElementSettings = new FrameworkElementSettings( frameworkElement, settingsKey );
-			frameworkElement.SetValue( DependencyPropertySetting.ApplicationSettingsProperty, frameworkElementSettings );
-		} // OnFrameworkElementSettingsChanged
+            // search the framework element settings
+            if (frameworkElement.ReadLocalValue(DependencyPropertySetting.ApplicationSettingsProperty) is not FrameworkElementSettings frameworkElementSettings)
+            {
+                Debug.WriteLine("FrameworkElementSettings: missing framework element settings in element " + frameworkElement);
+                return;
+            }
 
-		// ----------------------------------------------------------------------
-		private static void OnCollectedSettingChanged( DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e )
-		{
-			FrameworkElement frameworkElement = dependencyObject as FrameworkElement;
-			if ( frameworkElement == null )
-			{
-				Debug.WriteLine( "FrameworkElementSettings: invalid framework element" );
-				return;
-			}
+            DependencyPropertySettingCollector collector =
+                new(frameworkElement, dependencyProperty);
+            frameworkElementSettings.SettingCollectors.Add(collector);
+        } // OnCollectedSettingChanged
 
-			DependencyProperty dependencyProperty = e.NewValue as DependencyProperty;
-			if ( dependencyProperty == null )
-			{
-				Debug.WriteLine( "FrameworkElementSettings: missing dependency property" );
-				return;
-			}
+        // ----------------------------------------------------------------------
+        // members
+        private readonly FrameworkElement frameworkElement;
+        private bool saveOnClose = true;
 
-			// search the framework element settings
-			FrameworkElementSettings frameworkElementSettings =
-					frameworkElement.ReadLocalValue( DependencyPropertySetting.ApplicationSettingsProperty ) as FrameworkElementSettings;
-			if ( frameworkElementSettings == null )
-			{
-				Debug.WriteLine( "FrameworkElementSettings: missing framework element settings in element " + frameworkElement );
-				return;
-			}
-
-			DependencyPropertySettingCollector collector =
-				new DependencyPropertySettingCollector( frameworkElement, dependencyProperty );
-			frameworkElementSettings.SettingCollectors.Add( collector );
-		} // OnCollectedSettingChanged
-
-		// ----------------------------------------------------------------------
-		// members
-		private readonly FrameworkElement frameworkElement;
-		private bool saveOnClose = true;
-
-	} // class FrameworkElementSettings
-
-} // namespace Itenso.Configuration
+    } // class FrameworkElementSettings
+} // namespace EPG.Configuration
 // -- EOF -------------------------------------------------------------------

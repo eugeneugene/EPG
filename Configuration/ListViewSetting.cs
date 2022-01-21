@@ -4,315 +4,298 @@
 // language   : c#
 // environment: .NET 2.0
 // --------------------------------------------------------------------------
-using System;
-using System.Windows;
-using System.Windows.Controls;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.Windows;
+using System.Windows.Controls;
 
-namespace Itenso.Configuration
+namespace EPG.Configuration
 {
+    // ------------------------------------------------------------------------
+    public class ListViewSetting : Setting
+    {
+        // ----------------------------------------------------------------------
+        public static readonly DependencyProperty SettingProperty = DependencyProperty.RegisterAttached(
+            "Setting",
+            typeof(string),
+            typeof(ListViewSetting),
+            new FrameworkPropertyMetadata(OnListViewSettingChanged));
 
-	// ------------------------------------------------------------------------
-	public class ListViewSetting : Setting
-	{
+        // ----------------------------------------------------------------------
+        public ListViewSetting(ListView listView) : this(listView.Name, listView)
+        {
+        } // ListViewSetting
 
-		// ----------------------------------------------------------------------
-		public static readonly DependencyProperty SettingProperty =
-			DependencyProperty.RegisterAttached(
-				"Setting",
-				typeof( string ),
-				typeof( ListViewSetting ),
-				new FrameworkPropertyMetadata( OnListViewSettingChanged ) );
+        // ----------------------------------------------------------------------
+        public ListViewSetting(string name, ListView listView)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
 
-		// ----------------------------------------------------------------------
-		public ListViewSetting( ListView listView ) :
-			this( listView.Name, listView )
-		{
-		} // ListViewSetting
+            this.name = name;
+            this.listView = listView ?? throw new ArgumentNullException(nameof(listView));
+            listView.Initialized += ListViewInitialized;
+            SetupGridViewColumns();
+        } // ListViewSetting
 
-		// ----------------------------------------------------------------------
-		public ListViewSetting( string name, ListView listView )
-		{
-			if ( string.IsNullOrEmpty( name ) )
-			{
-				throw new ArgumentNullException( "name" );
-			}
-			if ( listView == null )
-			{
-				throw new ArgumentNullException( "listView" );
-			}
+        // ----------------------------------------------------------------------
+        public string Name
+        {
+            get { return name; }
+        } // Name
 
-			this.name = name;
-			this.listView = listView;
-			listView.Initialized += ListViewInitialized;
-			SetupGridViewColumns();
-		} // ListViewSetting
+        // ----------------------------------------------------------------------
+        public ListView ListView
+        {
+            get { return listView; }
+        } // ListView
 
-		// ----------------------------------------------------------------------
-		public string Name
-		{
-			get { return name; }
-		} // Name
+        // ----------------------------------------------------------------------
+        public bool UseWidth
+        {
+            get { return useWidth; }
+            set { useWidth = value; }
+        } // UseWidth
 
-		// ----------------------------------------------------------------------
-		public ListView ListView
-		{
-			get { return listView; }
-		} // ListView
+        // ----------------------------------------------------------------------
+        public bool UseDisplayIndex
+        {
+            get { return useDisplayIndex; }
+            set { useDisplayIndex = value; }
+        } // UseDisplayIndex
 
-		// ----------------------------------------------------------------------
-		public bool UseWidth
-		{
-			get { return useWidth; }
-			set { useWidth = value; }
-		} // UseWidth
+        // ----------------------------------------------------------------------
+        public override bool HasChanged
+        {
+            get
+            {
+                GridViewColumnSetting[] originalColumnSettings = OriginalColumnSettings;
+                GridViewColumnSetting[] columnSettings = ColumnSettings;
+                if (originalColumnSettings == null || columnSettings == null ||
+                    originalColumnSettings == columnSettings)
+                {
+                    return false;
+                }
 
-		// ----------------------------------------------------------------------
-		public bool UseDisplayIndex
-		{
-			get { return useDisplayIndex; }
-			set { useDisplayIndex = value; }
-		} // UseDisplayIndex
+                if (originalColumnSettings.Length != columnSettings.Length)
+                {
+                    return true;
+                }
 
-		// ----------------------------------------------------------------------
-		public override bool HasChanged
-		{
-			get
-			{
-				GridViewColumnSetting[] originalColumnSettings = OriginalColumnSettings;
-				GridViewColumnSetting[] columnSettings = ColumnSettings;
-				if ( originalColumnSettings == null || columnSettings == null ||
-					originalColumnSettings == columnSettings )
-				{
-					return false;
-				}
+                for (int i = 0; i < originalColumnSettings.Length; i++)
+                {
+                    if (!originalColumnSettings[i].Equals(columnSettings[i]))
+                    {
+                        return true;
+                    }
+                }
 
-				if ( originalColumnSettings.Length != columnSettings.Length )
-				{
-					return true;
-				}
+                return false;
+            }
+        } // HasChanged
 
-				for ( int i = 0; i < originalColumnSettings.Length; i++ )
-				{
-					if ( !originalColumnSettings[ i ].Equals( columnSettings[ i ] ) )
-					{
-						return true;
-					}
-				}
+        // ----------------------------------------------------------------------
+        private GridViewColumnSetting[] OriginalColumnSettings
+        {
+            get
+            {
+                return LoadValue(
+                    Name,
+                    typeof(GridViewColumnSetting[]),
+                    SettingsSerializeAs.Xml,
+                    null) as GridViewColumnSetting[];
+            }
+        } // OriginalColumnSettings
 
-				return false;
-			}
-		} // HasChanged
+        // ----------------------------------------------------------------------
+        private GridViewColumnSetting[] ColumnSettings
+        {
+            get
+            {
+                if (listView.View is not GridView gridView || gridView.Columns.Count == 0)
+                {
+                    return null;
+                }
 
-		// ----------------------------------------------------------------------
-		private GridViewColumnSetting[] OriginalColumnSettings
-		{
-			get
-			{
-				return LoadValue(
-					Name,
-					typeof( GridViewColumnSetting[] ),
-					SettingsSerializeAs.Xml,
-					null ) as GridViewColumnSetting[];
-			}
-		} // OriginalColumnSettings
+                List<GridViewColumnSetting> columnSettings =
+                    new(gridView.Columns.Count);
+                for (int displayIndex = 0; displayIndex < gridView.Columns.Count; displayIndex++)
+                {
+                    GridViewColumn gridViewColumn = gridView.Columns[displayIndex];
+                    int index = gridViewColumns.IndexOf(gridViewColumn);
+                    columnSettings.Add(new GridViewColumnSetting(gridViewColumn, index, displayIndex));
+                }
 
-		// ----------------------------------------------------------------------
-		private GridViewColumnSetting[] ColumnSettings
-		{
-			get
-			{
-				GridView gridView = listView.View as GridView;
-				if ( gridView == null || gridView.Columns.Count == 0 )
-				{
-					return null;
-				}
+                return columnSettings.ToArray();
+            }
+        } // ColumnSettings
 
-				List<GridViewColumnSetting> columnSettings =
-					new List<GridViewColumnSetting>( gridView.Columns.Count );
-				for ( int displayIndex = 0; displayIndex < gridView.Columns.Count; displayIndex++ )
-				{
-					GridViewColumn gridViewColumn = gridView.Columns[ displayIndex ];
-					int index = gridViewColumns.IndexOf( gridViewColumn );
-					columnSettings.Add( new GridViewColumnSetting( gridViewColumn, index, displayIndex ) );
-				}
+        // ----------------------------------------------------------------------
+        public static string GetSetting(DependencyObject dependencyObject)
+        {
+            return dependencyObject.GetValue(SettingProperty) as string;
+        } // SetSetting
 
-				return columnSettings.ToArray();
-			}
-		} // ColumnSettings
+        // ----------------------------------------------------------------------
+        public static void SetSetting(DependencyObject dependencyObject, string settingKey)
+        {
+            dependencyObject.SetValue(SettingProperty, settingKey);
+        } // SetSetting
 
-		// ----------------------------------------------------------------------
-		public static string GetSetting( DependencyObject dependencyObject )
-		{
-			return dependencyObject.GetValue( SettingProperty ) as string;
-		} // SetSetting
+        // ----------------------------------------------------------------------
+        public override void Load()
+        {
+            try
+            {
+                if (listView.View is not GridView gridView || gridView.Columns.Count == 0)
+                {
+                    return;
+                }
 
-		// ----------------------------------------------------------------------
-		public static void SetSetting( DependencyObject dependencyObject, string settingKey )
-		{
-			dependencyObject.SetValue( SettingProperty, settingKey );
-		} // SetSetting
+                GridViewColumnSetting[] columnSettings = OriginalColumnSettings;
+                if (columnSettings == null || columnSettings.Length == 0)
+                {
+                    return;
+                }
 
-		// ----------------------------------------------------------------------
-		public override void Load()
-		{
-			try
-			{
-				GridView gridView = listView.View as GridView;
-				if ( gridView == null || gridView.Columns.Count == 0 )
-				{
-					return;
-				}
+                for (int displayIndex = 0; displayIndex < columnSettings.Length; displayIndex++)
+                {
+                    GridViewColumnSetting columnSetting = columnSettings[displayIndex];
+                    if (columnSetting.Index < 0 || columnSetting.Index >= gridViewColumns.Count)
+                    {
+                        continue;
+                    }
 
-				GridViewColumnSetting[] columnSettings = OriginalColumnSettings;
-				if ( columnSettings == null || columnSettings.Length == 0 )
-				{
-					return;
-				}
+                    GridViewColumn gridViewColumn = gridViewColumns[columnSetting.Index];
 
-				for ( int displayIndex = 0; displayIndex < columnSettings.Length; displayIndex++ )
-				{
-					GridViewColumnSetting columnSetting = columnSettings[ displayIndex ];
-					if ( columnSetting.Index < 0 || columnSetting.Index >= gridViewColumns.Count )
-					{
-						continue;
-					}
+                    if (useWidth)
+                    {
+                        gridViewColumn.Width = columnSetting.Width;
+                    }
 
-					GridViewColumn gridViewColumn = gridViewColumns[ columnSetting.Index ];
+                    if (!useDisplayIndex)
+                    {
+                        continue;
+                    }
 
-					if ( useWidth )
-					{
-						gridViewColumn.Width = columnSetting.Width;
-					}
+                    if (columnSetting.Index == columnSetting.DisplayIndex)
+                    {
+                        continue;
+                    }
 
-					if ( !useDisplayIndex )
-					{
-						continue;
-					}
+                    int oldIndex = gridView.Columns.IndexOf(gridViewColumn);
+                    gridView.Columns.Move(oldIndex, columnSetting.DisplayIndex);
+                }
+            }
+            catch
+            {
+                if (ThrowOnErrorLoading)
+                {
+                    throw;
+                }
+            }
+        } // Load
 
-					if ( columnSetting.Index == columnSetting.DisplayIndex )
-					{
-						continue;
-					}
+        // ----------------------------------------------------------------------
+        public override void Save()
+        {
+            try
+            {
+                GridViewColumnSetting[] columnSettings = ColumnSettings;
+                if (columnSettings == null)
+                {
+                    return;
+                }
 
-					int oldIndex = gridView.Columns.IndexOf( gridViewColumn );
-					gridView.Columns.Move( oldIndex, columnSetting.DisplayIndex );
-				}
-			}
-			catch
-			{
-				if ( ThrowOnErrorLoading )
-				{
-					throw;
-				}
-			}
-		} // Load
+                SaveValue(
+                    Name,
+                    typeof(GridViewColumnSetting[]),
+                    SettingsSerializeAs.Xml,
+                    columnSettings,
+                    null);
+            }
+            catch
+            {
+                if (ThrowOnErrorSaving)
+                {
+                    throw;
+                }
+            }
+        } // Save
 
-		// ----------------------------------------------------------------------
-		public override void Save()
-		{
-			try
-			{
-				GridViewColumnSetting[] columnSettings = ColumnSettings;
-				if ( columnSettings == null )
-				{
-					return;
-				}
+        // ----------------------------------------------------------------------
+        public override string ToString()
+        {
+            return string.Concat(name, " (ListView)");
+        } // ToString
 
-				SaveValue(
-					Name,
-					typeof( GridViewColumnSetting[] ),
-					SettingsSerializeAs.Xml,
-					columnSettings,
-					null );
-			}
-			catch
-			{
-				if ( ThrowOnErrorSaving )
-				{
-					throw;
-				}
-			}
-		} // Save
+        // ----------------------------------------------------------------------
+        private void SetupGridViewColumns()
+        {
+            gridViewColumns.Clear();
 
-		// ----------------------------------------------------------------------
-		public override string ToString()
-		{
-			return string.Concat( name, " (ListView)" );
-		} // ToString
+            if (listView.View is not GridView gridView)
+            {
+                return;
+            }
 
-		// ----------------------------------------------------------------------
-		private void SetupGridViewColumns()
-		{
-			gridViewColumns.Clear();
+            for (int i = 0; i < gridView.Columns.Count; i++)
+            {
+                gridViewColumns.Add(gridView.Columns[i]);
+            }
+        } // SetupGridViewColumns
 
+        // ----------------------------------------------------------------------
+        private void ListViewInitialized(object sender, EventArgs e)
+        {
+            SetupGridViewColumns();
+        } // ListViewInitialized
 
-			GridView gridView = listView.View as GridView;
-			if ( gridView == null )
-			{
-				return;
-			}
+        // ----------------------------------------------------------------------
+        private static void OnListViewSettingChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+        {
+            if (dependencyObject is not ListView listView)
+            {
+                Debug.WriteLine("ListViewSetting: invalid property attachment");
+                return;
+            }
 
-			for ( int i = 0; i < gridView.Columns.Count; i++ )
-			{
-				gridViewColumns.Add( gridView.Columns[ i ] );
-			}
-		} // SetupGridViewColumns
+            // search on the parent-tree for application settings
+            ApplicationSettings applicationSettings = FindParentSettings(dependencyObject);
+            if (applicationSettings == null)
+            {
+                Debug.WriteLine("ListViewSetting: missing application settings in parent hierarchy");
+                return;
+            }
 
-		// ----------------------------------------------------------------------
-		private void ListViewInitialized( object sender, EventArgs e )
-		{
-			SetupGridViewColumns();
-		} // ListViewInitialized
+            applicationSettings.Settings.Add(new ListViewSetting(listView));
+        } // OnListViewSettingChanged
 
-		// ----------------------------------------------------------------------
-		private static void OnListViewSettingChanged( DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e )
-		{
-			ListView listView = dependencyObject as ListView;
-			if ( listView == null )
-			{
-				Debug.WriteLine( "ListViewSetting: invalid property attachment" );
-				return;
-			}
+        // ----------------------------------------------------------------------
+        private static ApplicationSettings FindParentSettings(DependencyObject element)
+        {
+            while (element != null)
+            {
+                if (element.ReadLocalValue(DependencyPropertySetting.ApplicationSettingsProperty) is ApplicationSettings applicationSettings)
+                {
+                    return applicationSettings;
+                }
+                element = LogicalTreeHelper.GetParent(element);
+            }
+            return null;
+        } // FindParentSettings
 
-			// search on the parent-tree for application settings
-			ApplicationSettings applicationSettings = FindParentSettings( dependencyObject );
-			if ( applicationSettings == null )
-			{
-				Debug.WriteLine( "ListViewSetting: missing application settings in parent hierarchy" );
-				return;
-			}
+        // ----------------------------------------------------------------------
+        // members
+        private readonly ListView listView;
+        private readonly List<GridViewColumn> gridViewColumns = new();
 
-			applicationSettings.Settings.Add( new ListViewSetting( listView ) );
-		} // OnListViewSettingChanged
+        private readonly string name;
+        private bool useWidth = true;
+        private bool useDisplayIndex = true;
 
-		// ----------------------------------------------------------------------
-		private static ApplicationSettings FindParentSettings( DependencyObject element )
-		{
-			while ( element != null )
-			{
-				ApplicationSettings applicationSettings = element.ReadLocalValue( DependencyPropertySetting.ApplicationSettingsProperty ) as ApplicationSettings;
-				if ( applicationSettings != null )
-				{
-					return applicationSettings;
-				}
-				element = LogicalTreeHelper.GetParent( element );
-			}
-			return null;
-		} // FindParentSettings
-
-		// ----------------------------------------------------------------------
-		// members
-		private readonly ListView listView;
-		private readonly List<GridViewColumn> gridViewColumns = new List<GridViewColumn>();
-
-		private readonly string name;
-		private bool useWidth = true;
-		private bool useDisplayIndex = true;
-
-	} // class ListViewSetting
-
-} // namespace Itenso.Configuration
+    } // class ListViewSetting
+} // namespace EPG.Configuration
 // -- EOF -------------------------------------------------------------------

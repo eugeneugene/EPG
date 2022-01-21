@@ -4,160 +4,151 @@
 // language   : c#
 // environment: .NET 2.0
 // --------------------------------------------------------------------------
-using System;
 using System.Collections;
 using System.Reflection;
 
-namespace Itenso.Configuration
+namespace EPG.Configuration
 {
+    // ------------------------------------------------------------------------
+    public sealed class SettingCollection : IEnumerable
+    {
+        // ----------------------------------------------------------------------
+        public SettingCollection(ApplicationSettings applicationSettings)
+        {
+            this.applicationSettings = applicationSettings ?? throw new ArgumentNullException(nameof(applicationSettings));
+        } // SettingCollection
 
-	// ------------------------------------------------------------------------
-	public sealed class SettingCollection : IEnumerable
-	{
+        // ----------------------------------------------------------------------
+        public ApplicationSettings ApplicationSettings
+        {
+            get { return applicationSettings; }
+        } // ApplicationSettings
 
-		// ----------------------------------------------------------------------
-		public SettingCollection( ApplicationSettings applicationSettings )
-		{
-			if ( applicationSettings == null )
-			{
-				throw new ArgumentNullException( "applicationSettings" );
-			}
+        // ----------------------------------------------------------------------
+        public int Count
+        {
+            get { return settings.Count; }
+        } // Count
 
-			this.applicationSettings = applicationSettings;
-		} // SettingCollection
+        // ----------------------------------------------------------------------
+        public bool HasChanges
+        {
+            get
+            {
+                foreach (ISetting setting in settings)
+                {
+                    if (setting.HasChanged)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        } // HasChanges
 
-		// ----------------------------------------------------------------------
-		public ApplicationSettings ApplicationSettings
-		{
-			get { return applicationSettings; }
-		} // ApplicationSettings
+        // ----------------------------------------------------------------------
+        public IEnumerator GetEnumerator()
+        {
+            return settings.GetEnumerator();
+        } // GetEnumerator
 
-		// ----------------------------------------------------------------------
-		public int Count
-		{
-			get { return settings.Count; }
-		} // Count
+        // ----------------------------------------------------------------------
+        public bool Contains(ISetting setting)
+        {
+            if (setting == null)
+            {
+                throw new ArgumentNullException(nameof(setting));
+            }
+            return settings.Contains(setting);
+        } // Contains
 
-		// ----------------------------------------------------------------------
-		public bool HasChanges
-		{
-			get 
-			{
-				foreach ( ISetting setting in settings )
-				{
-					if ( setting.HasChanged )
-					{
-						return true;
-					}
-				}
-				return false;
-			}
-		} // HasChanges
+        // ----------------------------------------------------------------------
+        public void Add(ISetting setting)
+        {
+            if (setting == null)
+            {
+                throw new ArgumentNullException(nameof(setting));
+            }
+            setting.ApplicationSettings = applicationSettings;
+            settings.Add(setting);
+        } // Add
 
-		// ----------------------------------------------------------------------
-		public IEnumerator GetEnumerator()
-		{
-			return settings.GetEnumerator();
-		} // GetEnumerator
+        // ----------------------------------------------------------------------
+        public void AddAll(object obj)
+        {
+            if (obj == null)
+            {
+                throw new ArgumentNullException(nameof(obj));
+            }
 
-		// ----------------------------------------------------------------------
-		public bool Contains( ISetting setting )
-		{
-			if ( setting == null )
-			{
-				throw new ArgumentNullException( "setting" );
-			}
-			return settings.Contains( setting );
-		} // Contains
+            // field settings
+            FieldInfo[] fieldInfos = obj.GetType().GetFields(
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            foreach (FieldInfo fieldInfo in fieldInfos)
+            {
+                FieldSettingAttribute[] settingAttributes = (FieldSettingAttribute[])fieldInfo.GetCustomAttributes(typeof(FieldSettingAttribute), true);
+                if (settingAttributes.Length <= 0)
+                {
+                    continue;
+                }
 
-		// ----------------------------------------------------------------------
-		public void Add( ISetting setting )
-		{
-			if ( setting == null )
-			{
-				throw new ArgumentNullException( "setting" );
-			}
-			setting.ApplicationSettings = applicationSettings;
-			settings.Add( setting );
-		} // Add
+                FieldSettingAttribute settingAttribute = settingAttributes[0];
+                string settingName = settingAttribute.Name;
+                if (string.IsNullOrEmpty(settingName))
+                {
+                    settingName = fieldInfo.Name;
+                }
+                object defaultValue = settingAttribute.DefaultValue;
+                FieldSetting fieldSetting = new(
+                    settingName, obj, fieldInfo.Name, defaultValue);
+                Add(fieldSetting);
+            }
 
-		// ----------------------------------------------------------------------
-		public void AddAll( object obj )
-		{
-			if ( obj == null )
-			{
-				throw new ArgumentNullException( "obj" );
-			}
+            // property settings
+            PropertyInfo[] propertyInfos = obj.GetType().GetProperties(
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            foreach (PropertyInfo propertyInfo in propertyInfos)
+            {
+                PropertySettingAttribute[] settingAttributes = (PropertySettingAttribute[])propertyInfo.GetCustomAttributes(typeof(PropertySettingAttribute), true);
+                if (settingAttributes.Length <= 0)
+                {
+                    continue;
+                }
 
-			// field settings
-			FieldInfo[] fieldInfos = obj.GetType().GetFields(
-				BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic );
-			foreach ( FieldInfo fieldInfo in fieldInfos )
-			{
-				FieldSettingAttribute[] settingAttributes = (FieldSettingAttribute[])fieldInfo.GetCustomAttributes( typeof( FieldSettingAttribute ), true );
-				if ( settingAttributes.Length <= 0 )
-				{
-					continue;
-				}
+                PropertySettingAttribute settingAttribute = settingAttributes[0];
+                string settingName = settingAttribute.Name;
+                if (string.IsNullOrEmpty(settingName))
+                {
+                    settingName = propertyInfo.Name;
+                }
+                object defaultValue = settingAttribute.DefaultValue;
+                PropertySetting propertySetting = new(
+                    settingName, obj, propertyInfo.Name, defaultValue);
+                Add(propertySetting);
+            }
+        } // AddAll
 
-				FieldSettingAttribute settingAttribute = settingAttributes[ 0 ];
-				string settingName = settingAttribute.Name;
-				if ( string.IsNullOrEmpty( settingName ) )
-				{
-					settingName = fieldInfo.Name;
-				}
-				object defaultValue = settingAttribute.DefaultValue;
-				FieldSetting fieldSetting = new FieldSetting(
-					settingName, obj, fieldInfo.Name, defaultValue );
-				Add( fieldSetting );
-			}
+        // ----------------------------------------------------------------------
+        public void Remove(ISetting setting)
+        {
+            if (setting == null)
+            {
+                throw new ArgumentNullException(nameof(setting));
+            }
+            settings.Remove(setting);
+        } // Remove
 
-			// property settings
-			PropertyInfo[] propertyInfos = obj.GetType().GetProperties(
-				BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic );
-			foreach ( PropertyInfo propertyInfo in propertyInfos )
-			{
-				PropertySettingAttribute[] settingAttributes = (PropertySettingAttribute[])propertyInfo.GetCustomAttributes( typeof( PropertySettingAttribute ), true );
-				if ( settingAttributes.Length <= 0 )
-				{
-					continue;
-				}
+        // ----------------------------------------------------------------------
+        public void Clear()
+        {
+            settings.Clear();
+        } // Clear
 
-				PropertySettingAttribute settingAttribute = settingAttributes[ 0 ];
-				string settingName = settingAttribute.Name;
-				if ( string.IsNullOrEmpty( settingName ) )
-				{
-					settingName = propertyInfo.Name;
-				}
-				object defaultValue = settingAttribute.DefaultValue;
-				PropertySetting propertySetting = new PropertySetting(
-					settingName, obj, propertyInfo.Name, defaultValue );
-				Add( propertySetting );
-			}
-		} // AddAll
+        // ----------------------------------------------------------------------
+        // members
+        private readonly ArrayList settings = new();
+        private readonly ApplicationSettings applicationSettings;
 
-		// ----------------------------------------------------------------------
-		public void Remove( ISetting setting )
-		{
-			if ( setting == null )
-			{
-				throw new ArgumentNullException( "setting" );
-			}
-			settings.Remove( setting );
-		} // Remove
-
-		// ----------------------------------------------------------------------
-		public void Clear()
-		{
-			settings.Clear();
-		} // Clear
-
-		// ----------------------------------------------------------------------
-		// members
-		private readonly ArrayList settings = new ArrayList();
-		private readonly ApplicationSettings applicationSettings;
-
-	} // class SettingCollection
-
-} // namespace Itenso.Configuration
+    } // class SettingCollection
+} // namespace EPG.Configuration
 // -- EOF -------------------------------------------------------------------

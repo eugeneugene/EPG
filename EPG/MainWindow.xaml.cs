@@ -1,7 +1,7 @@
 ﻿using CSAdapter;
 using EPG.Code;
+using EPG.Configuration;
 using EPG.Models;
-using Itenso.Configuration;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Diagnostics;
@@ -21,6 +21,8 @@ namespace EPG
         private readonly EPGSettings settings;
         private readonly EPGSettingsProvider settingsProvider;
         private readonly ApplicationSettings applicationSettings;
+        //private readonly WindowSettings windowSettings;
+
         public MainWindow(IHostApplicationLifetime applicationLifetime)
         {
             _applicationLifetime = applicationLifetime ?? throw new Exception(nameof(applicationLifetime));
@@ -28,8 +30,9 @@ namespace EPG
             model = new();
             settings = new();
             settingsProvider = new();
-            applicationSettings = new ApplicationSettings(settings, settingsProvider);
-            applicationSettings.Load();
+            applicationSettings = new(settings, settingsProvider);
+            //windowSettings = new(this, settingsProvider);
+            //windowSettings.Load();
             model.FromSettings(settings);
             random = new(DateTime.Now.Millisecond);
 

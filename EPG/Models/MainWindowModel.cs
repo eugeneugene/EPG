@@ -27,12 +27,12 @@ namespace EPG.Models
             CapitalSymbols = ToBoolNull(settings.CapitalSymbols);
             Numerals = ToBoolNull(settings.Numerals);
             SpecialSymbols = ToBoolNull(settings.SpecialSymbols);
-            Exclude = settings.Exclude;
-            Include = settings.Include;
+            Exclude = string.IsNullOrWhiteSpace(settings.Exclude) ? string.Empty : settings.Exclude;    // Отрезать пробелы и стмволы возврата строки. Нужно решение на уровне сериализатора XML
+            Include = string.IsNullOrWhiteSpace(settings.Include) ? string.Empty : settings.Include;
             EnableBloom = settings.EnableBloom;
             ParanoidCheck = settings.ParanoidCheck;
             CalculateQuality = settings.CalculateQuality;
-            Filter = settings.Filter;
+            Filter = string.IsNullOrWhiteSpace(settings.Filter) ? string.Empty : settings.Filter;
             AutoClear = settings.AutoClear;
         }
 

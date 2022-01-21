@@ -11,7 +11,7 @@ namespace EPG.Code
         private static string GetUserSettingsPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EPG", "EPG.config");
 
         public override string Name => nameof(EPGSettingsProvider);
-        
+
         public override SettingsPropertyValueCollection GetPropertyValues(SettingsContext context, SettingsPropertyCollection properties)
         {
             try
@@ -57,7 +57,7 @@ namespace EPG.Code
             return context["GroupName"]?.ToString();
         }
 
-        private static Configuration GetConfiguration(string path)
+        private static System.Configuration.Configuration GetConfiguration(string path)
         {
             if (path is null)
                 throw new ArgumentNullException(nameof(path));
@@ -68,7 +68,7 @@ namespace EPG.Code
             }, ConfigurationUserLevel.None);
         }
 
-        private static SettingElementCollection GetSettingElementCollection(Configuration config, string sectionName)
+        private static SettingElementCollection GetSettingElementCollection(System.Configuration.Configuration config, string sectionName)
         {
             ConfigurationSectionGroup userSettings = config.GetSectionGroup("userSettings");
             if (userSettings is null)
@@ -131,7 +131,7 @@ namespace EPG.Code
             {
                 if (!string.IsNullOrEmpty(path) && !string.IsNullOrEmpty(sectionName))
                 {
-                    Configuration configuration = GetConfiguration(path);
+                    var configuration = GetConfiguration(path);
                     UpdateSettingsFromPropertyValues(GetSettingElementCollection(configuration, sectionName), values);
                     configuration.Save();
                 }
@@ -164,7 +164,10 @@ namespace EPG.Code
         private static XmlNode CreateXmlValue(object serializedValue)
         {
             XmlElement xmlElement = new XmlDocument().CreateElement("value");
-            xmlElement.InnerText = serializedValue?.ToString() ?? string.Empty;
+            if (serializedValue is null)
+                xmlElement.InnerText = string.Empty;
+            else
+                xmlElement.InnerText = serializedValue.ToString() ?? string.Empty;
             return xmlElement;
         }
     }
