@@ -87,7 +87,7 @@ namespace EPG.Configuration
         public void RemoveAllSections()
         {
             UserSettingsGroup userSettingsGroup = UserSettingsGroup;
-            if (userSettingsGroup == null)
+            if (userSettingsGroup is null)
             {
                 return;
             }
@@ -103,13 +103,13 @@ namespace EPG.Configuration
             }
 
             UserSettingsGroup userSettingsGroup = UserSettingsGroup;
-            if (userSettingsGroup == null)
+            if (userSettingsGroup is null)
             {
                 return;
             }
 
             ConfigurationSection section = userSettingsGroup.Sections[name];
-            if (section == null)
+            if (section is null)
             {
                 throw new InvalidOperationException("invalid section " + name);
             }
@@ -119,7 +119,7 @@ namespace EPG.Configuration
         // ----------------------------------------------------------------------
         public bool HasSameSettings(UserConfig compareUserConfig)
         {
-            if (compareUserConfig == null)
+            if (compareUserConfig is null)
             {
                 throw new ArgumentNullException(nameof(compareUserConfig));
             }
@@ -156,7 +156,7 @@ namespace EPG.Configuration
                     foreach (SettingElement compateSettingElement in compareClientSettingsSection.Settings)
                     {
                         SettingElement settingElement = clientSettingsSection.Settings.Get(compateSettingElement.Name);
-                        if (settingElement == null || !settingElement.Value.ValueXml.InnerXml.Equals(compateSettingElement.Value.ValueXml.InnerXml))
+                        if (settingElement is null || !settingElement.Value.ValueXml.InnerXml.Equals(compateSettingElement.Value.ValueXml.InnerXml))
                         {
                             return false;
                         }
@@ -182,7 +182,7 @@ namespace EPG.Configuration
         // ----------------------------------------------------------------------
         public void Import(UserConfig importUserConfig, bool overwriteSettings)
         {
-            if (importUserConfig == null)
+            if (importUserConfig is null)
             {
                 throw new ArgumentNullException(nameof(importUserConfig));
             }
@@ -218,7 +218,7 @@ namespace EPG.Configuration
                         bool newSetting = false;
 
                         SettingElement settingElement = clientSettingsSection.Settings.Get(importSettingElement.Name);
-                        if (settingElement == null)
+                        if (settingElement is null)
                         {
                             newSetting = true;
                             settingElement = new SettingElement();

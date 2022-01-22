@@ -140,7 +140,7 @@ namespace EPG
             {
                 var sb = new StringBuilder();
                 sb.AppendLine("Exception: " + ex.Message);
-                while (ex.InnerException != null)
+                while (ex.InnerException is not null)
                 {
                     ex = ex.InnerException;
                     sb.AppendLine("InnerException: " + ex.Message);

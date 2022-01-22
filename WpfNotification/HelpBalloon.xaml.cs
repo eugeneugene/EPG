@@ -172,7 +172,7 @@ namespace WpfNotification
         /// <param name="e">The <see cref="MouseEventArgs"/> instance containing the event data.</param>
         private void ImageMouseEnter(object sender, MouseEventArgs e)
         {
-            if (balloon == null)
+            if (balloon is null)
             {
                 balloon = new Balloon(this, Caption, BalloonType, MaxHeight, MaxWidth, AutoWidth, true, ShowCloseButton, Title);
                 balloon.Closed += BalloonClosed;

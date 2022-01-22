@@ -48,7 +48,7 @@ namespace EPG.Configuration
         // ----------------------------------------------------------------------
         public bool HasValue
         {
-            get { return value != null; }
+            get { return value is not null; }
         } // HasValue
 
         // ----------------------------------------------------------------------

@@ -54,7 +54,7 @@ namespace EPG.Configuration
         // ----------------------------------------------------------------------
         protected virtual object OnValueSaving(string name, object value)
         {
-            if (ValueSaving == null)
+            if (ValueSaving is null)
             {
                 return value;
             }
@@ -67,7 +67,7 @@ namespace EPG.Configuration
         // ----------------------------------------------------------------------
         protected virtual object OnValueLoading(string name, object value)
         {
-            if (ValueLoading == null)
+            if (ValueLoading is null)
             {
                 return value;
             }
@@ -81,13 +81,13 @@ namespace EPG.Configuration
         protected void CreateSettingProperty(string name, Type type, SettingsSerializeAs serializeAs, object defaultValue)
         {
             ApplicationSettings applicationSettings = ApplicationSettings;
-            if (applicationSettings == null || applicationSettings.DefaultProvider == null)
+            if (applicationSettings is null || applicationSettings.DefaultProvider is null)
             {
                 return;
             }
 
             SettingsProperty settingsProperty = applicationSettings.Properties[name];
-            if (settingsProperty != null)
+            if (settingsProperty is not null)
             {
                 return; // already present
             }
@@ -128,7 +128,7 @@ namespace EPG.Configuration
 
             ApplicationSettings applicationSettings = ApplicationSettings;
             SettingsProperty settingsProperty = applicationSettings.Properties[name];
-            if (settingsProperty != null)
+            if (settingsProperty is not null)
             {
                 return; // already present
             }
@@ -161,7 +161,7 @@ namespace EPG.Configuration
         // ----------------------------------------------------------------------
         protected void SaveValue(string name, Type type, SettingsSerializeAs serializeAs, object value, object defaultValue)
         {
-            if (OnValueSaving(name, value) == null)
+            if (OnValueSaving(name, value) is null)
             {
                 return;
             }

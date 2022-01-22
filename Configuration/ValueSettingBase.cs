@@ -50,7 +50,7 @@ namespace EPG.Configuration
         // ----------------------------------------------------------------------
         public bool HasValue
         {
-            get { return Value != null; }
+            get { return Value is not null; }
         } // HasValue
 
         // ----------------------------------------------------------------------
@@ -66,7 +66,7 @@ namespace EPG.Configuration
                     return false;
                 }
 
-                return originalValue == null || !originalValue.Equals(value);
+                return originalValue is null || !originalValue.Equals(value);
             }
         } // HasChanged
 

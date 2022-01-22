@@ -118,7 +118,7 @@ namespace EPG.Code
         private static void ApplySettingToValue(SettingsPropertyValue value, SettingElementCollection settings)
         {
             SettingElement setting = settings.Get(value.Name);
-            if (setting != null)
+            if (setting is not null)
             {
                 value.SerializedValue = setting.Value.ValueXml.InnerText;
                 value.Deserialized = false;
@@ -149,7 +149,7 @@ namespace EPG.Code
                 if (value.IsDirty)
                 {
                     SettingElement element = settings.Get(value.Name);
-                    if (element == null)
+                    if (element is null)
                     {
                         element = new SettingElement(value.Name, SettingsSerializeAs.String);
                         settings.Add(element);

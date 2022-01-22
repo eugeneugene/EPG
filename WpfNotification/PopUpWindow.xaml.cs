@@ -163,7 +163,7 @@ namespace WpfNotification
         private PopupWindow(string title)
         {
             InitializeComponent();
-            if (Application.Current.MainWindow != null)
+            if (Application.Current.MainWindow is not null)
                 Application.Current.MainWindow.Closing += MainWindowClosing;
 
             TextBoxTitle.Text = title;
@@ -192,7 +192,7 @@ namespace WpfNotification
             Closed += NotificationWindowClosed;
             ArrangeWindows();
 
-            if (focusedElement != null)
+            if (focusedElement is not null)
             {
                 // Restore keyboard focus to the original element that had focus. That way if someone
                 // was typing into a control we don't steal keyboard focus away from that control.
@@ -280,7 +280,7 @@ namespace WpfNotification
             }
 
             var head = PopupWindows.Head.Next;
-            while (head != PopupWindows.Tail && head != null)
+            while (head != PopupWindows.Tail && head is not null)
             {
                 var t = head;
                 head = head.Next;
@@ -374,7 +374,7 @@ namespace WpfNotification
 
         private static T NullChecker<T>(T argument)
         {
-            if (argument == null)
+            if (argument is null)
                 throw new ArgumentNullException(nameof(argument));
             return argument;
         }

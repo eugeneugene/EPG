@@ -15,7 +15,7 @@ namespace EPG.Configuration
         // ----------------------------------------------------------------------
         public GridViewColumnSetting(GridViewColumn gridViewColumn, int index, int displayIndex)
         {
-            if (gridViewColumn == null)
+            if (gridViewColumn is null)
             {
                 throw new ArgumentNullException(nameof(gridViewColumn));
             }
@@ -75,7 +75,7 @@ namespace EPG.Configuration
         // ----------------------------------------------------------------------
         private static int AddHashCode(int hash, object obj)
         {
-            int combinedHash = obj != null ? obj.GetHashCode() : 0;
+            int combinedHash = obj is not null ? obj.GetHashCode() : 0;
             if (hash != 0)
             {
                 combinedHash += hash * 31;

@@ -21,7 +21,7 @@ namespace EPG.Configuration
         // ----------------------------------------------------------------------
         protected virtual bool OnCollectingSetting(object element)
         {
-            if (CollectingSetting != null)
+            if (CollectingSetting is not null)
             {
                 SettingCollectorCancelEventArgs e = new(element);
                 CollectingSetting(this, e);

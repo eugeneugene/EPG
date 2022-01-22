@@ -66,7 +66,7 @@ namespace EPG.Configuration
             get
             {
                 DependencyObject control = frameworkElement;
-                while (control != null)
+                while (control is not null)
                 {
                     if (control is Window)
                     {
@@ -96,7 +96,7 @@ namespace EPG.Configuration
         private void FrameworkElementInitialized(object sender, EventArgs e)
         {
             Window window = ParentWindow;
-            if (window == null)
+            if (window is null)
             {
                 throw new InvalidOperationException();
             }
@@ -131,7 +131,7 @@ namespace EPG.Configuration
                 return;
             }
 
-            if (frameworkElement.GetValue(DependencyPropertySetting.ApplicationSettingsProperty) != null)
+            if (frameworkElement.GetValue(DependencyPropertySetting.ApplicationSettingsProperty) is not null)
             {
                 return; // framework-element contains already an application setting
             }

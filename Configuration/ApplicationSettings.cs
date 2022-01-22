@@ -61,7 +61,7 @@ namespace EPG.Configuration
             upgradeSettings = new ValueSetting(UpgradeSettingsKey, typeof(bool), true);
             UseAutoUpgrade = true;
 
-            if (obj != null)
+            if (obj is not null)
             {
                 Settings.AddAll(obj);
             }
@@ -84,7 +84,7 @@ namespace EPG.Configuration
         {
             get
             {
-                if (settingCollectors == null)
+                if (settingCollectors is null)
                 {
                     settingCollectors = new SettingCollectorCollection(this);
                     settingCollectors.CollectingSetting += SettingCollectorsCollectingSetting;
@@ -168,7 +168,7 @@ namespace EPG.Configuration
         // ----------------------------------------------------------------------
         private void CollectSettings()
         {
-            if (settingCollectors == null)
+            if (settingCollectors is null)
             {
                 return; // no colectors present
             }
@@ -180,12 +180,12 @@ namespace EPG.Configuration
         {
             foreach (ISetting userSetting in settings)
             {
-                if (SettingLoading != null)
+                if (SettingLoading is not null)
                 {
                     userSetting.ValueLoading += UserSettingLoading;
                 }
                 userSetting.Load();
-                if (SettingLoading != null)
+                if (SettingLoading is not null)
                 {
                     userSetting.ValueLoading -= UserSettingLoading;
                 }
@@ -197,12 +197,12 @@ namespace EPG.Configuration
         {
             foreach (ISetting userSetting in settings)
             {
-                if (SettingSaving != null)
+                if (SettingSaving is not null)
                 {
                     userSetting.ValueSaving += UserSettingSaving;
                 }
                 userSetting.Save();
-                if (SettingSaving != null)
+                if (SettingSaving is not null)
                 {
                     userSetting.ValueSaving -= UserSettingSaving;
                 }

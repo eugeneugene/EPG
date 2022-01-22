@@ -34,16 +34,16 @@ namespace WpfNotification
             Func<T, Tuple<T>> newValue)
             where T : class
         {
-            if (node == null)
+            if (node is null)
                 throw new ArgumentNullException(nameof(node));
-            if (newValue == null)
+            if (newValue is null)
                 throw new ArgumentNullException(nameof(newValue));
 
             T old = node.Value;
             while (true)
             {
                 Tuple<T> @new = newValue(old);
-                if (@new == null)
+                if (@new is null)
                     return new Tuple<T, bool>(old, false);
                 T prevalent = node.CompareExchangeValue(@new.Item1, old);
                 if (prevalent == old)

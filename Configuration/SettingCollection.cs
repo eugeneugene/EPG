@@ -55,7 +55,7 @@ namespace EPG.Configuration
         // ----------------------------------------------------------------------
         public bool Contains(ISetting setting)
         {
-            if (setting == null)
+            if (setting is null)
             {
                 throw new ArgumentNullException(nameof(setting));
             }
@@ -65,7 +65,7 @@ namespace EPG.Configuration
         // ----------------------------------------------------------------------
         public void Add(ISetting setting)
         {
-            if (setting == null)
+            if (setting is null)
             {
                 throw new ArgumentNullException(nameof(setting));
             }
@@ -76,7 +76,7 @@ namespace EPG.Configuration
         // ----------------------------------------------------------------------
         public void AddAll(object obj)
         {
-            if (obj == null)
+            if (obj is null)
             {
                 throw new ArgumentNullException(nameof(obj));
             }
@@ -131,7 +131,7 @@ namespace EPG.Configuration
         // ----------------------------------------------------------------------
         public void Remove(ISetting setting)
         {
-            if (setting == null)
+            if (setting is null)
             {
                 throw new ArgumentNullException(nameof(setting));
             }

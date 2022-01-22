@@ -190,7 +190,7 @@ namespace EPG.Configuration
 
             // exclusion
             object exclude = frameworkElement.ReadLocalValue(ExcludeElementProperty);
-            if (exclude != null && exclude is bool b && b)
+            if (exclude is not null && exclude is bool b && b)
             {
                 e.Cancel = true;
                 return;
@@ -268,7 +268,7 @@ namespace EPG.Configuration
                 return;
             }
 
-            if (window.GetValue(DependencyPropertySetting.ApplicationSettingsProperty) != null)
+            if (window.GetValue(DependencyPropertySetting.ApplicationSettingsProperty) is not null)
             {
                 return; // window contains already an application setting
             }

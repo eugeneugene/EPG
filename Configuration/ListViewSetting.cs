@@ -73,7 +73,7 @@ namespace EPG.Configuration
             {
                 GridViewColumnSetting[] originalColumnSettings = OriginalColumnSettings;
                 GridViewColumnSetting[] columnSettings = ColumnSettings;
-                if (originalColumnSettings == null || columnSettings == null ||
+                if (originalColumnSettings is null || columnSettings is null ||
                     originalColumnSettings == columnSettings)
                 {
                     return false;
@@ -155,7 +155,7 @@ namespace EPG.Configuration
                 }
 
                 GridViewColumnSetting[] columnSettings = OriginalColumnSettings;
-                if (columnSettings == null || columnSettings.Length == 0)
+                if (columnSettings is null || columnSettings.Length == 0)
                 {
                     return;
                 }
@@ -204,7 +204,7 @@ namespace EPG.Configuration
             try
             {
                 GridViewColumnSetting[] columnSettings = ColumnSettings;
-                if (columnSettings == null)
+                if (columnSettings is null)
                 {
                     return;
                 }
@@ -264,7 +264,7 @@ namespace EPG.Configuration
 
             // search on the parent-tree for application settings
             ApplicationSettings applicationSettings = FindParentSettings(dependencyObject);
-            if (applicationSettings == null)
+            if (applicationSettings is null)
             {
                 Debug.WriteLine("ListViewSetting: missing application settings in parent hierarchy");
                 return;
@@ -276,7 +276,7 @@ namespace EPG.Configuration
         // ----------------------------------------------------------------------
         private static ApplicationSettings FindParentSettings(DependencyObject element)
         {
-            while (element != null)
+            while (element is not null)
             {
                 if (element.ReadLocalValue(DependencyPropertySetting.ApplicationSettingsProperty) is ApplicationSettings applicationSettings)
                 {

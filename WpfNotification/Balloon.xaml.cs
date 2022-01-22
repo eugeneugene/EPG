@@ -203,7 +203,7 @@ namespace WpfNotification
 
             PresentationSource source = PresentationSource.FromVisual(control);
 
-            if (source != null)
+            if (source is not null)
             {
                 // Position balloon relative to the help image and screen placement
                 // Compensate for the bubble point

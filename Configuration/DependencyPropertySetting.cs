@@ -102,7 +102,7 @@ namespace EPG.Configuration
             try
             {
                 object originalValue = OriginalValue;
-                if (originalValue == null && LoadUndefinedValue == false)
+                if (originalValue is null && LoadUndefinedValue == false)
                 {
                     return;
                 }
@@ -123,7 +123,7 @@ namespace EPG.Configuration
             try
             {
                 object value = Value;
-                if (value == null && SaveUndefinedValue == false)
+                if (value is null && SaveUndefinedValue == false)
                 {
                     return;
                 }
@@ -162,7 +162,7 @@ namespace EPG.Configuration
 
             // search on the parent-tree for application settings
             ApplicationSettings applicationSettings = FindParentSettings(dependencyObject);
-            if (applicationSettings == null)
+            if (applicationSettings is null)
             {
                 Debug.WriteLine("DependencyPropertySetting: missing application settings in parent hierarchy");
                 return;
@@ -176,7 +176,7 @@ namespace EPG.Configuration
         // ----------------------------------------------------------------------
         private static ApplicationSettings FindParentSettings(DependencyObject element)
         {
-            while (element != null)
+            while (element is not null)
             {
                 if (element.ReadLocalValue(ApplicationSettingsProperty) is ApplicationSettings applicationSettings)
                 {

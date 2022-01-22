@@ -202,7 +202,7 @@ namespace WpfNotification
 
                     if (prev2.D)
                     {
-                        if (lastLink != null)
+                        if (lastLink is not null)
                         {
                             SetMark(ref prev.Prev_);
 
@@ -268,7 +268,7 @@ namespace WpfNotification
             /// <param name="initial">The enumeration to copy.</param>
             public ConcurrentLinkedListInternal(IEnumerable<T> initial) : this()
             {
-                if (initial == null)
+                if (initial is null)
                     throw new ArgumentNullException(nameof(initial));
                 foreach (T value in initial)
                     Enqueue(value);
@@ -703,7 +703,7 @@ namespace WpfNotification
 
             public bool Equals(NodeLink<T> other)
             {
-                if (other == null)
+                if (other is null)
                     return false;
 
                 return D == other.D && P == other.P;

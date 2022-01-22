@@ -41,7 +41,7 @@ namespace EPG.Configuration
         // ----------------------------------------------------------------------
         public void Add(ISettingCollector setting)
         {
-            if (setting == null)
+            if (setting is null)
             {
                 throw new ArgumentNullException(nameof(setting));
             }
@@ -53,7 +53,7 @@ namespace EPG.Configuration
         // ----------------------------------------------------------------------
         public void Remove(ISettingCollector setting)
         {
-            if (setting == null)
+            if (setting is null)
             {
                 throw new ArgumentNullException(nameof(setting));
             }

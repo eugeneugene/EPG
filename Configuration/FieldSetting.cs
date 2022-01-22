@@ -50,7 +50,7 @@ namespace EPG.Configuration
             this.component = component ?? throw new ArgumentNullException(nameof(component));
             fieldInfo = component.GetType().GetField(fieldName,
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            if (fieldInfo == null)
+            if (fieldInfo is null)
             {
                 throw new ArgumentException("missing setting field: " + fieldName);
             }
@@ -94,7 +94,7 @@ namespace EPG.Configuration
             try
             {
                 object originalValue = OriginalValue;
-                if (originalValue == null && LoadUndefinedValue == false)
+                if (originalValue is null && LoadUndefinedValue == false)
                 {
                     return;
                 }
@@ -115,7 +115,7 @@ namespace EPG.Configuration
             try
             {
                 object value = Value;
-                if (value == null && SaveUndefinedValue == false)
+                if (value is null && SaveUndefinedValue == false)
                 {
                     return;
                 }

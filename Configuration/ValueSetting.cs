@@ -23,11 +23,11 @@ namespace EPG.Configuration
         // ----------------------------------------------------------------------
         public ValueSetting(string name, Type valueType, object value, object defaultValue) : base(name, defaultValue)
         {
-            if (valueType == null)
+            if (valueType is null)
             {
                 throw new ArgumentNullException(nameof(valueType));
             }
-            if (defaultValue != null && defaultValue.GetType() != valueType)
+            if (defaultValue is not null && defaultValue.GetType() != valueType)
             {
                 throw new ArgumentException(null, nameof(defaultValue));
             }
@@ -55,7 +55,7 @@ namespace EPG.Configuration
             try
             {
                 object originalValue = OriginalValue;
-                if (originalValue == null && LoadUndefinedValue == false)
+                if (originalValue is null && LoadUndefinedValue == false)
                 {
                     return;
                 }
@@ -76,7 +76,7 @@ namespace EPG.Configuration
             try
             {
                 object toSaveValue = Value;
-                if (toSaveValue == null && SaveUndefinedValue == false)
+                if (toSaveValue is null && SaveUndefinedValue == false)
                 {
                     return;
                 }
@@ -94,7 +94,7 @@ namespace EPG.Configuration
         // ----------------------------------------------------------------------
         private void ChangeValue(object newValue)
         {
-            if (newValue != null && newValue.GetType() != valueType)
+            if (newValue is not null && newValue.GetType() != valueType)
             {
                 throw new ArgumentException(null, nameof(newValue));
             }
