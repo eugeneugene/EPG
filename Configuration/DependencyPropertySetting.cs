@@ -26,25 +26,25 @@ namespace EPG.Configuration
             new FrameworkPropertyMetadata(OnDependencyPropertyChanged));
 
         // ----------------------------------------------------------------------
-        public DependencyPropertySetting(DependencyObject dependencyObject, DependencyProperty dependencyProperty) : this(dependencyObject, dependencyProperty, null)
+        public DependencyPropertySetting(DependencyObject obj, DependencyProperty property) : this(obj, property, null)
         {
         } // DependencyPropertySetting
 
         // ----------------------------------------------------------------------
-        public DependencyPropertySetting(DependencyObject dependencyObject, DependencyProperty dependencyProperty, object defaultValue) : this(dependencyProperty.Name, dependencyObject, dependencyProperty, defaultValue)
+        public DependencyPropertySetting(DependencyObject obj, DependencyProperty property, object defaultValue) : this(property.Name, obj, property, defaultValue)
         {
         } // DependencyPropertySetting
 
         // ----------------------------------------------------------------------
-        public DependencyPropertySetting(string name, DependencyObject dependencyObject, DependencyProperty dependencyProperty) : this(name, dependencyObject, dependencyProperty, null)
+        public DependencyPropertySetting(string name, DependencyObject obj, DependencyProperty property) : this(name, obj, property, null)
         {
         } // DependencyPropertySetting
 
         // ----------------------------------------------------------------------
-        public DependencyPropertySetting(string name, DependencyObject dependencyObject, DependencyProperty dependencyProperty, object defaultValue) : base(name, defaultValue)
+        public DependencyPropertySetting(string name, DependencyObject obj, DependencyProperty property, object defaultValue) : base(name, defaultValue)
         {
-            this.dependencyObject = dependencyObject ?? throw new ArgumentNullException(nameof(dependencyObject));
-            this.dependencyProperty = dependencyProperty ?? throw new ArgumentNullException(nameof(dependencyProperty));
+            dependencyObject = obj ?? throw new ArgumentNullException(nameof(obj));
+            dependencyProperty = property ?? throw new ArgumentNullException(nameof(property));
         } // DependencyPropertySetting
 
         // ----------------------------------------------------------------------
@@ -79,9 +79,9 @@ namespace EPG.Configuration
         } // GetProperty
 
         // ----------------------------------------------------------------------
-        public static void SetProperty(DependencyObject obj, DependencyProperty dependencyProperty)
+        public static void SetProperty(DependencyObject obj, DependencyProperty property)
         {
-            obj.SetValue(PropertyProperty, dependencyProperty);
+            obj.SetValue(PropertyProperty, property);
         } // SetProperty
 
         // ----------------------------------------------------------------------
@@ -139,9 +139,9 @@ namespace EPG.Configuration
         } // Save
 
         // ----------------------------------------------------------------------
-        private static void OnDependencyPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+        private static void OnDependencyPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
-            if (dependencyObject is not IFrameworkInputElement frameworkInputElement)
+            if (obj is not IFrameworkInputElement frameworkInputElement)
             {
                 Debug.WriteLine("DependencyPropertySetting: invalid framework element");
                 return;
@@ -161,7 +161,7 @@ namespace EPG.Configuration
             }
 
             // search on the parent-tree for application settings
-            ApplicationSettings applicationSettings = FindParentSettings(dependencyObject);
+            ApplicationSettings applicationSettings = FindParentSettings(obj);
             if (applicationSettings is null)
             {
                 Debug.WriteLine("DependencyPropertySetting: missing application settings in parent hierarchy");
@@ -170,19 +170,19 @@ namespace EPG.Configuration
 
             string settingName = string.Concat(elementName, ".", dependencyProperty.Name);
             applicationSettings.Settings.Add(
-                new DependencyPropertySetting(settingName, dependencyObject, dependencyProperty));
+                new DependencyPropertySetting(settingName, obj, dependencyProperty));
         } // OnDependencyPropertyChanged
 
         // ----------------------------------------------------------------------
-        private static ApplicationSettings FindParentSettings(DependencyObject element)
+        private static ApplicationSettings FindParentSettings(DependencyObject obj)
         {
-            while (element is not null)
+            while (obj is not null)
             {
-                if (element.ReadLocalValue(ApplicationSettingsProperty) is ApplicationSettings applicationSettings)
+                if (obj.ReadLocalValue(ApplicationSettingsProperty) is ApplicationSettings applicationSettings)
                 {
                     return applicationSettings;
                 }
-                element = LogicalTreeHelper.GetParent(element);
+                obj = LogicalTreeHelper.GetParent(obj);
             }
             return null;
         } // FindParentSettings

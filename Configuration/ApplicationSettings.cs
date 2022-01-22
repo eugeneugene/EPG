@@ -4,7 +4,6 @@
 // language   : c#
 // environment: .NET 2.0
 // --------------------------------------------------------------------------
-
 using System.Collections.Specialized;
 using System.Configuration;
 
@@ -49,13 +48,13 @@ namespace EPG.Configuration
             // provider
             if (provider is null)
             {
-                defaultProvider = new LocalFileSettingsProvider();
-                defaultProvider.Initialize("LocalFileSettingsProvider", new NameValueCollection());
+                this.provider = new LocalFileSettingsProvider();
+                this.provider.Initialize("LocalFileSettingsProvider", new NameValueCollection());
             }
             else
-                defaultProvider = provider;
+                this.provider = provider;
 
-            base.Providers.Add(defaultProvider);
+            base.Providers.Add(this.provider);
 
             // upgrade
             upgradeSettings = new ValueSetting(UpgradeSettingsKey, typeof(bool), true);
@@ -68,9 +67,9 @@ namespace EPG.Configuration
         } // ApplicationSettings
 
         // ----------------------------------------------------------------------
-        public SettingsProvider DefaultProvider
+        public SettingsProvider Provider
         {
-            get { return defaultProvider; }
+            get { return provider; }
         } // DefaultProvider
 
         // ----------------------------------------------------------------------
@@ -235,7 +234,7 @@ namespace EPG.Configuration
 
         // ----------------------------------------------------------------------
         // members
-        private readonly LocalFileSettingsProvider defaultProvider;
+        private readonly LocalFileSettingsProvider provider;
         private readonly SettingCollection settings;
         private SettingCollectorCollection settingCollectors;
         private readonly ValueSetting upgradeSettings;

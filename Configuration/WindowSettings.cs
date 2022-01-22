@@ -134,27 +134,27 @@ namespace EPG.Configuration
         } // SaveOnClose
 
         // ----------------------------------------------------------------------
-        public static string GetSettings(DependencyObject dependencyObject)
+        public static string GetSettings(DependencyObject obj)
         {
-            return dependencyObject.GetValue(SettingsProperty) as string;
+            return obj.GetValue(SettingsProperty) as string;
         } // GetSettings
 
         // ----------------------------------------------------------------------
-        public static void SetSettings(DependencyObject dependencyObject, string settingsKey)
+        public static void SetSettings(DependencyObject obj, string settingsKey)
         {
-            dependencyObject.SetValue(SettingsProperty, settingsKey);
+            obj.SetValue(SettingsProperty, settingsKey);
         } // SetSettings
 
         // ----------------------------------------------------------------------
-        public static DependencyProperty GetCollectedSetting(DependencyObject dependencyObject)
+        public static DependencyProperty GetCollectedSetting(DependencyObject obj)
         {
-            return dependencyObject.GetValue(SettingsProperty) as DependencyProperty;
+            return obj.GetValue(SettingsProperty) as DependencyProperty;
         } // GetCollectedSetting
 
         // ----------------------------------------------------------------------
-        public static void SetCollectedSetting(DependencyObject dependencyObject, DependencyProperty dependencyProperty)
+        public static void SetCollectedSetting(DependencyObject obj, DependencyProperty dependencyProperty)
         {
-            dependencyObject.SetValue(SettingsProperty, dependencyProperty);
+            obj.SetValue(SettingsProperty, dependencyProperty);
         } // SetCollectedSetting
 
         // ----------------------------------------------------------------------

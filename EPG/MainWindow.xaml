@@ -11,6 +11,7 @@
     Title="MainWindow"
     Width="1200"
     Height="800"
+    config:DependencyPropertySetting.ApplicationSettings="{localmodels:DataItem}"
     config:WindowSettings.Settings="XamlWindowSettings"
     d:DataContext="{d:DesignInstance Type=localmodels:MainWindowModel}"
     Closed="WindowClosed"

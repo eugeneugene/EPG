@@ -81,7 +81,7 @@ namespace EPG.Configuration
         protected void CreateSettingProperty(string name, Type type, SettingsSerializeAs serializeAs, object defaultValue)
         {
             ApplicationSettings applicationSettings = ApplicationSettings;
-            if (applicationSettings is null || applicationSettings.DefaultProvider is null)
+            if (applicationSettings is null || applicationSettings.Provider is null)
             {
                 return;
             }
@@ -110,7 +110,7 @@ namespace EPG.Configuration
             settingsProperty = new SettingsProperty(
                 name, // name
                 type, // type
-                applicationSettings.DefaultProvider, // settings provider
+                applicationSettings.Provider, // settings provider
                 false, // is readonly
                 defaultValue, // default
                 serializeAs, // serialize as
