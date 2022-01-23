@@ -27,7 +27,7 @@ namespace EPG.Models
             CapitalSymbols = ToBoolNull(settings.CapitalSymbols);
             Numerals = ToBoolNull(settings.Numerals);
             SpecialSymbols = ToBoolNull(settings.SpecialSymbols);
-            Exclude = string.IsNullOrWhiteSpace(settings.Exclude) ? string.Empty : settings.Exclude;    // Отрезать пробелы и стмволы возврата строки. Нужно решение на уровне сериализатора XML
+            Exclude = string.IsNullOrWhiteSpace(settings.Exclude) ? string.Empty : settings.Exclude;
             Include = string.IsNullOrWhiteSpace(settings.Include) ? string.Empty : settings.Include;
             EnableBloom = settings.EnableBloom;
             ParanoidCheck = settings.ParanoidCheck;
