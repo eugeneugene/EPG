@@ -1,10 +1,8 @@
 ﻿using CSAdapter;
-using EPG.Code;
 using EPG.Configuration;
 using EPG.Models;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Configuration;
 using System.Diagnostics;
 using System.Text;
 using System.Windows;
@@ -19,46 +17,25 @@ namespace EPG
         private readonly Random random;
 
         private readonly MainWindowModel model;
-        private readonly WindowSettings windowSettings;
 
-        internal static EPGSettings Settings { get; set; } = new();
-        internal static EPGSettingsProvider SettingsProvider { get; set; } = new();
-        internal static ApplicationSettings ApplicationSettings { get; set; } = new(Settings, SettingsProvider);
+        private readonly EPGSettings settings;
+        private readonly ApplicationSettings applicationSettings;
 
         public MainWindow(IHostApplicationLifetime applicationLifetime)
         {
             _applicationLifetime = applicationLifetime ?? throw new Exception(nameof(applicationLifetime));
 
             model = new();
+            settings = new();
+            applicationSettings = new(settings);
+            applicationSettings.Load();
 
-            windowSettings = new(this, SettingsProvider);
-            windowSettings.SettingLoading += SettingLoading;
-            windowSettings.SettingsLoaded += SettingsLoaded;
             InitializeComponent();
 
-            ApplicationSettings.Load();
-            //windowSettings.Load();
-
-            model.FromSettings(Settings);
+            model.FromSettings(settings);
             random = new(DateTime.Now.Millisecond);
 
             _applicationLifetime.ApplicationStopping.Register(() => Close(), true);
-        }
-
-        private void SettingsLoaded(object sender, SettingsLoadedEventArgs e)
-        {
-            Debug.WriteLine(e.ToString());
-        }
-
-        private void SettingLoading(object sender, SettingValueCancelEventArgs e)
-        {
-            if (e.Setting is ValueSetting setting )
-            if (windowSettings.TopSetting is DependencyPropertySetting dependencyPropertySetting )
-            if (setting.Name == dependencyPropertySetting.Name)
-            {
-                if (Convert.ToInt32(setting.Value) == 0)
-                { }
-            }
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
@@ -68,9 +45,8 @@ namespace EPG
 
         private void WindowClosed(object sender, EventArgs e)
         {
-            windowSettings.Save();
-            Settings.FromModel(model);
-            ApplicationSettings.Save();
+            settings.FromModel(model);
+            applicationSettings.Save();
         }
 
         private void CommandGenerateExecuted(object sender, ExecutedRoutedEventArgs e)

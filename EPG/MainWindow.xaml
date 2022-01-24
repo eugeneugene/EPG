@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:localcodeconverters="clr-namespace:EPG.Converters"
     xmlns:localcommands="clr-namespace:EPG.Commands"
+    xmlns:localconfig="clr-namespace:EPG.Configuration;assembly=Configuration"
     xmlns:localmodels="clr-namespace:EPG.Models"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="MainWindow"
@@ -19,6 +20,7 @@
         <CommandBinding Command="localcommands:EpgCommands.CommandGenerate" Executed="CommandGenerateExecuted" />
         <CommandBinding Command="localcommands:EpgCommands.EditClear" Executed="ClearExecuted" />
     </Window.CommandBindings>
+    <localconfig:WindowSettings.Settings>XamlWindowSettings</localconfig:WindowSettings.Settings>
     <Window.Resources>
         <localcodeconverters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
         <localcodeconverters:UIntConverter x:Key="UIntConverter" />
@@ -26,6 +28,7 @@
         <localcodeconverters:GenerateEnabledConverter x:Key="GenerateEnabledConverter" />
         <localcodeconverters:DataCollectionVisibleConverter x:Key="DataCollectionVisibleConverter" />
         <localcodeconverters:ColumnVisibleConverter x:Key="ColumnVisibleConverter" />
+        <localcodeconverters:BloomFilterResultConverter x:Key="BloomFilterResultConverter" />
     </Window.Resources>
     <StackPanel>
         <Menu VerticalAlignment="Top">
@@ -249,6 +252,7 @@
         </GroupBox>
         <FrameworkElement x:Name="ProxyElement" Visibility="Collapsed" />
         <DataGrid
+            x:Name="DataGridResult"
             Margin="10"
             AutoGenerateColumns="False"
             ColumnHeaderStyle="{DynamicResource DataGridHeaderDefaultStyle}"
@@ -257,6 +261,17 @@
             Style="{DynamicResource DataGridDefaultStyle}"
             Visibility="{Binding Path=DataCollection, Converter={StaticResource DataCollectionVisibleConverter}}">
             <DataGrid.Columns>
+                <DataGridTemplateColumn Width="50" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Source="{Binding BloomFilterResult, Converter={StaticResource BloomFilterResultConverter}}"
+                                />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn
                     Binding="{Binding Password}"
                     Header="Passwords"
