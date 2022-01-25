@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EPG.Models;
+using System;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
@@ -11,12 +12,23 @@ namespace EPG.Converters
         {
             if (value is null)
             {
-                //using var memoryStream = new MemoryStream();
-                //Resources.IconResources.NotChecked16.Save(memoryStream);
                 var img = new BitmapImage();
                 img.BeginInit();
-                //img.StreamSource = memoryStream;
                 img.UriSource = new Uri("pack://application:,,,/EPG;component/Resources/NotChecked16.png", UriKind.Absolute);
+                img.EndInit();
+                return img;
+            }
+            if (value is BloomFilterResult result)
+            {
+                var img = new BitmapImage();
+                img.BeginInit();
+                img.UriSource = result switch
+                {
+                    BloomFilterResult.NOTFOUND => new Uri("pack://application:,,,/EPG;component/Resources/Ok.png", UriKind.Absolute),
+                    BloomFilterResult.UNSAFE => new Uri("pack://application:,,,/EPG;component/Resources/Unsafe.png", UriKind.Absolute),
+                    BloomFilterResult.FOUND => new Uri("pack://application:,,,/EPG;component/Resources/Found.png", UriKind.Absolute),
+                    _ => new Uri("pack://application:,,,/EPG;component/Resources/NotChecked16.png", UriKind.Absolute),
+                };                  
                 img.EndInit();
                 return img;
             }

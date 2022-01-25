@@ -259,16 +259,16 @@
             DataContext="{Binding Path=ResultModel}"
             ItemsSource="{Binding Path=DataCollection}"
             Style="{DynamicResource DataGridDefaultStyle}"
+            UseLayoutRounding="True"
             Visibility="{Binding Path=DataCollection, Converter={StaticResource DataCollectionVisibleConverter}}">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Width="50" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Image
+                            <Image  Stretch="None"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Source="{Binding BloomFilterResult, Converter={StaticResource BloomFilterResultConverter}}"
-                                />
+                                Source="{Binding BloomFilterResult, Converter={StaticResource BloomFilterResultConverter}}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
