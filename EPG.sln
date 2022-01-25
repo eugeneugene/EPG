@@ -29,7 +29,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PasswordDll", "PasswordDll\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfNotification", "WpfNotification\WpfNotification.csproj", "{3406E224-83DF-46D5-8A87-5F13B1158224}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Configuration", "Configuration\Configuration.csproj", "{594E47F4-6F11-4F0B-BD07-80D4608CFF55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Configuration", "Configuration\Configuration.csproj", "{594E47F4-6F11-4F0B-BD07-80D4608CFF55}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,12 +79,12 @@ Global
 		{C88A8464-83AD-4BEB-8935-C760711E0FF8}.Release|x64.Build.0 = Release|x64
 		{3406E224-83DF-46D5-8A87-5F13B1158224}.Debug|x64.ActiveCfg = Debug|x64
 		{3406E224-83DF-46D5-8A87-5F13B1158224}.Debug|x64.Build.0 = Debug|x64
-		{3406E224-83DF-46D5-8A87-5F13B1158224}.Release|x64.ActiveCfg = Release|Any CPU
-		{3406E224-83DF-46D5-8A87-5F13B1158224}.Release|x64.Build.0 = Release|Any CPU
+		{3406E224-83DF-46D5-8A87-5F13B1158224}.Release|x64.ActiveCfg = Release|x64
+		{3406E224-83DF-46D5-8A87-5F13B1158224}.Release|x64.Build.0 = Release|x64
 		{594E47F4-6F11-4F0B-BD07-80D4608CFF55}.Debug|x64.ActiveCfg = Debug|x64
 		{594E47F4-6F11-4F0B-BD07-80D4608CFF55}.Debug|x64.Build.0 = Debug|x64
-		{594E47F4-6F11-4F0B-BD07-80D4608CFF55}.Release|x64.ActiveCfg = Release|Any CPU
-		{594E47F4-6F11-4F0B-BD07-80D4608CFF55}.Release|x64.Build.0 = Release|Any CPU
+		{594E47F4-6F11-4F0B-BD07-80D4608CFF55}.Release|x64.ActiveCfg = Release|x64
+		{594E47F4-6F11-4F0B-BD07-80D4608CFF55}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
