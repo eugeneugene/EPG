@@ -19,6 +19,7 @@
         <CommandBinding Command="ApplicationCommands.Close" Executed="CommandCloseExecuted" />
         <CommandBinding Command="localcommands:EpgCommands.CommandGenerate" Executed="CommandGenerateExecuted" />
         <CommandBinding Command="localcommands:EpgCommands.EditClear" Executed="ClearExecuted" />
+        <CommandBinding Command="localcommands:EpgCommands.FilterBrowse" Executed="FilterBrowse" />
     </Window.CommandBindings>
     <localconfig:WindowSettings.Settings>XamlWindowSettings</localconfig:WindowSettings.Settings>
     <Window.Resources>
@@ -30,8 +31,16 @@
         <localcodeconverters:ColumnVisibleConverter x:Key="ColumnVisibleConverter" />
         <localcodeconverters:BloomFilterResultConverter x:Key="BloomFilterResultConverter" />
     </Window.Resources>
-    <StackPanel>
-        <Menu VerticalAlignment="Top">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0" VerticalAlignment="Top">
             <MenuItem Header="File">
                 <MenuItem Command="ApplicationCommands.Close" Header="Exit" />
             </MenuItem>
@@ -44,7 +53,14 @@
                     IsChecked="{Binding Path=AutoClear}" />
             </MenuItem>
         </Menu>
-        <GroupBox Margin="10" Header="Options">
+        <FrameworkElement
+            x:Name="ProxyElement"
+            Grid.Row="1"
+            Visibility="Collapsed" />
+        <GroupBox
+            Grid.Row="2"
+            Margin="10"
+            Header="Options">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="40*" />
@@ -123,7 +139,7 @@
                     </Grid>
                 </GroupBox>
                 <Button
-                    Grid.Column="2"
+                    Grid.Column="3"
                     Width="80"
                     Height="20"
                     Command="localcommands:EpgCommands.CommandGenerate"
@@ -139,7 +155,10 @@
                 </Button>
             </Grid>
         </GroupBox>
-        <GroupBox Margin="10" Header="Character set">
+        <GroupBox
+            Grid.Row="3"
+            Margin="10"
+            Header="Character set">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
@@ -156,14 +175,14 @@
                     Margin="3"
                     Content="Small symbols"
                     IsChecked="{Binding Path=SmallSymbols}"
-                    IsThreeState="{Binding Path=PasswordMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static localmodels:PasswordMode.Random}}" />
+                    IsThreeState="True" />
                 <CheckBox
                     Grid.Row="1"
                     Grid.Column="0"
                     Margin="3"
                     Content="Capital symbols"
                     IsChecked="{Binding Path=CapitalSymbols}"
-                    IsThreeState="{Binding Path=PasswordMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static localmodels:PasswordMode.Random}}" />
+                    IsThreeState="True" />
                 <CheckBox
                     Grid.Row="0"
                     Grid.Column="1"
@@ -202,7 +221,10 @@
                 </Grid>
             </Grid>
         </GroupBox>
-        <GroupBox Margin="10" Header="Restrictions">
+        <GroupBox
+            Grid.Row="4"
+            Margin="10"
+            Header="Restrictions">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="26" />
@@ -239,6 +261,7 @@
                         Grid.Column="2"
                         Width="80"
                         Margin="3"
+                        Command="localcommands:EpgCommands.FilterBrowse"
                         Content="Browse"
                         Style="{StaticResource PressButtonEffectStyle}" />
                 </Grid>
@@ -250,9 +273,8 @@
                     IsChecked="{Binding Path=CalculateQuality}" />
             </Grid>
         </GroupBox>
-        <FrameworkElement x:Name="ProxyElement" Visibility="Collapsed" />
         <DataGrid
-            x:Name="DataGridResult"
+            Grid.Row="5"
             Margin="10"
             AutoGenerateColumns="False"
             ColumnHeaderStyle="{DynamicResource DataGridHeaderDefaultStyle}"
@@ -265,10 +287,11 @@
                 <DataGridTemplateColumn Width="50" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Image  Stretch="None"
+                            <Image
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Source="{Binding BloomFilterResult, Converter={StaticResource BloomFilterResultConverter}}" />
+                                Source="{Binding BloomFilterResult, Converter={StaticResource BloomFilterResultConverter}}"
+                                Stretch="None" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -293,5 +316,5 @@
                     Visibility="{Binding DataContext.ResultModel.CalculateQuality, Converter={StaticResource ColumnVisibleConverter}, Source={x:Reference ProxyElement}}" />
             </DataGrid.Columns>
         </DataGrid>
-    </StackPanel>
+    </Grid>
 </Window>

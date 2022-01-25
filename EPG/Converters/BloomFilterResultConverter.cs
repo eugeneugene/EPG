@@ -14,7 +14,7 @@ namespace EPG.Converters
             {
                 var img = new BitmapImage();
                 img.BeginInit();
-                img.UriSource = new Uri("pack://application:,,,/EPG;component/Resources/NotChecked16.png", UriKind.Absolute);
+                img.UriSource = new Uri("pack://application:,,,/EPG;component/Resources/NotChecked.png", UriKind.Absolute);
                 img.EndInit();
                 return img;
             }
@@ -27,7 +27,7 @@ namespace EPG.Converters
                     BloomFilterResult.NOTFOUND => new Uri("pack://application:,,,/EPG;component/Resources/Ok.png", UriKind.Absolute),
                     BloomFilterResult.UNSAFE => new Uri("pack://application:,,,/EPG;component/Resources/Unsafe.png", UriKind.Absolute),
                     BloomFilterResult.FOUND => new Uri("pack://application:,,,/EPG;component/Resources/Found.png", UriKind.Absolute),
-                    _ => new Uri("pack://application:,,,/EPG;component/Resources/NotChecked16.png", UriKind.Absolute),
+                    _ => new Uri("pack://application:,,,/EPG;component/Resources/NotChecked.png", UriKind.Absolute),
                 };                  
                 img.EndInit();
                 return img;

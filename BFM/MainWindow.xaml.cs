@@ -33,19 +33,21 @@ namespace BFM
 
         private void BloomFilterOpenCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
+            e.Handled = true;
             var res = BloomFileDialog.ShowDialog(this) ?? false;
             if (res)
                 model.OpenBloom(BloomFileDialog.FileName);
-            e.Handled = true;
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
         {
+            e.Handled = true;
             DataContext = model;
         }
 
         private void BloomFilterImportCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
+            e.Handled = true;
             var importDialog = _serviceProvider.GetRequiredService<ImportDialog>();
             importDialog.ShowDialog();
             if (importDialog.Model is not null && importDialog.Model.State == Code.LinesCounterState.FINISH && !string.IsNullOrEmpty(importDialog.Model.BloomFilter))
@@ -54,6 +56,7 @@ namespace BFM
 
         private void BloomFilterCloseCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
+            e.Handled = true;
             model.CloseBloom();
         }
     }

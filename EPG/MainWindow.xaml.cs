@@ -2,9 +2,11 @@
 using EPG.Configuration;
 using EPG.Models;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Win32;
 using System;
 using System.Diagnostics;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using WpfNotification;
@@ -20,6 +22,7 @@ namespace EPG
 
         private readonly EPGSettings settings;
         private readonly ApplicationSettings applicationSettings;
+        private readonly OpenFileDialog BloomFileDialog;
 
         public MainWindow(IHostApplicationLifetime applicationLifetime)
         {
@@ -36,10 +39,20 @@ namespace EPG
             random = new(DateTime.Now.Millisecond);
 
             _applicationLifetime.ApplicationStopping.Register(() => Close(), true);
+
+            BloomFileDialog = new()
+            {
+                CheckFileExists = false,
+                CheckPathExists = true,
+                DefaultExt = ".bf",
+                Filter = "Bloom Filter|*.bf|Any file|*.*",
+                Title = "Open Bloom Filter"
+            };
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
         {
+            e.Handled = true;
             DataContext = model;
         }
 
@@ -49,8 +62,9 @@ namespace EPG
             applicationSettings.Save();
         }
 
-        private void CommandGenerateExecuted(object sender, ExecutedRoutedEventArgs e)
+        private async void CommandGenerateExecuted(object sender, ExecutedRoutedEventArgs e)
         {
+            e.Handled = true;
             if (model.PasswordMode is null)
                 return;
             if (model.NumberOfPasswords == 0U)
@@ -90,52 +104,59 @@ namespace EPG
             model.ResultModel.EnableBloom = model.EnableBloom;
             model.ResultModel.CalculateQuality = model.CalculateQuality;
 
+            Bloom? bloom = null;
             try
             {
-                Password password = new(modes, model.Include ?? string.Empty, model.Exclude ?? string.Empty);
-                Bloom? bloom = null;
-                if (model.EnableBloom && !string.IsNullOrEmpty(model.Filter))
+                Mouse.OverrideCursor = Cursors.Wait;
+                await Task.Run(() =>
                 {
-                    bloom = new();
-                    bloom.Open(model.Filter);
-                    bloom.Load();
-                }
-                for (uint i = 0; i < model.NumberOfPasswords; i++)
-                {
-                    uint length = (uint)random.Next((int)model.MinimumLength, (int)model.MaximumLength);
-                    switch (model.PasswordMode)
+                    Password password = new(modes, model.Include ?? string.Empty, model.Exclude ?? string.Empty);
+                    if (model.EnableBloom && !string.IsNullOrEmpty(model.Filter))
                     {
-                        case PasswordMode.Pronounceable:
-                            {
-                                if (!password.GenerateWord(length))
-                                    return;
-                                string pass = password.GetWord();
-                                string hpass = string.Empty;
-                                if (model.ShowHyphenated)
-                                    hpass = password.GetHyphenatedWord();
-                                BloomFilterResult? bloomFilterResult = null;
-                                if (bloom is not null)
-                                    bloomFilterResult = CheckBloom(bloom, pass);
-                                model.ResultModel.DataCollection.Add(new(pass, hpass, bloomFilterResult, null));
-                            }
-                            break;
-                        case PasswordMode.Random:
-                            {
-                                if (!password.GenerateWord(length))
-                                    return;
-                                string pass = password.GetWord();
-                                BloomFilterResult? bloomFilterResult = null;
-                                if (bloom is not null)
-                                    bloomFilterResult = CheckBloom(bloom, pass);
-                                model.ResultModel.DataCollection.Add(new(pass, null, bloomFilterResult, null));
-                            }
-                            break;
+                        bloom = new();
+                        bloom.Open(model.Filter);
+                        bloom.Load();
                     }
-                }
+                    for (uint i = 0; i < model.NumberOfPasswords; i++)
+                    {
+                        uint length = (uint)random.Next((int)model.MinimumLength, (int)model.MaximumLength);
+                        switch (model.PasswordMode)
+                        {
+                            case PasswordMode.Pronounceable:
+                                {
+                                    if (!password.GenerateWord(length))
+                                        return;
+                                    string pass = password.GetWord();
+                                    string hpass = string.Empty;
+                                    if (model.ShowHyphenated)
+                                        hpass = password.GetHyphenatedWord();
+                                    BloomFilterResult? bloomFilterResult = null;
+                                    if (bloom is not null)
+                                        bloomFilterResult = CheckBloom(bloom, pass);
+                                    Dispatcher.Invoke(() => model.ResultModel.DataCollection.Add(new(pass, hpass, bloomFilterResult, null)));
+                                }
+                                break;
+                            case PasswordMode.Random:
+                                {
+                                    if (!password.GenerateWord(length))
+                                        return;
+                                    string pass = password.GetWord();
+                                    BloomFilterResult? bloomFilterResult = null;
+                                    if (bloom is not null)
+                                        bloomFilterResult = CheckBloom(bloom, pass);
+                                    Dispatcher.Invoke(() => model.ResultModel.DataCollection.Add(new(pass, null, bloomFilterResult, null)));
+                                }
+                                break;
+                        }
+                    }
+                });
+                Mouse.OverrideCursor = null;
+                bloom?.Close();
                 bloom?.Dispose();
             }
             catch (Exception ex)
             {
+                bloom?.Abort();
                 var sb = new StringBuilder();
                 sb.AppendLine("Exception: " + ex.Message);
                 while (ex.InnerException is not null)
@@ -152,11 +173,13 @@ namespace EPG
 
         private void CommandCloseExecuted(object sender, ExecutedRoutedEventArgs e)
         {
+            e.Handled = true;
             Close();
         }
 
         private void ClearExecuted(object sender, ExecutedRoutedEventArgs e)
         {
+            e.Handled = true;
             model.ResultModel.DataCollection.Clear();
         }
 
@@ -183,6 +206,14 @@ namespace EPG
                     return BloomFilterResult.UNSAFE;
             }
             return BloomFilterResult.NOTFOUND;
+        }
+
+        private void FilterBrowse(object sender, ExecutedRoutedEventArgs e)
+        {
+            e.Handled = true;
+            var res = BloomFileDialog.ShowDialog(this) ?? false;
+            if (res)
+                model.Filter = BloomFileDialog.FileName;
         }
     }
 }
