@@ -34,11 +34,14 @@ namespace BloomCS_Test
         [TestMethod]
         public void Words1000ForceC()
         {
-            string included = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            using Password password = new(Password.Modes.LowersForced | Password.Modes.CapitalsForced, string.Empty, string.Empty);
+            string includedL = "abcdefghijklmnopqrstuvwxyz";
+            string includedC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            using Password password = new(Password.Modes.Lowers | Password.Modes.CapitalsForced, string.Empty, string.Empty);
             Assert.IsNotNull(password);
 
-            for (int i = 0; i < 1000; i++)
+            int amount = 1000;
+            decimal l = 0.0m;
+            for (int i = 0; i < amount; i++)
             {
                 bool res = password.GenerateWord(10);
                 Assert.IsTrue(res);
@@ -50,19 +53,27 @@ namespace BloomCS_Test
                 Assert.AreEqual(10, word.Length);
                 uint l1 = password.GetWordLength();
                 Assert.AreEqual(10u, l1);
-                Assert.IsTrue(word.IndexOfAny(included.ToCharArray()) >= 0);
+                Assert.IsTrue(word.IndexOfAny(includedC.ToCharArray()) >= 0);
+
+                if (word.IndexOfAny(includedL.ToCharArray()) >= 0)
+                    l++;
             }
+
+            decimal p = l / amount;
+            Debug.WriteLine("Fraction of Passwords with small letters included = {0:F5}", p);
         }
 
         [TestMethod]
-        public void Words1000ForceSC()
+        public void Words1000ForceL()
         {
-            string includedS = "abcdefghijklmnopqrstuvwxyz";
+            string includedL = "abcdefghijklmnopqrstuvwxyz";
             string includedC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            using Password password = new(Password.Modes.LowersForced | Password.Modes.CapitalsForced, string.Empty, string.Empty);
+            using Password password = new(Password.Modes.LowersForced | Password.Modes.Capitals, string.Empty, string.Empty);
             Assert.IsNotNull(password);
 
-            for (int i = 0; i < 1000; i++)
+            int amount = 1000;
+            decimal c = 0.0m;
+            for (int i = 0; i < amount; i++)
             {
                 bool res = password.GenerateWord(10);
                 Assert.IsTrue(res);
@@ -74,9 +85,14 @@ namespace BloomCS_Test
                 Assert.AreEqual(10, word.Length);
                 uint l1 = password.GetWordLength();
                 Assert.AreEqual(10u, l1);
-                Assert.IsTrue(word.IndexOfAny(includedS.ToCharArray()) >= 0);
-                Assert.IsTrue(word.IndexOfAny(includedC.ToCharArray()) >= 0);
+                Assert.IsTrue(word.IndexOfAny(includedL.ToCharArray()) >= 0);
+
+                if (word.IndexOfAny(includedC.ToCharArray()) >= 0)
+                    c++;
             }
+
+            decimal p = c / amount;
+            Debug.WriteLine("Fraction of Passwords with capital letters included = {0:F5}", p);
         }
 
         [TestMethod]
