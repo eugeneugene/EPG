@@ -26,20 +26,6 @@ namespace EPG.Models
             }
         }
 
-        private bool enableBloom;
-        public bool EnableBloom
-        {
-            get => enableBloom;
-            set
-            {
-                if (enableBloom != value)
-                {
-                    enableBloom = value;
-                    NotifyPropertyChanged(nameof(EnableBloom));
-                }
-            }
-        }
-
         private bool calculateQuality;
         public bool CalculateQuality
         {

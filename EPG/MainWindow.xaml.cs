@@ -101,7 +101,6 @@ namespace EPG
                 model.ResultModel.DataCollection.Clear();
 
             model.ResultModel.ShowHyphenated = model.ShowHyphenated;
-            model.ResultModel.EnableBloom = model.EnableBloom;
             model.ResultModel.CalculateQuality = model.CalculateQuality;
 
             Bloom? bloom = null;
@@ -133,7 +132,10 @@ namespace EPG
                                     BloomFilterResult? bloomFilterResult = null;
                                     if (bloom is not null)
                                         bloomFilterResult = CheckBloom(bloom, pass);
-                                    Dispatcher.Invoke(() => model.ResultModel.DataCollection.Add(new(pass, hpass, bloomFilterResult, null)));
+                                    int? Quality = null;
+                                    if (model.CalculateQuality)
+                                        Quality = PasswordQuality.CalculateQuality(pass);
+                                    Dispatcher.Invoke(() => model.ResultModel.DataCollection.Add(new(pass, hpass, bloomFilterResult, Quality)));
                                 }
                                 break;
                             case PasswordMode.Random:
@@ -144,7 +146,10 @@ namespace EPG
                                     BloomFilterResult? bloomFilterResult = null;
                                     if (bloom is not null)
                                         bloomFilterResult = CheckBloom(bloom, pass);
-                                    Dispatcher.Invoke(() => model.ResultModel.DataCollection.Add(new(pass, null, bloomFilterResult, null)));
+                                    int? Quality = null;
+                                    if (model.CalculateQuality)
+                                        Quality = PasswordQuality.CalculateQuality(pass);
+                                    Dispatcher.Invoke(() => model.ResultModel.DataCollection.Add(new(pass, null, bloomFilterResult, Quality)));
                                 }
                                 break;
                         }

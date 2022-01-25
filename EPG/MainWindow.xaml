@@ -304,16 +304,24 @@
                     Header="Hyphenated Passwords"
                     IsReadOnly="True"
                     Visibility="{Binding DataContext.ResultModel.ShowHyphenated, Converter={StaticResource ColumnVisibleConverter}, Source={x:Reference ProxyElement}}" />
-                <DataGridTextColumn
-                    Binding="{Binding BloomFilterResult}"
-                    Header="BloomFilter Results"
-                    IsReadOnly="True"
-                    Visibility="{Binding DataContext.ResultModel.EnableBloom, Converter={StaticResource ColumnVisibleConverter}, Source={x:Reference ProxyElement}}" />
-                <DataGridTextColumn
-                    Binding="{Binding PasswordQuality}"
-                    Header="Passwords Quality"
-                    IsReadOnly="True"
-                    Visibility="{Binding DataContext.ResultModel.CalculateQuality, Converter={StaticResource ColumnVisibleConverter}, Source={x:Reference ProxyElement}}" />
+                <DataGridTemplateColumn Header="Passwords Quality">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <ProgressBar
+                                    Grid.Column="0"
+                                    Maximum="128"
+                                    Minimum="0"
+                                    Value="{Binding PasswordQuality, Mode=OneWay}" />
+                                <TextBlock
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding PasswordQuality, Mode=OneWay}" />
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
