@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EPG
+namespace EPG.Code
 {
     internal static class PasswordQuality
     {

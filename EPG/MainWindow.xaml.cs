@@ -1,9 +1,11 @@
 ﻿using CSAdapter;
+using EPG.Code;
 using EPG.Configuration;
 using EPG.Models;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
@@ -116,6 +118,7 @@ namespace EPG
                         bloom.Open(model.Filter);
                         bloom.Load();
                     }
+                    List<DataItem> data = new();
                     for (uint i = 0; i < model.NumberOfPasswords; i++)
                     {
                         uint length = (uint)random.Next((int)model.MinimumLength, (int)model.MaximumLength);
@@ -135,7 +138,7 @@ namespace EPG
                                     int? Quality = null;
                                     if (model.CalculateQuality)
                                         Quality = PasswordQuality.CalculateQuality(pass);
-                                    Dispatcher.Invoke(() => model.ResultModel.DataCollection.Add(new(pass, hpass, bloomFilterResult, Quality)));
+                                    data.Add(new(pass, hpass, bloomFilterResult, Quality));
                                 }
                                 break;
                             case PasswordMode.Random:
@@ -149,13 +152,17 @@ namespace EPG
                                     int? Quality = null;
                                     if (model.CalculateQuality)
                                         Quality = PasswordQuality.CalculateQuality(pass);
-                                    Dispatcher.Invoke(() => model.ResultModel.DataCollection.Add(new(pass, null, bloomFilterResult, Quality)));
+                                    data.Add(new(pass, null, bloomFilterResult, Quality));
                                 }
                                 break;
                         }
                     }
+                    Dispatcher.Invoke(() =>
+                    {
+                        foreach (var d in data)
+                            model.ResultModel.DataCollection.Add(d);
+                    });
                 });
-                Mouse.OverrideCursor = null;
                 bloom?.Close();
                 bloom?.Dispose();
             }
@@ -173,6 +180,10 @@ namespace EPG
                 var popup = new PopupWindow("Exception", sb.ToString(), NotificationType.Error);
                 popup.Show();
                 Debug.WriteLine(ex.ToString());
+            }
+            finally
+            {
+                Mouse.OverrideCursor = null;
             }
         }
 
@@ -219,6 +230,11 @@ namespace EPG
             var res = BloomFileDialog.ShowDialog(this) ?? false;
             if (res)
                 model.Filter = BloomFileDialog.FileName;
+        }
+
+        private void CommandPrintExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            DataGridPrint.Print(ResultDataGrid, "Password results");
         }
     }
 }
