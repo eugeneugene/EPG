@@ -233,7 +233,7 @@ namespace EPG
                 model.Filter = BloomFileDialog.FileName;
         }
 
-        private void CommandPrintExecuted(object sender, ExecutedRoutedEventArgs )
+        private void CommandPrintExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             PrintDialog printDlg = new();
             if (printDlg.ShowDialog().GetValueOrDefault())
