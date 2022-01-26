@@ -9,7 +9,7 @@ using System.Windows.Media;
 
 namespace EPG.Code
 {
-    public static  class DataGridPrint
+    public static class DataGridPrint
     {
         public static void Print(DataGrid dataGrid, string title)
         {
@@ -17,7 +17,7 @@ namespace EPG.Code
 
             if (printDialog.ShowDialog() == true)
             {
-                FlowDocument fd = new ();
+                FlowDocument fd = new();
 
                 Paragraph p = new(new Run(title));
                 p.FontStyle = dataGrid.FontStyle;
@@ -25,9 +25,9 @@ namespace EPG.Code
                 p.FontSize = 18;
                 fd.Blocks.Add(p);
 
-                Table table = new ();
-                TableRowGroup tableRowGroup = new ();
-                TableRow r = new ();
+                Table table = new();
+                TableRowGroup tableRowGroup = new();
+                TableRow r = new();
                 fd.PageWidth = printDialog.PrintableAreaWidth;
                 fd.PageHeight = printDialog.PrintableAreaHeight;
                 fd.BringIntoView();
@@ -37,7 +37,7 @@ namespace EPG.Code
                 table.CellSpacing = 0;
 
                 var headerList = dataGrid.Columns.Select(e => e.Header?.ToString() ?? string.Empty).ToList();
-                List<dynamic> bindList = new ();
+                List<dynamic> bindList = new();
 
                 for (int j = 0; j < headerList.Count; j++)
                 {
@@ -55,7 +55,7 @@ namespace EPG.Code
                     {
                         var binding = column.Binding as Binding;
                         if (binding is not null)
-                        bindList.Add(binding.Path.Path);
+                            bindList.Add(binding.Path.Path);
                     }
                 }
 
@@ -67,7 +67,7 @@ namespace EPG.Code
                     dynamic row;
 
                     if (dataGrid.ItemsSource.ToString().ToLower() == "system.data.linqdataview")
-                    { 
+                    {
                         row = (DataRowView)dataGrid.Items.GetItemAt(i);
                     }
                     else

@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using WpfNotification;
 
@@ -232,9 +233,16 @@ namespace EPG
                 model.Filter = BloomFileDialog.FileName;
         }
 
-        private void CommandPrintExecuted(object sender, ExecutedRoutedEventArgs e)
+        private void CommandPrintExecuted(object sender, ExecutedRoutedEventArgs )
         {
-            DataGridPrint.Print(ResultDataGrid, "Password results");
+            PrintDialog printDlg = new();
+            if (printDlg.ShowDialog().GetValueOrDefault())
+            {
+                //WpfPrinting wpfPrinting = new WpfPrinting();
+                //wpfPrinting.PrintDataGrid(null, ResultDataGrid, null, printDlg);
+                WpfPrinting wpfPrinting = new WpfPrinting();
+                wpfPrinting.PrintDataGrid(ResultDataGrid, printDlg);
+            }
         }
     }
 }
