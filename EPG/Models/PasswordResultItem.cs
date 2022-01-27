@@ -1,8 +1,8 @@
 ﻿namespace EPG.Models
 {
-    public class DataItem
+    public class PasswordResultItem
     {
-        public DataItem(string password, string? hyphenatedPassword, BloomFilterResult? bloomFilterResult, decimal? passwordQuality)
+        public PasswordResultItem(string password, string? hyphenatedPassword, BloomFilterResult? bloomFilterResult, decimal? passwordQuality)
         {
             Password = password;
             HyphenatedPassword = hyphenatedPassword;

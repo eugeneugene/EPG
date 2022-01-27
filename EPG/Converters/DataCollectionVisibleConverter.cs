@@ -11,7 +11,7 @@ namespace EPG.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is ObservableCollection<DataItem> collection)
+            if (value is ObservableCollection<PasswordResultItem> collection)
                 return collection.Count > 0 ? Visibility.Visible : Visibility.Hidden;
             return Binding.DoNothing;
         }

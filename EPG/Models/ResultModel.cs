@@ -40,7 +40,7 @@ namespace EPG.Models
             }
         }
 
-        public ObservableCollection<DataItem> DataCollection { get; }
+        public ObservableCollection<PasswordResultItem> DataCollection { get; }
 
         private void DataCollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {

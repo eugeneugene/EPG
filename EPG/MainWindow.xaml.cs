@@ -2,6 +2,8 @@
 using EPG.Code;
 using EPG.Configuration;
 using EPG.Models;
+using EPG.Printing.Controls;
+using EPG.Printing.Documents;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Win32;
 using System;
@@ -119,7 +121,7 @@ namespace EPG
                         bloom.Open(model.Filter);
                         bloom.Load();
                     }
-                    List<DataItem> data = new();
+                    List<PasswordResultItem> data = new();
                     for (uint i = 0; i < model.NumberOfPasswords; i++)
                     {
                         uint length = (uint)random.Next((int)model.MinimumLength, (int)model.MaximumLength);
@@ -238,40 +240,12 @@ namespace EPG
             PrintDialog printDlg = new();
             if (printDlg.ShowDialog().GetValueOrDefault())
             {
-                DataGrid printDataGrid = new()
-                {
-                    Margin = new(50.0, 40.0, 50.0, 40.0),
-                    AutoGenerateColumns = false,
-                    ColumnHeaderStyle = ResultDataGrid.ColumnHeaderStyle,
-                    DataContext = model.ResultModel,
-                    ItemsSource = model.ResultModel.DataCollection,
-                    Style = ResultDataGrid.Style,
-                    UseLayoutRounding = true,
-                    Width = printDlg.PrintableAreaWidth - 100.0,
-                };
-
-                printDataGrid.Columns.Add(new DataGridTemplateColumn()
-                {
-                    Header = "Applicability",
-                    Width = 100,
-                    CellTemplate = (ResultDataGrid.Columns[0] as DataGridTemplateColumn)?.CellTemplate ?? null,
-                });
-                printDataGrid.Columns.Add(new DataGridTextColumn()
-                {
-                    Header = "Passwords",
-                    Binding = (ResultDataGrid.Columns[1] as DataGridBoundColumn)?.Binding ?? null,
-                });
-                printDataGrid.Columns.Add(new DataGridTextColumn()
-                {
-                    Header = "Hyphenated Passwords",
-                    Binding = (ResultDataGrid.Columns[2] as DataGridBoundColumn)?.Binding ?? null,
-                });
-                printDataGrid.Columns.Add(new DataGridTemplateColumn()
-                {
-                    Header = "Passwords Quality",
-                    CellTemplate = (ResultDataGrid.Columns[3] as DataGridTemplateColumn)?.CellTemplate ?? null,
-                });
-                WpfPrinting.PrintDataGrid(printDataGrid, printDlg);
+                var previewer = new PrintPreviewer<PasswordResultFormPage>(
+                    new PasswordResultFormPage(new PasswordResultFormHeader("Title", DateTime.Now, model.ResultModel.DataCollection.Count, "mode", 0, 1), model.ResultModel.DataCollection),
+                    DataGridPrintablePaginator<PasswordResultItem>.Paginate,
+                    PrinterSelector<IPrinter>.FromLocalServer<IPrinter>(q => new Printer(q)));
+                var document = FixedDocumentCreator.FromDataContexts(previewer.Pages, new Size(printDlg.PrintableAreaWidth, printDlg.PrintableAreaHeight));
+                printDlg.PrintDocument(document.DocumentPaginator, "Title 1");
             }
         }
     }
