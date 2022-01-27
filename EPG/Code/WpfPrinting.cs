@@ -236,12 +236,6 @@ namespace EPG.Code
             PrintFixedDocument(fixedDoc, printDialog);
         }
 
-        public void PrintDataGrid(DataGrid grid, PrintDialog printDialog)
-        {
-            var fixedDoc = GetFixedDocument(grid, printDialog);
-            PrintFixedDocument(fixedDoc, printDialog);
-        }
-
         private DataGrid GetDataGrid(DataGrid grid, double GridActualWidth, double PageWidthWithMargin)
         {
             DataGrid printed = new();
@@ -332,6 +326,12 @@ namespace EPG.Code
         {
             XpsDocumentWriter writer = PrintQueue.CreateXpsDocumentWriter(printDialog.PrintQueue);
             writer.Write(fixedDoc, printDialog.PrintTicket);
+        }
+
+        public static void PrintDataGrid(DataGrid grid, PrintDialog printDialog)
+        {
+            var fixedDoc = GetFixedDocument(grid, printDialog);
+            PrintFixedDocument(fixedDoc, printDialog);
         }
 
         public static FixedDocument GetFixedDocument(FrameworkElement element, PrintDialog printDialog)

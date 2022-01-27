@@ -238,10 +238,40 @@ namespace EPG
             PrintDialog printDlg = new();
             if (printDlg.ShowDialog().GetValueOrDefault())
             {
-                //WpfPrinting wpfPrinting = new WpfPrinting();
-                //wpfPrinting.PrintDataGrid(null, ResultDataGrid, null, printDlg);
-                WpfPrinting wpfPrinting = new WpfPrinting();
-                wpfPrinting.PrintDataGrid(ResultDataGrid, printDlg);
+                DataGrid printDataGrid = new()
+                {
+                    Margin = new(50.0, 40.0, 50.0, 40.0),
+                    AutoGenerateColumns = false,
+                    ColumnHeaderStyle = ResultDataGrid.ColumnHeaderStyle,
+                    DataContext = model.ResultModel,
+                    ItemsSource = model.ResultModel.DataCollection,
+                    Style = ResultDataGrid.Style,
+                    UseLayoutRounding = true,
+                    Width = printDlg.PrintableAreaWidth - 100.0,
+                };
+
+                printDataGrid.Columns.Add(new DataGridTemplateColumn()
+                {
+                    Header = "Applicability",
+                    Width = 100,
+                    CellTemplate = (ResultDataGrid.Columns[0] as DataGridTemplateColumn)?.CellTemplate ?? null,
+                });
+                printDataGrid.Columns.Add(new DataGridTextColumn()
+                {
+                    Header = "Passwords",
+                    Binding = (ResultDataGrid.Columns[1] as DataGridBoundColumn)?.Binding ?? null,
+                });
+                printDataGrid.Columns.Add(new DataGridTextColumn()
+                {
+                    Header = "Hyphenated Passwords",
+                    Binding = (ResultDataGrid.Columns[2] as DataGridBoundColumn)?.Binding ?? null,
+                });
+                printDataGrid.Columns.Add(new DataGridTemplateColumn()
+                {
+                    Header = "Passwords Quality",
+                    CellTemplate = (ResultDataGrid.Columns[3] as DataGridTemplateColumn)?.CellTemplate ?? null,
+                });
+                WpfPrinting.PrintDataGrid(printDataGrid, printDlg);
             }
         }
     }
