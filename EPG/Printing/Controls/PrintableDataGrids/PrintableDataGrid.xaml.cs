@@ -14,19 +14,13 @@ namespace EPG.Printing.Controls
         readonly Grid grid;
         readonly StackPanel stackPanel;
 
-        readonly ObservableCollection<PrintableDataGridColumn> columns = new();
-
         /// <summary>
         /// Gets an collection to store columns.
         /// </summary>
-        public ObservableCollection<PrintableDataGridColumn> Columns
-        {
-            get { return columns; }
-        }
+        public ObservableCollection<PrintableDataGridColumn> Columns { get; } = new();
 
         object[]? items;
 
-        #region ItemsSource
         /// <summary>
         /// Gets the dependency property of <see cref="ItemsSource"/>.
         /// </summary>
@@ -62,9 +56,7 @@ namespace EPG.Printing.Controls
                 @this.Reset();
             }
         }
-        #endregion
 
-        #region RowHeight
         /// <summary>
         /// Gets the dependency property of <see cref="RowHeight"/>.
         /// </summary>
@@ -87,7 +79,6 @@ namespace EPG.Printing.Controls
             get { return (GridLength)GetValue(RowHeightProperty); }
             set { SetValue(RowHeightProperty, value); }
         }
-        #endregion
 
         void AddColumnDefinition(PrintableDataGridColumn column)
         {
@@ -221,7 +212,6 @@ namespace EPG.Printing.Controls
             Reset();
         }
 
-        #region IPrintableDataGrid
         const int HeaderRowCount = 1;
 
         double IPrintableDataGrid.ItemMeasure(int index)
@@ -229,9 +219,7 @@ namespace EPG.Printing.Controls
             return grid.RowDefinitions[HeaderRowCount + index].ActualHeight;
         }
 
-        double IPrintableDataGrid.ActualMeasure =>
-            ActualHeight - grid.RowDefinitions[0].ActualHeight;
-        #endregion
+        double IPrintableDataGrid.ActualMeasure => ActualHeight - grid.RowDefinitions[0].ActualHeight;
 
         /// <summary>
         /// Constructs an instance.

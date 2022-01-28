@@ -8,10 +8,10 @@ using System.Windows;
 
 namespace EPG.Printing.Controls
 {
-    public class PrintPreviewer<TPrintable> : BindableBase, IPrintPreviewer
+    public class PrintPreviewer<TModel> : BindableBase, IPrintPreviewer
     {
-        readonly TPrintable printable;
-        readonly Func<TPrintable, Size, IEnumerable> paginate;
+        readonly TModel model;
+        readonly Func<TModel, Size, IEnumerable> paginate;
 
         static readonly IReadOnlyList<PrintPreviewPage> emptyPages = Array.Empty<PrintPreviewPage>();
 
@@ -22,7 +22,7 @@ namespace EPG.Printing.Controls
             set { SetProperty(ref pages, value); }
         }
 
-        public MediaSizeSelector MediaSizeSelector { get; } =            new MediaSizeSelector();
+        public MediaSizeSelector MediaSizeSelector { get; } = new MediaSizeSelector();
 
         bool isLandscape;
         public bool IsLandscape
@@ -50,8 +50,7 @@ namespace EPG.Printing.Controls
         public void UpdatePreview()
         {
             var pageSize = PageSize;
-            Pages =
-                paginate(printable, PageSize)
+            Pages = paginate(model, PageSize)
                 .Cast<object>()
                 .Select(content => new PrintPreviewPage(content, pageSize))
                 .ToArray();
@@ -60,10 +59,11 @@ namespace EPG.Printing.Controls
         public void Print()
         {
             var printer = PrinterSelector.SelectedPrinterOrNull;
-            if (printer == null) return;
+            if (printer is null)
+                return;
 
             var pageSize = PageSize;
-            printer.Print(paginate(printable, pageSize), pageSize);
+            printer.Print(paginate(model, pageSize), pageSize);
         }
 
         public void Dispose()
@@ -73,12 +73,12 @@ namespace EPG.Printing.Controls
 
         public
             PrintPreviewer(
-                TPrintable printable,
-                Func<TPrintable, Size, IEnumerable> paginate,
+                TModel printable,
+                Func<TModel, Size, IEnumerable> paginate,
                 PrinterSelector<IPrinter> printerSelector
             )
         {
-            this.printable = printable;
+            this.model = printable;
             this.paginate = paginate;
             PrinterSelector = printerSelector;
 

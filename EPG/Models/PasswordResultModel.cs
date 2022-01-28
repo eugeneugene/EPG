@@ -4,9 +4,9 @@ using System.Runtime.CompilerServices;
 
 namespace EPG.Models
 {
-    public class ResultModel : INotifyPropertyChanged
+    public class PasswordResultModel : INotifyPropertyChanged
     {
-        public ResultModel()
+        public PasswordResultModel()
         {
             DataCollection = new();
             DataCollection.CollectionChanged += DataCollectionChanged;

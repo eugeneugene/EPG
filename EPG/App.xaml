@@ -2,12 +2,19 @@
     x:Class="EPG.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="clr-namespace:EPG.Models"
+    xmlns:printing="clr-namespace:EPG.Printing"
     DispatcherUnhandledException="AppDispatcherUnhandledException">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/EPG;component/Resources/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate DataType="{x:Type models:PasswordResultPage}">
+                <printing:PasswordResultPageControl />
+            </DataTemplate>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -2,7 +2,7 @@
 
 namespace EPG.Models
 {
-    public class PasswordResultFormHeader
+    public class PasswordResultHeader
     {
         public string Title { get; }
         public DateTime GenerationDate { get; }
@@ -14,7 +14,7 @@ namespace EPG.Models
         public int PageIndexPlus1 => PageIndex + 1;
 
         public
-            PasswordResultFormHeader(
+            PasswordResultHeader(
                 string title,
                 DateTime generationDate,
                 int passwordsGenerated,
@@ -31,10 +31,10 @@ namespace EPG.Models
             PageCount = pageCount;
         }
 
-        public PasswordResultFormHeader UpdatePageIndexCount(int pageIndex, int pageCount)
+        public PasswordResultHeader UpdatePageIndexCount(int pageIndex, int pageCount)
         {
             return
-                new PasswordResultFormHeader(
+                new PasswordResultHeader(
                     Title,
                     GenerationDate,
                     PasswordsGenerated,

@@ -11,14 +11,14 @@ namespace EPG.Printing.Documents
 {
     public struct DataGridPrintablePaginator<TItem>
     {
-        sealed class PaginateFunction
+        private sealed class PaginateFunction
         {
-            readonly IDataGridPrintable<TItem> printable;
-            readonly TItem[] allItems;
-            readonly Size pageSize;
+            private readonly IDataGridPrintable<TItem> printable;
+            private readonly TItem[] allItems;
+            private readonly Size pageSize;
 
-            int index;
-            int pageIndex;
+            private int index;
+            private int pageIndex;
 
             ContentPresenter PagePresenterFromRestItems()
             {
@@ -37,7 +37,18 @@ namespace EPG.Printing.Documents
 
             IPrintableDataGrid DataGridFromPagePresenter(ContentPresenter presenter)
             {
-                if (VisualTreeHelper.GetChild(presenter, 0) is not IPrintableDataGridContainer control)
+                IPrintableDataGridContainer control = null;
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(presenter); i++)
+                {
+                    var child = VisualTreeHelper.GetChild(presenter, i);
+                    if (child is IPrintableDataGridContainer printable)
+                    {
+                        control = printable;
+                        break;
+                    }
+                }
+                //if (child is not IPrintableDataGridContainer control)
+                if(control is null)
                     throw new InvalidOperationException($"{nameof(DataTemplate)} of printable page must directly generate a control implementing {nameof(IPrintableDataGridContainer)}.");
                 return control.DataGrid;
             }
@@ -51,7 +62,8 @@ namespace EPG.Printing.Documents
                 while (index + count < allItems.Length)
                 {
                     totalMeasure += dataGrid.ItemMeasure(count);
-                    if (totalMeasure > actualMeasure) break;
+                    if (totalMeasure > actualMeasure)
+                        break;
 
                     count++;
                 }
@@ -62,9 +74,8 @@ namespace EPG.Printing.Documents
             {
                 var pages = new object[chunks.Count];
                 for (var i = 0; i < chunks.Count; i++)
-                {
                     pages[i] = printable.CreatePage(chunks[i], i, chunks.Count);
-                }
+
                 return pages;
             }
 
@@ -77,7 +88,8 @@ namespace EPG.Printing.Documents
                     var presenter = PagePresenterFromRestItems();
                     var dataGrid = DataGridFromPagePresenter(presenter);
                     var count = CountVisibleRows(dataGrid);
-                    if (count == 0) throw new InfinitePaginationException();
+                    if (count == 0)
+                        throw new InfinitePaginationException();
 
                     chunks.Add(new ArraySegment<TItem>(allItems, index, count));
                     index += count;
@@ -104,7 +116,8 @@ namespace EPG.Printing.Documents
         public static IEnumerable Paginate(IDataGridPrintable<TItem> printable, Size pageSize)
         {
             var allItems = printable.Items.ToArray();
-            return new PaginateFunction(printable, allItems, pageSize).Paginate();
+            var function = new PaginateFunction(printable, allItems, pageSize);
+            return function.Paginate();
         }
     }
 }

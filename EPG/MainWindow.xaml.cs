@@ -2,6 +2,7 @@
 using EPG.Code;
 using EPG.Configuration;
 using EPG.Models;
+using EPG.Printing;
 using EPG.Printing.Controls;
 using EPG.Printing.Documents;
 using Microsoft.Extensions.Hosting;
@@ -240,12 +241,8 @@ namespace EPG
             PrintDialog printDlg = new();
             if (printDlg.ShowDialog().GetValueOrDefault())
             {
-                var previewer = new PrintPreviewer<PasswordResultFormPage>(
-                    new PasswordResultFormPage(new PasswordResultFormHeader("Title", DateTime.Now, model.ResultModel.DataCollection.Count, "mode", 0, 1), model.ResultModel.DataCollection),
-                    DataGridPrintablePaginator<PasswordResultItem>.Paginate,
-                    PrinterSelector<IPrinter>.FromLocalServer<IPrinter>(q => new Printer(q)));
-                var document = FixedDocumentCreator.FromDataContexts(previewer.Pages, new Size(printDlg.PrintableAreaWidth, printDlg.PrintableAreaHeight));
-                printDlg.PrintDocument(document.DocumentPaginator, "Title 1");
+                PreviewerWindow previewer = new(model.ResultModel.DataCollection);
+                previewer.ShowDialog();
             }
         }
     }

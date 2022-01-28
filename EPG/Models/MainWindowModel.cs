@@ -36,7 +36,7 @@ namespace EPG.Models
             AutoClear = settings.AutoClear;
         }
 
-        public ResultModel ResultModel { get; }
+        public PasswordResultModel ResultModel { get; }
 
         private PasswordMode? passwordMode;
         public PasswordMode? PasswordMode
