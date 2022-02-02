@@ -8,8 +8,6 @@ namespace EPG.Models
         public PasswordResultHeader Header { get; }
         public IEnumerable<PasswordResultItem> Items { get; }
 
-        //IEnumerable<PasswordResultItem> IDataGridPrintable<PasswordResultItem>.Items => Items;
-
         object IDataGridPrintable<PasswordResultItem>.CreatePage(IReadOnlyList<PasswordResultItem> items, int pageIndex, int pageCount)
         {
             var header = Header.UpdatePageIndexCount(pageIndex, pageCount);

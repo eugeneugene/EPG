@@ -1,4 +1,5 @@
-﻿using Prism.Commands;
+﻿using EPG.Models;
+using Prism.Commands;
 using Prism.Mvvm;
 using System;
 using System.Collections;
@@ -18,7 +19,7 @@ namespace EPG.Printing.Controls
         {
             get { return pages; }
             set { SetProperty(ref pages, value); }
-        } 
+        }
 
         public ScaleSelector ScaleSelector { get; } = new ScaleSelector();
 
@@ -61,5 +62,15 @@ namespace EPG.Printing.Controls
             PreviewCommand = new DelegateCommand(UpdatePreview);
             PrintCommand = new DelegateCommand(Print);
         }
+    }
+
+    /// <summary>
+    /// Для привязки типа к DataContext в PrintPreviewerControl.xaml
+    /// </summary>
+    public class PrintPreviewerResultPage : PrintPreviewer<PasswordResultPage>
+    {
+        public PrintPreviewerResultPage(PasswordResultPage model, Func<PasswordResultPage, Size, IEnumerable> paginate, IPrinter printer)
+            : base(model, paginate, printer)
+        { }
     }
 }

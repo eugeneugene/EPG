@@ -10,6 +10,9 @@ namespace EPG.Models
         {
             DataCollection = new();
             DataCollection.CollectionChanged += DataCollectionChanged;
+            mode = string.Empty;
+            include = string.Empty;
+            exclude = string.Empty;
         }
 
         private bool showHyphenated;
@@ -36,6 +39,48 @@ namespace EPG.Models
                 {
                     calculateQuality = value;
                     NotifyPropertyChanged(nameof(CalculateQuality));
+                }
+            }
+        }
+
+        private string mode;
+        public string Mode
+        {
+            get => mode;
+            set
+            {
+                if (Mode != value)
+                {
+                    mode = value;
+                    NotifyPropertyChanged(nameof(Mode));
+                }
+            }
+        }
+
+        private string include;
+        public string Include
+        {
+            get => include;
+            set
+            {
+                if (Include != value)
+                {
+                    include = value;
+                    NotifyPropertyChanged(nameof(Include));
+                }
+            }
+        }
+
+        private string exclude;
+        public string Exclude
+        {
+            get => exclude;
+            set
+            {
+                if (Exclude != value)
+                {
+                    exclude = value;
+                    NotifyPropertyChanged(nameof(Exclude));
                 }
             }
         }

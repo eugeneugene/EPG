@@ -16,19 +16,31 @@ namespace EPG
     {
         public IEnumerable<PasswordResultItem> Items { get; }
 
-        public PreviewerWindow(PrintQueue printQueue, PrintTicket printTicket, IEnumerable<PasswordResultItem> items)
+        public PreviewerWindow(PrintQueue printQueue, PrintTicket printTicket, PasswordResultModel resultModel)
         {
-            Items = items ?? throw new ArgumentNullException(nameof(items));
+            if (resultModel is null)
+                throw new ArgumentNullException(nameof(resultModel));
+
+            Items = resultModel.DataCollection;
 
             InitializeComponent();
 
-            PasswordResultPage page = new(new PasswordResultHeader("Title",
-                DateTime.Now,
-                Items.Count(), "mode", 0, 1),
-                Items.ToList());
-            var previewer = new PrintPreviewer<PasswordResultPage>(page,
-                DataGridPrintablePaginator<PasswordResultItem>.Paginate,
-                new Printer(printQueue, printTicket));
+            PasswordResultPage resultPage = new(
+                header: new PasswordResultHeader(
+                    title: "Title",
+                    version: "1.0",
+                    include: resultModel.Include,
+                    exclude: resultModel.Exclude,
+                    generationDate: DateTime.Now, 
+                    passwordsGenerated: Items.Count(),
+                    mode: resultModel.Mode,
+                    pageIndex: 0,
+                    pageCount: 1),
+                items: Items.ToList());
+            var previewer = new PrintPreviewer<PasswordResultPage>(
+                model: resultPage,
+                paginate: DataGridPrintablePaginator<PasswordResultItem>.Paginate,
+                printer: new Printer(printQueue, printTicket));
 
             DataContext = previewer;
 

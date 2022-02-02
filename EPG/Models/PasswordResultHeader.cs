@@ -5,6 +5,9 @@ namespace EPG.Models
     public class PasswordResultHeader
     {
         public string Title { get; }
+        public string Version { get; }
+        public string Include { get; }
+        public string Exclude { get; }
         public DateTime GenerationDate { get; }
         public int PasswordsGenerated { get; }
         public string Mode { get; }
@@ -16,6 +19,9 @@ namespace EPG.Models
         public
             PasswordResultHeader(
                 string title,
+                string version,
+                string include,
+                string exclude,
                 DateTime generationDate,
                 int passwordsGenerated,
                 string mode,
@@ -24,6 +30,9 @@ namespace EPG.Models
             )
         {
             Title = title;
+            Version = version;
+            Include = include;
+            Exclude = exclude;
             GenerationDate = generationDate;
             PasswordsGenerated = passwordsGenerated;
             Mode = mode;
@@ -36,6 +45,9 @@ namespace EPG.Models
             return
                 new PasswordResultHeader(
                     Title,
+                    Version,
+                    Include,
+                    Exclude,
                     GenerationDate,
                     PasswordsGenerated,
                     Mode,

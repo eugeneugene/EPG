@@ -82,26 +82,59 @@ namespace EPG
             if (model.MinimumLength > model.MaximumLength)
                 return;
 
+            StringBuilder builderMode = new();
             Password.Modes modes = Password.Modes.NoMode;
+
             if (model.SmallSymbols is null)
-                modes |= Password.Modes.Lowers;
-            if (model.SmallSymbols == true)
+            {
                 modes |= Password.Modes.LowersForced;
+                builderMode.Append('l');
+            }
+            else if (model.SmallSymbols == true)
+            {
+                modes |= Password.Modes.Lowers;
+                builderMode.Append('L');
+            }
+
             if (model.CapitalSymbols is null)
+            {
                 modes |= Password.Modes.Capitals;
-            if (model.CapitalSymbols == true)
+                builderMode.Append('c');
+            }
+            else if (model.CapitalSymbols == true)
+            {
                 modes |= Password.Modes.CapitalsForced;
+                builderMode.Append('C');
+            }
+
             if (model.Numerals is null)
+            {
                 modes |= Password.Modes.Numerals;
-            if (model.Numerals == true)
+                builderMode.Append('n');
+            }
+            else if (model.Numerals == true)
+            {
                 modes |= Password.Modes.NumeralsForced;
+                builderMode.Append('N');
+            }
+
             if (model.SpecialSymbols is null)
+            {
                 modes |= Password.Modes.Symbols;
-            if (model.SpecialSymbols == true)
+                builderMode.Append('s');
+            }
+            else if (model.SpecialSymbols == true)
+            {
                 modes |= Password.Modes.SymbolsForced;
+                builderMode.Append('S');
+            }
 
             if (modes == Password.Modes.NoMode)
                 return;
+
+            model.ResultModel.Mode = builderMode.ToString();
+            model.ResultModel.Include = model.Include ?? string.Empty;
+            model.ResultModel.Exclude = model.Exclude ?? string.Empty;
 
             if (model.AutoClear)
                 model.ResultModel.DataCollection.Clear();
@@ -241,7 +274,7 @@ namespace EPG
             PrintDialog printDlg = new();
             if (printDlg.ShowDialog().GetValueOrDefault())
             {
-                PreviewerWindow previewer = new(printDlg.PrintQueue, printDlg.PrintTicket, model.ResultModel.DataCollection);
+                PreviewerWindow previewer = new(printDlg.PrintQueue, printDlg.PrintTicket, model.ResultModel);
                 previewer.ShowDialog();
             }
         }
