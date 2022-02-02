@@ -4,6 +4,7 @@ using EPG.Printing.Documents;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Printing;
 using System.Windows;
 
 namespace EPG
@@ -15,7 +16,7 @@ namespace EPG
     {
         public IEnumerable<PasswordResultItem> Items { get; }
 
-        public PreviewerWindow(IEnumerable<PasswordResultItem> items)
+        public PreviewerWindow(PrintQueue printQueue, PrintTicket printTicket, IEnumerable<PasswordResultItem> items)
         {
             Items = items ?? throw new ArgumentNullException(nameof(items));
 
@@ -27,7 +28,9 @@ namespace EPG
                  Items.ToList());
             var previewer = new PrintPreviewer<PasswordResultPage>(page,
                 DataGridPrintablePaginator<PasswordResultItem>.Paginate,
-                PrinterSelector<IPrinter>.FromLocalServer<IPrinter>(q => new Printer(q)));
+                new Printer(printQueue, printTicket)
+                //PrinterSelector<IPrinter>.FromLocalServer<IPrinter>(q => new Printer(q))
+                );
 
             DataContext = previewer;
 

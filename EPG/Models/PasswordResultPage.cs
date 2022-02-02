@@ -6,9 +6,9 @@ namespace EPG.Models
     public class PasswordResultPage : IDataGridPrintable<PasswordResultItem>
     {
         public PasswordResultHeader Header { get; }
-        public IReadOnlyList<PasswordResultItem>? Items { get; }
+        public IEnumerable<PasswordResultItem> Items { get; }
 
-        IEnumerable<PasswordResultItem> IDataGridPrintable<PasswordResultItem>.Items => Items;
+        //IEnumerable<PasswordResultItem> IDataGridPrintable<PasswordResultItem>.Items => Items;
 
         object IDataGridPrintable<PasswordResultItem>.CreatePage(IReadOnlyList<PasswordResultItem> items, int pageIndex, int pageCount)
         {
@@ -16,7 +16,7 @@ namespace EPG.Models
             return new PasswordResultPage(header, items);
         }
 
-        public PasswordResultPage(PasswordResultHeader header, IReadOnlyList<PasswordResultItem>? items)
+        public PasswordResultPage(PasswordResultHeader header, IReadOnlyList<PasswordResultItem> items)
         {
             Header = header;
             Items = items;

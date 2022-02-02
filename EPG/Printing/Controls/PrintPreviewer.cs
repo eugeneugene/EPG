@@ -13,26 +13,18 @@ namespace EPG.Printing.Controls
         private readonly TModel model;
         private readonly Func<TModel, Size, IEnumerable> paginate;
 
-        private static readonly IReadOnlyList<PrintPreviewPage> emptyPages = Array.Empty<PrintPreviewPage>();
+        //private static readonly IReadOnlyList<PrintPreviewPage> emptyPages = Array.Empty<PrintPreviewPage>();
 
-        private IReadOnlyList<PrintPreviewPage> pages = emptyPages;
+        private IReadOnlyList<PrintPreviewPage> pages = Array.Empty<PrintPreviewPage>();
         public IReadOnlyList<PrintPreviewPage> Pages
         {
             get { return pages; }
             set { SetProperty(ref pages, value); }
-        }
+        } 
 
-        public MediaSizeSelector MediaSizeSelector { get; } = new MediaSizeSelector();
-
-        private bool isLandscape;
-        public bool IsLandscape
-        {
-            get { return isLandscape; }
-            set { SetProperty(ref isLandscape, value); }
-        }
         public ScaleSelector ScaleSelector { get; } = new ScaleSelector();
 
-        public PrinterSelector<IPrinter> PrinterSelector { get; }
+        public IPrinter Printer { get; }
 
         public DelegateCommand PreviewCommand { get; }
 
@@ -42,43 +34,31 @@ namespace EPG.Printing.Controls
         {
             get
             {
-                var mediaSize = MediaSizeSelector.SelectedSize;
-                return IsLandscape ? new Size(mediaSize.Height, mediaSize.Width) : mediaSize;
+                var mediaSize = Printer.PrintTicket.PageMediaSize;
+                if (Printer.PrintTicket.PageOrientation == System.Printing.PageOrientation.Landscape || Printer.PrintTicket.PageOrientation == System.Printing.PageOrientation.ReverseLandscape)
+                    return new Size(mediaSize.Height ?? 0.0, mediaSize.Width ?? 0.0);
+                return new Size(mediaSize.Width ?? 0.0, mediaSize.Height ?? 0.0);
             }
         }
 
         public void UpdatePreview()
         {
-            var pageSize = PageSize;
             Pages = paginate(model, PageSize)
                 .Cast<object>()
-                .Select(content => new PrintPreviewPage(content, pageSize))
+                .Select(content => new PrintPreviewPage(content, PageSize))
                 .ToArray();
         }
 
         public void Print()
         {
-            var printer = PrinterSelector.SelectedPrinterOrNull;
-            if (printer is null)
-                return;
-
-            var pageSize = PageSize;
-            printer.Print(paginate(model, pageSize), pageSize);
+            Printer.Print(paginate(model, PageSize), PageSize);
         }
 
-        public void Dispose()
-        {
-            PrinterSelector.Dispose();
-        }
-
-        public PrintPreviewer(
-                TModel printable,
-                Func<TModel, Size, IEnumerable> paginate,
-                PrinterSelector<IPrinter> printerSelector)
+        public PrintPreviewer(TModel printable, Func<TModel, Size, IEnumerable> paginate, IPrinter printer)
         {
             this.model = printable;
             this.paginate = paginate;
-            PrinterSelector = printerSelector;
+            Printer = printer;
 
             PreviewCommand = new DelegateCommand(UpdatePreview);
             PrintCommand = new DelegateCommand(Print);

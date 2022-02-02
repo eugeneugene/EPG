@@ -37,7 +37,7 @@ namespace EPG.Printing.Documents
 
             IPrintableDataGrid DataGridFromPagePresenter(ContentPresenter presenter)
             {
-                IPrintableDataGridContainer control = null;
+                IPrintableDataGridContainer? control = null;
                 for (int i = 0; i < VisualTreeHelper.GetChildrenCount(presenter); i++)
                 {
                     var child = VisualTreeHelper.GetChild(presenter, i);

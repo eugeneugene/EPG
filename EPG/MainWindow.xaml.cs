@@ -241,7 +241,7 @@ namespace EPG
             PrintDialog printDlg = new();
             if (printDlg.ShowDialog().GetValueOrDefault())
             {
-                PreviewerWindow previewer = new(model.ResultModel.DataCollection);
+                PreviewerWindow previewer = new(printDlg.PrintQueue, printDlg.PrintTicket, model.ResultModel.DataCollection);
                 previewer.ShowDialog();
             }
         }

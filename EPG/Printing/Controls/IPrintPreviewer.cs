@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace EPG.Printing.Controls
+﻿namespace EPG.Printing.Controls
 {
-    public interface IPrintPreviewer : IDisposable
+    public interface IPrintPreviewer
     {
         ScaleSelector ScaleSelector { get; }
     }

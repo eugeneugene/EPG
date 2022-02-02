@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Printing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -6,37 +7,56 @@ using System.Windows.Media;
 
 namespace EPG.Printing.Documents
 {
-    public struct FixedDocumentCreator
+    public static class FixedDocumentCreator
     {
-        public static FixedDocument FromDataContexts(IEnumerable contents, Size pageSize)
+        public static FixedDocument FromDataContexts(PrintTicket printTicket, IEnumerable contents)
         {
-            var isLandscape = pageSize.Width > pageSize.Height;
-            var mediaSize = isLandscape ? new Size(pageSize.Height, pageSize.Width) : pageSize;
-
             var document = new FixedDocument();
+
+            var ticketSize = new Size(printTicket.PageMediaSize.Width ?? 0.0, printTicket.PageMediaSize.Height ?? 0.0);
+            var orientationSize = printTicket.PageOrientation switch
+            {
+                PageOrientation.Landscape => new Size(printTicket.PageMediaSize.Height ?? 0.0, printTicket.PageMediaSize.Width ?? 0.0),
+                PageOrientation.ReverseLandscape => new Size(printTicket.PageMediaSize.Height ?? 0.0, printTicket.PageMediaSize.Width ?? 0.0),
+                _ => new Size(printTicket.PageMediaSize.Width ?? 0.0, printTicket.PageMediaSize.Height ?? 0.0),
+            };
 
             foreach (var content in contents)
             {
                 var presenter = new ContentPresenter()
                 {
                     Content = content,
-                    Width = pageSize.Width,
-                    Height = pageSize.Height,
+                    Width = orientationSize.Width,
+                    Height = orientationSize.Height,
                 };
 
-                if (isLandscape)
+                switch (printTicket.PageOrientation)
                 {
-                    presenter.LayoutTransform = new RotateTransform(90.0);
+                    case PageOrientation.Landscape:
+                        presenter.LayoutTransform = new RotateTransform(90.0);
+                        break;
+                    case PageOrientation.ReversePortrait:
+                        presenter.LayoutTransform = new RotateTransform(180.0);
+                        break;
+                    case PageOrientation.ReverseLandscape:
+                        presenter.LayoutTransform = new RotateTransform(-90.0);
+                        break;
                 }
 
                 var page = new FixedPage()
                 {
-                    Width = mediaSize.Width,
-                    Height = mediaSize.Height,
+                    Width = ticketSize.Width,
+                    Height = ticketSize.Height,
+                    PrintTicket = printTicket,
                 };
                 page.Children.Add(presenter);
 
-                var pageContent = new PageContent() { Child = page };
+                var pageContent = new PageContent()
+                {
+                    Child = page,
+                    Width = orientationSize.Width,
+                    Height = orientationSize.Height,
+                };
                 document.Pages.Add(pageContent);
             }
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Printing;
 using System.Windows;
 
 namespace EPG.Printing.Controls
@@ -8,5 +9,8 @@ namespace EPG.Printing.Controls
         string Name { get; }
 
         void Print(IEnumerable pages, Size pageSize);
+
+        PrintQueue PrintQueue { get; }
+        PrintTicket PrintTicket { get; }
     }
 }
