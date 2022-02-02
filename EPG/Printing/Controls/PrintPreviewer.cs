@@ -10,12 +10,12 @@ namespace EPG.Printing.Controls
 {
     public class PrintPreviewer<TModel> : BindableBase, IPrintPreviewer
     {
-        readonly TModel model;
-        readonly Func<TModel, Size, IEnumerable> paginate;
+        private readonly TModel model;
+        private readonly Func<TModel, Size, IEnumerable> paginate;
 
-        static readonly IReadOnlyList<PrintPreviewPage> emptyPages = Array.Empty<PrintPreviewPage>();
+        private static readonly IReadOnlyList<PrintPreviewPage> emptyPages = Array.Empty<PrintPreviewPage>();
 
-        IReadOnlyList<PrintPreviewPage> pages = emptyPages;
+        private IReadOnlyList<PrintPreviewPage> pages = emptyPages;
         public IReadOnlyList<PrintPreviewPage> Pages
         {
             get { return pages; }
@@ -24,7 +24,7 @@ namespace EPG.Printing.Controls
 
         public MediaSizeSelector MediaSizeSelector { get; } = new MediaSizeSelector();
 
-        bool isLandscape;
+        private bool isLandscape;
         public bool IsLandscape
         {
             get { return isLandscape; }
@@ -38,7 +38,7 @@ namespace EPG.Printing.Controls
 
         public DelegateCommand PrintCommand { get; }
 
-        Size PageSize
+        private Size PageSize
         {
             get
             {
@@ -71,12 +71,10 @@ namespace EPG.Printing.Controls
             PrinterSelector.Dispose();
         }
 
-        public
-            PrintPreviewer(
+        public PrintPreviewer(
                 TModel printable,
                 Func<TModel, Size, IEnumerable> paginate,
-                PrinterSelector<IPrinter> printerSelector
-            )
+                PrinterSelector<IPrinter> printerSelector)
         {
             this.model = printable;
             this.paginate = paginate;
