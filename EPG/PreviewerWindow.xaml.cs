@@ -23,14 +23,12 @@ namespace EPG
             InitializeComponent();
 
             PasswordResultPage page = new(new PasswordResultHeader("Title",
-                 DateTime.Now,
-                 Items.Count(), "mode", 0, 1),
-                 Items.ToList());
+                DateTime.Now,
+                Items.Count(), "mode", 0, 1),
+                Items.ToList());
             var previewer = new PrintPreviewer<PasswordResultPage>(page,
                 DataGridPrintablePaginator<PasswordResultItem>.Paginate,
-                new Printer(printQueue, printTicket)
-                //PrinterSelector<IPrinter>.FromLocalServer<IPrinter>(q => new Printer(q))
-                );
+                new Printer(printQueue, printTicket));
 
             DataContext = previewer;
 

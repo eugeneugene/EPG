@@ -13,8 +13,6 @@ namespace EPG.Printing.Controls
         private readonly TModel model;
         private readonly Func<TModel, Size, IEnumerable> paginate;
 
-        //private static readonly IReadOnlyList<PrintPreviewPage> emptyPages = Array.Empty<PrintPreviewPage>();
-
         private IReadOnlyList<PrintPreviewPage> pages = Array.Empty<PrintPreviewPage>();
         public IReadOnlyList<PrintPreviewPage> Pages
         {
@@ -54,9 +52,9 @@ namespace EPG.Printing.Controls
             Printer.Print(paginate(model, PageSize), PageSize);
         }
 
-        public PrintPreviewer(TModel printable, Func<TModel, Size, IEnumerable> paginate, IPrinter printer)
+        public PrintPreviewer(TModel model, Func<TModel, Size, IEnumerable> paginate, IPrinter printer)
         {
-            this.model = printable;
+            this.model = model;
             this.paginate = paginate;
             Printer = printer;
 

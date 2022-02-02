@@ -14,14 +14,6 @@ namespace EPG.Printing.Controls
 
         public void Print(IEnumerable pages, Size pageSize)
         {
-            //var isLandscape = pageSize.Width > pageSize.Height;
-            //var mediaSize = isLandscape ? new Size(pageSize.Height, pageSize.Width) : pageSize;
-
-            // Set up print ticket.
-            //var ticket = PrintQueue.DefaultPrintTicket;
-            //ticket.PageMediaSize = new PageMediaSize(mediaSize.Width, mediaSize.Height);
-            //ticket.PageOrientation = PageOrientation.Portrait;
-
             // Generate FixedDocument to be printed from data contexts.
             var document = FixedDocumentCreator.FromDataContexts(PrintTicket, pages);
 

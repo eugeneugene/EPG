@@ -37,20 +37,13 @@ namespace EPG.Printing.Documents
 
             IPrintableDataGrid DataGridFromPagePresenter(ContentPresenter presenter)
             {
-                IPrintableDataGridContainer? control = null;
                 for (int i = 0; i < VisualTreeHelper.GetChildrenCount(presenter); i++)
                 {
                     var child = VisualTreeHelper.GetChild(presenter, i);
                     if (child is IPrintableDataGridContainer printable)
-                    {
-                        control = printable;
-                        break;
-                    }
+                        return printable.DataGrid;
                 }
-                //if (child is not IPrintableDataGridContainer control)
-                if(control is null)
-                    throw new InvalidOperationException($"{nameof(DataTemplate)} of printable page must directly generate a control implementing {nameof(IPrintableDataGridContainer)}.");
-                return control.DataGrid;
+                throw new InvalidOperationException($"{nameof(DataTemplate)} of printable page must directly generate a control implementing {nameof(IPrintableDataGridContainer)}.");
             }
 
             int CountVisibleRows(IPrintableDataGrid dataGrid)
