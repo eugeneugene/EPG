@@ -1,5 +1,4 @@
-﻿using EPG.Models;
-using Prism.Commands;
+﻿using Prism.Commands;
 using Prism.Mvvm;
 using System;
 using System.Collections;
@@ -45,7 +44,7 @@ namespace EPG.Printing.Controls
             Pages = paginate(model, PageSize)
                 .Cast<object>()
                 .Select(content => new PrintPreviewPage(content, PageSize))
-                .ToArray();
+                .ToList();
         }
 
         public void Print()
@@ -62,15 +61,5 @@ namespace EPG.Printing.Controls
             PreviewCommand = new DelegateCommand(UpdatePreview);
             PrintCommand = new DelegateCommand(Print);
         }
-    }
-
-    /// <summary>
-    /// Для привязки типа к DataContext в PrintPreviewerControl.xaml
-    /// </summary>
-    public class PrintPreviewerResultPage : PrintPreviewer<PasswordResultPage>
-    {
-        public PrintPreviewerResultPage(PasswordResultPage model, Func<PasswordResultPage, Size, IEnumerable> paginate, IPrinter printer)
-            : base(model, paginate, printer)
-        { }
     }
 }

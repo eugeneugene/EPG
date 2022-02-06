@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -52,6 +53,7 @@ namespace EPG.Printing.Documents
 
                 var totalMeasure = 0.0;
                 var count = 0;
+
                 while (index + count < allItems.Length)
                 {
                     totalMeasure += dataGrid.ItemMeasure(count);
@@ -60,6 +62,8 @@ namespace EPG.Printing.Documents
 
                     count++;
                 }
+
+                Debug.WriteLine("Count: {0}", count);
                 return count;
             }
 

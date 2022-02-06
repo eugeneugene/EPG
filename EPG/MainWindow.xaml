@@ -288,6 +288,10 @@
             UseLayoutRounding="True"
             Visibility="{Binding Path=DataCollection, Converter={StaticResource DataCollectionVisibleConverter}}">
             <DataGrid.Columns>
+                <DataGridTextColumn
+                    Binding="{Binding Counter}"
+                    Header="#"
+                    IsReadOnly="True" />
                 <DataGridTemplateColumn
                     Width="100"
                     Header="Applicability"

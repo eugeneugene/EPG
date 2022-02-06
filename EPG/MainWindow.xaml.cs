@@ -155,6 +155,7 @@ namespace EPG
                 Mouse.OverrideCursor = Cursors.Wait;
                 await Task.Run(() =>
                 {
+                    uint counter = 0U;
                     Password password = new(modes, model.Include ?? string.Empty, model.Exclude ?? string.Empty);
                     if (model.EnableBloom && !string.IsNullOrEmpty(model.Filter))
                     {
@@ -182,7 +183,7 @@ namespace EPG
                                     int? Quality = null;
                                     if (model.CalculateQuality)
                                         Quality = PasswordQuality.CalculateQuality(pass);
-                                    data.Add(new(pass, hpass, bloomFilterResult, Quality));
+                                    data.Add(new(++counter, pass, hpass, bloomFilterResult, Quality));
                                 }
                                 break;
                             case PasswordMode.Random:
@@ -196,7 +197,7 @@ namespace EPG
                                     int? Quality = null;
                                     if (model.CalculateQuality)
                                         Quality = PasswordQuality.CalculateQuality(pass);
-                                    data.Add(new(pass, null, bloomFilterResult, Quality));
+                                    data.Add(new(++counter, pass, null, bloomFilterResult, Quality));
                                 }
                                 break;
                         }
