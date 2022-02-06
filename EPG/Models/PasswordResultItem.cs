@@ -16,5 +16,10 @@
         public string? HyphenatedPassword { get; }
         public BloomFilterResult? BloomFilterResult { get; }
         public decimal? PasswordQuality { get; }
+
+        public override string ToString()
+        {
+            return $"{Counter}. {Password}";
+        }
     }
 }

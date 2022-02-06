@@ -67,11 +67,12 @@ namespace EPG.Printing.Documents
                 return count;
             }
 
-            object[] PagesFromChunks(List<ArraySegment<TItem>> chunks)
+            IEnumerable PagesFromChunks(IEnumerable<ArraySegment<TItem>> chunks)
             {
-                var pages = new object[chunks.Count];
-                for (var i = 0; i < chunks.Count; i++)
-                    pages[i] = printable.CreatePage(chunks[i], i, chunks.Count);
+                var pages = new List<IDataGridPrintable<TItem>>();
+                int page = 0;
+                foreach (var chunk in chunks)
+                    pages.Add(printable.CreatePage(chunk, page++, chunks.Count()));
 
                 return pages;
             }
