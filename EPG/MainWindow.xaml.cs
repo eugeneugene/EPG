@@ -137,10 +137,17 @@ namespace EPG
             model.ResultModel.Exclude = model.Exclude ?? string.Empty;
 
             if (model.AutoClear)
+            {
                 model.ResultModel.DataCollection.Clear();
+                model.ResultModel.ShowHyphenated = false;
+                model.ResultModel.CalculateQuality = false;
+            }
 
-            model.ResultModel.ShowHyphenated = model.ShowHyphenated;
-            model.ResultModel.CalculateQuality = model.CalculateQuality;
+            if (model.ShowHyphenated)
+                model.ResultModel.ShowHyphenated = true;
+
+            if (model.CalculateQuality)
+                model.ResultModel.CalculateQuality = true;
 
             Bloom? bloom = null;
             try

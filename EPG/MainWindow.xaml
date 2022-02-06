@@ -311,7 +311,7 @@
                     Header="Hyphenated Passwords"
                     IsReadOnly="True"
                     Visibility="{Binding DataContext.ResultModel.ShowHyphenated, Converter={StaticResource ColumnVisibleConverter}, Source={x:Reference ProxyElement}}" />
-                <DataGridTemplateColumn Header="Passwords Quality">
+                <DataGridTemplateColumn Header="Passwords Quality" Visibility="{Binding DataContext.ResultModel.CalculateQuality, Converter={StaticResource ColumnVisibleConverter}, Source={x:Reference ProxyElement}}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Grid>
@@ -319,7 +319,7 @@
                                     Grid.Column="0"
                                     Maximum="128"
                                     Minimum="0"
-                                    Value="{Binding PasswordQuality, Mode=OneWay}" />
+                                    Value="{Binding PasswordQuality, Mode=OneWay, TargetNullValue=0}" />
                                 <TextBlock
                                     Grid.Column="0"
                                     HorizontalAlignment="Center"
