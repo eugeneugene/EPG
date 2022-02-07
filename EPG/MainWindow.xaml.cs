@@ -258,13 +258,13 @@ namespace EPG
             {
                 var res1 = bloom.CheckString(password.ToLowerInvariant());
                 if (res1)
-                    return BloomFilterResult.UNSAFE;
+                    return BloomFilterResult.NOTSAFE;
                 var res2 = bloom.CheckString(password.ToUpperInvariant());
                 if (res2)
-                    return BloomFilterResult.UNSAFE;
+                    return BloomFilterResult.NOTSAFE;
                 var res3 = bloom.CheckString(string.Concat(password[0].ToString().ToUpper(), password.AsSpan(1)));
                 if (res3)
-                    return BloomFilterResult.UNSAFE;
+                    return BloomFilterResult.NOTSAFE;
             }
             return BloomFilterResult.NOTFOUND;
         }
@@ -285,6 +285,12 @@ namespace EPG
                 PreviewerWindow previewer = new(printDlg.PrintQueue, printDlg.PrintTicket, model.ResultModel);
                 previewer.ShowDialog();
             }
+        }
+
+        private void CommandCopyCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.Handled = true;
+            e.CanExecute = ResultDataGrid.SelectedItems.Count > 0;
         }
     }
 }

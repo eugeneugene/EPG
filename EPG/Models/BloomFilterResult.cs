@@ -1,4 +1,14 @@
-﻿namespace EPG.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace EPG.Models
 {
-    public enum BloomFilterResult { NOTFOUND, FOUND, UNSAFE };
+    public enum BloomFilterResult
+    {
+        [Display(Name="Not Found")]
+        NOTFOUND,
+        [Display(Name = "Found")]
+        FOUND,
+        [Display(Name = "Not Safe")]
+        NOTSAFE
+    };
 }

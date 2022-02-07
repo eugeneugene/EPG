@@ -30,7 +30,12 @@
         <localcodeconverters:GenerateEnabledConverter x:Key="GenerateEnabledConverter" />
         <localcodeconverters:DataCollectionVisibleConverter x:Key="DataCollectionVisibleConverter" />
         <localcodeconverters:ColumnVisibleConverter x:Key="ColumnVisibleConverter" />
-        <localcodeconverters:BloomFilterResultConverter x:Key="BloomFilterResultConverter" />
+        <localcodeconverters:BloomFilterResultImageConverter x:Key="BloomFilterResultImageConverter" />
+        <localcodeconverters:BloomFilterResultTextConverter x:Key="BloomFilterResultTextConverter" />
+        <localcodeconverters:PasswordQualityPercentConverter x:Key="PasswordQualityPercentConverter" />
+        <ContextMenu x:Key="CopyMenu">
+            <MenuItem Command="ApplicationCommands.Copy" />
+        </ContextMenu>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -48,6 +53,7 @@
                 <MenuItem Command="ApplicationCommands.Close" Header="Exit" />
             </MenuItem>
             <MenuItem Header="Edit">
+                <MenuItem Command="ApplicationCommands.Copy" Header="Copy" />
                 <MenuItem Command="localcommands:EpgCommands.EditClear" Header="Clear" />
                 <Separator />
                 <MenuItem
@@ -281,7 +287,9 @@
             Grid.Row="5"
             Margin="10"
             AutoGenerateColumns="False"
+            ClipboardCopyMode="IncludeHeader"
             ColumnHeaderStyle="{DynamicResource DataGridHeaderDefaultStyle}"
+            ContextMenu="{StaticResource CopyMenu}"
             DataContext="{Binding Path=ResultModel}"
             ItemsSource="{Binding Path=DataCollection}"
             Style="{DynamicResource DataGridDefaultStyle}"
@@ -289,11 +297,13 @@
             Visibility="{Binding Path=DataCollection, Converter={StaticResource DataCollectionVisibleConverter}}">
             <DataGrid.Columns>
                 <DataGridTextColumn
+                    Width="35"
                     Binding="{Binding Counter}"
                     Header="#"
                     IsReadOnly="True" />
                 <DataGridTemplateColumn
                     Width="100"
+                    ClipboardContentBinding="{Binding BloomFilterResult, Converter={StaticResource BloomFilterResultTextConverter}}"
                     Header="Applicability"
                     IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
@@ -301,7 +311,7 @@
                             <Image
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Source="{Binding BloomFilterResult, Converter={StaticResource BloomFilterResultConverter}}"
+                                Source="{Binding BloomFilterResult, Converter={StaticResource BloomFilterResultImageConverter}}"
                                 Stretch="None" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -315,7 +325,10 @@
                     Header="Hyphenated Passwords"
                     IsReadOnly="True"
                     Visibility="{Binding DataContext.ResultModel.ShowHyphenated, Converter={StaticResource ColumnVisibleConverter}, Source={x:Reference ProxyElement}}" />
-                <DataGridTemplateColumn Header="Passwords Quality" Visibility="{Binding DataContext.ResultModel.CalculateQuality, Converter={StaticResource ColumnVisibleConverter}, Source={x:Reference ProxyElement}}">
+                <DataGridTemplateColumn
+                    ClipboardContentBinding="{Binding PasswordQuality, Converter={StaticResource PasswordQualityPercentConverter}}"
+                    Header="Passwords Quality"
+                    Visibility="{Binding DataContext.ResultModel.CalculateQuality, Converter={StaticResource ColumnVisibleConverter}, Source={x:Reference ProxyElement}}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Grid>
@@ -328,7 +341,7 @@
                                     Grid.Column="0"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Text="{Binding PasswordQuality, Mode=OneWay}" />
+                                    Text="{Binding PasswordQuality, Converter={StaticResource PasswordQualityPercentConverter}, Mode=OneWay}" />
                             </Grid>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

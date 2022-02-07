@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -13,6 +15,27 @@ namespace EPG.Models
             mode = string.Empty;
             include = string.Empty;
             exclude = string.Empty;
+        }
+
+        public PasswordResultModel(IEnumerable<PasswordResultItem> collection, string mode, string include, string exclude)
+        {
+            if (collection is null)
+                throw new ArgumentNullException(nameof(collection));
+
+            if (string.IsNullOrEmpty(mode))
+                throw new ArgumentException($"'{nameof(mode)}' cannot be null or empty.", nameof(mode));
+
+            if (string.IsNullOrEmpty(include))
+                throw new ArgumentException($"'{nameof(include)}' cannot be null or empty.", nameof(include));
+
+            if (string.IsNullOrEmpty(exclude))
+                throw new ArgumentException($"'{nameof(exclude)}' cannot be null or empty.", nameof(exclude));
+
+            DataCollection = new(collection);
+            DataCollection.CollectionChanged += DataCollectionChanged;
+            this.mode = mode;
+            this.include = include;
+            this.exclude = exclude;
         }
 
         private bool showHyphenated;
