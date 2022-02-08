@@ -5,6 +5,7 @@
 		<TargetFramework>net6.0-windows</TargetFramework>
 		<Nullable>enable</Nullable>
 		<UseWPF>true</UseWPF>
+		<NeutralLanguage>en</NeutralLanguage>
 		<Platforms>x64</Platforms>
 		<ApplicationIcon>Resources\epg.ico</ApplicationIcon>
 		<PackageId>EPG</PackageId>
@@ -15,11 +16,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="Resources\Found.png" />
-	  <None Remove="Resources\NotChecked.png" />
-	  <None Remove="Resources\NotChecked32.png" />
-	  <None Remove="Resources\Ok.png" />
-	  <None Remove="Resources\Unsafe.png" />
+		<None Remove="Resources\Found.png" />
+		<None Remove="Resources\NotChecked.png" />
+		<None Remove="Resources\NotChecked32.png" />
+		<None Remove="Resources\Ok.png" />
+		<None Remove="Resources\Unsafe.png" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -28,11 +29,11 @@
 		<Resource Include="Resources\Ok.png" />
 		<Resource Include="Resources\Unsafe.png" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<None Include="Resources\Epg.ico">
-		  <Pack>True</Pack>
-		  <PackagePath>\</PackagePath>
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
 		</None>
 	</ItemGroup>
 
@@ -49,18 +50,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Resources\IconResources.Designer.cs">
-	    <DesignTime>True</DesignTime>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>IconResources.resx</DependentUpon>
-	  </Compile>
+		<Compile Update="Resources\IconResources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>IconResources.resx</DependentUpon>
+		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Update="Resources\IconResources.resx">
-	    <Generator>ResXFileCodeGenerator</Generator>
-	    <LastGenOutput>IconResources.Designer.cs</LastGenOutput>
-	  </EmbeddedResource>
+		<EmbeddedResource Update="Resources\IconResources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>IconResources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>

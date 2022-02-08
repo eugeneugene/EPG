@@ -317,15 +317,18 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTextColumn
+                    Width="120"
                     Binding="{Binding Password}"
                     Header="Passwords"
                     IsReadOnly="True" />
                 <DataGridTextColumn
+                    Width="*"
                     Binding="{Binding HyphenatedPassword}"
                     Header="Hyphenated Passwords"
                     IsReadOnly="True"
                     Visibility="{Binding DataContext.ResultModel.ShowHyphenated, Converter={StaticResource ColumnVisibleConverter}, Source={x:Reference ProxyElement}}" />
                 <DataGridTemplateColumn
+                    Width="120"
                     ClipboardContentBinding="{Binding PasswordQuality, Converter={StaticResource PasswordQualityPercentConverter}}"
                     Header="Passwords Quality"
                     Visibility="{Binding DataContext.ResultModel.CalculateQuality, Converter={StaticResource ColumnVisibleConverter}, Source={x:Reference ProxyElement}}">
