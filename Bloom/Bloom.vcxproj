@@ -87,7 +87,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\Common\char_to_oem_filters.h" />
     <ClInclude Include="..\Common\WideHelp.h" />
     <ClInclude Include="..\Common\Win32ErrorEx.h" />
     <ClInclude Include="Bloom.h" />

@@ -33,9 +33,6 @@
     <ClInclude Include="Hash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\char_to_oem_filters.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Common\WideHelp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
