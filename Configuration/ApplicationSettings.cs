@@ -48,7 +48,7 @@ namespace EPG.Configuration
             // provider
             if (provider is null)
             {
-                this.provider = new LocalFileSettingsProvider();
+                this.provider = new EPG.Code.EPGConfiguratorSettingsProvider();
                 this.provider.Initialize("LocalFileSettingsProvider", new NameValueCollection());
             }
             else
@@ -109,15 +109,15 @@ namespace EPG.Configuration
         } // UseAutoUpgrade
 
         // ----------------------------------------------------------------------
-        public static string UserConfigurationFilePath
-        {
-            get
-            {
-                System.Configuration.Configuration config =
-                    ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
-                return config.FilePath;
-            }
-        } // UserConfigurationFilePath
+        //public static string UserConfigurationFilePath
+        //{
+        //    get
+        //    {
+        //        System.Configuration.Configuration config =
+        //            ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
+        //        return config.FilePath;
+        //    }
+        //} // UserConfigurationFilePath
 
         // ----------------------------------------------------------------------
         public void Load()

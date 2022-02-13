@@ -13,6 +13,8 @@
 		<Authors>Evgeniy Podkopaev</Authors>
 		<Product>Extended Password Generator</Product>
 		<Copyright>2022 (c) All rights reserved</Copyright>
+		<StartupObject>EPG.App</StartupObject>
+		<Description>Extended Password Generator is an unique tool which can help you to generate pronounceable and random passwords, secure against brute-force dictionary attacks</Description>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -22,7 +22,7 @@
         <CommandBinding Command="localcommands:EpgCommands.EditClear" Executed="ClearExecuted" />
         <CommandBinding Command="localcommands:EpgCommands.FilterBrowse" Executed="FilterBrowse" />
     </Window.CommandBindings>
-    <localconfig:WindowSettings.Settings>XamlWindowSettings</localconfig:WindowSettings.Settings>
+    <localconfig:WindowSettings.Settings>MainWindowSettings</localconfig:WindowSettings.Settings>
     <Window.Resources>
         <localcodeconverters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
         <localcodeconverters:UIntConverter x:Key="UIntConverter" />

@@ -2,8 +2,8 @@
 using EPG.Printing.Controls;
 using EPG.Printing.Documents;
 using System;
-using System.Linq;
 using System.Printing;
+using System.Reflection;
 using System.Windows;
 
 namespace EPG
@@ -20,12 +20,26 @@ namespace EPG
 
             InitializeComponent();
 
+            string product = "Title";
+            string version = "Version";
+
+            var assembly = Assembly.GetEntryAssembly();
+            if (assembly is not null)
+            {
+                var versionAttr = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+                if (versionAttr is not null)
+                    version = versionAttr.InformationalVersion;
+                var productAttr = assembly.GetCustomAttribute<AssemblyProductAttribute>();
+                if (productAttr is not null)
+                    product = productAttr.Product;
+            }
+
             PasswordResultPage resultPage = new(
                 header: new PasswordResultHeader(
-                    title: "Title",
-                    version: "1.0",
-                    generationDate: DateTime.Now, 
-                    passwordsGenerated: resultModel.DataCollection.Count(),
+                    title: product,
+                    version: version,
+                    generationDate: DateTime.Now,
+                    passwordsGenerated: resultModel.DataCollection.Count,
                     pageIndex: 0,
                     pageCount: 1), resultModel: resultModel);
 

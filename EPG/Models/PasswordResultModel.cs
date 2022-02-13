@@ -22,14 +22,14 @@ namespace EPG.Models
             if (collection is null)
                 throw new ArgumentNullException(nameof(collection));
 
+            if (include is null)
+                throw new ArgumentNullException(nameof(include));
+
+            if (exclude is null)
+                throw new ArgumentNullException(nameof(exclude));
+
             if (string.IsNullOrEmpty(mode))
                 throw new ArgumentException($"'{nameof(mode)}' cannot be null or empty.", nameof(mode));
-
-            if (string.IsNullOrEmpty(include))
-                throw new ArgumentException($"'{nameof(include)}' cannot be null or empty.", nameof(include));
-
-            if (string.IsNullOrEmpty(exclude))
-                throw new ArgumentException($"'{nameof(exclude)}' cannot be null or empty.", nameof(exclude));
 
             DataCollection = new(collection);
             DataCollection.CollectionChanged += DataCollectionChanged;

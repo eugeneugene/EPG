@@ -2,9 +2,6 @@
 using EPG.Code;
 using EPG.Configuration;
 using EPG.Models;
-using EPG.Printing;
-using EPG.Printing.Controls;
-using EPG.Printing.Documents;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Win32;
 using System;

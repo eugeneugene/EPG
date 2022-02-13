@@ -143,6 +143,39 @@ namespace EPG.Printing.Controls
         }
         #endregion
 
+        #region Hidden Columns
+
+        /// <summary>
+        ///     Dependency property for Visibility
+        /// </summary>
+        public static readonly DependencyProperty VisibilityProperty =
+            DependencyProperty.Register(
+                nameof(Visibility),
+                typeof(Visibility),
+                typeof(PrintableDataGridColumn));
+
+        /// <summary>
+        ///     The property which determines if the column is visible or not.
+        /// </summary>
+        public Visibility Visibility
+        {
+            get { return (Visibility)GetValue(VisibilityProperty); }
+            set { SetValue(VisibilityProperty, value); }
+        }
+
+        /// <summary>
+        ///     Helper IsVisible property
+        /// </summary>
+        internal bool IsVisible
+        {
+            get
+            {
+                return Visibility == Visibility.Visible;
+            }
+        }
+
+        #endregion
+
         /// <summary>
         /// Gets or sets the style for cells.
         /// </summary>

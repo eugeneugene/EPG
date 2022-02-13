@@ -50,7 +50,7 @@ namespace EPG.Printing.Controls
         {
             var @this = (PrintableDataGrid)obj;
             var itemsSource = @this.ItemsSource;
-            if (itemsSource != null)
+            if (itemsSource is not null)
             {
                 @this.items = itemsSource.Cast<object>().ToArray();
                 @this.Reset();
@@ -76,46 +76,47 @@ namespace EPG.Printing.Controls
         /// </summary>
         public GridLength RowHeight
         {
-            get { return (GridLength)GetValue(RowHeightProperty); }
-            set { SetValue(RowHeightProperty, value); }
+            get => (GridLength)GetValue(RowHeightProperty);
+            set => SetValue(RowHeightProperty, value);
         }
 
         void AddColumnDefinition(PrintableDataGridColumn column)
         {
-            var columnDefinition =
-                new ColumnDefinition()
-                {
-                    Width = column.Width,
-                };
+            var columnDefinition = new ColumnDefinition()
+            {
+                Width = column.Width,
+            };
             grid.ColumnDefinitions.Add(columnDefinition);
         }
 
         void AddHeaderRowDefinition()
         {
-            var rowDefinition = new RowDefinition() { Height = GridLength.Auto };
+            var rowDefinition = new RowDefinition()
+            {
+                Height = GridLength.Auto
+            };
             grid.RowDefinitions.Add(rowDefinition);
         }
 
         void AddRowDefinition()
         {
             var rowDefinition = new RowDefinition();
-            rowDefinition.SetBinding(
-                RowDefinition.HeightProperty,
-                new Binding(nameof(RowHeight)) { Source = this }
-            );
+            rowDefinition.SetBinding(RowDefinition.HeightProperty, new Binding(nameof(RowHeight))
+            {
+                Source = this
+            });
             grid.RowDefinitions.Add(rowDefinition);
         }
 
         void AddHeaderCell(int columnIndex)
         {
             var column = Columns[columnIndex];
-            var cell =
-                new PrintableDataGridCell()
-                {
-                    Content = column.Header,
-                    ContentTemplate = column.HeaderTemplate,
-                    ContentTemplateSelector = column.HeaderTemplateSelector,
-                };
+            var cell = new PrintableDataGridCell()
+            {
+                Content = column.Header,
+                ContentTemplate = column.HeaderTemplate,
+                ContentTemplateSelector = column.HeaderTemplateSelector,
+            };
             Grid.SetRow(cell, 0);
             Grid.SetColumn(cell, columnIndex);
             grid.Children.Add(cell);
@@ -124,21 +125,18 @@ namespace EPG.Printing.Controls
         void AddRowCell(int rowIndex, int columnIndex, object dataContext)
         {
             var column = Columns[columnIndex];
-            var cell =
-                new PrintableDataGridCell()
-                {
-                    ContentTemplate = column.CellTemplate,
-                    ContentTemplateSelector = column.CellTemplateSelector,
-                    DataContext = dataContext,
-                };
+            var cell = new PrintableDataGridCell()
+            {
+                ContentTemplate = column.CellTemplate,
+                ContentTemplateSelector = column.CellTemplateSelector,
+                DataContext = dataContext,
+            };
 
             cell.SetBinding(ContentProperty, column.CellBinding);
 
             var cellStyle = column.CellStyle;
-            if (cellStyle != null)
-            {
+            if (cellStyle is not null)
                 cell.Style = cellStyle;
-            }
 
             Grid.SetRow(cell, rowIndex);
             Grid.SetColumn(cell, columnIndex);
@@ -155,11 +153,15 @@ namespace EPG.Printing.Controls
 
             foreach (var columnIndex in Enumerable.Range(0, Columns.Count))
             {
-                AddColumnDefinition(Columns[columnIndex]);
-                AddHeaderCell(columnIndex);
+                var column = Columns[columnIndex];
+                if (column.IsVisible)
+                {
+                    AddColumnDefinition(column);
+                    AddHeaderCell(columnIndex);
+                }
             }
 
-            if (items != null)
+            if (items is not null)
             {
                 var rowIndex = 1;
                 foreach (var item in items)
@@ -168,7 +170,9 @@ namespace EPG.Printing.Controls
 
                     foreach (var columnIndex in Enumerable.Range(0, Columns.Count))
                     {
-                        AddRowCell(rowIndex, columnIndex, item);
+                        var column = Columns[columnIndex];
+                        if (column.IsVisible)
+                            AddRowCell(rowIndex, columnIndex, item);
                     }
 
                     rowIndex++;
@@ -183,7 +187,7 @@ namespace EPG.Printing.Controls
                 AddColumnDefinition(column);
                 AddHeaderCell(columnIndex);
 
-                if (items != null)
+                if (items is not null)
                 {
                     var rowIndex = 1;
                     foreach (var item in items)

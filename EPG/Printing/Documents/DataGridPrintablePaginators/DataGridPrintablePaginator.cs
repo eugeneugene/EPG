@@ -2,7 +2,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -63,7 +62,6 @@ namespace EPG.Printing.Documents
                     count++;
                 }
 
-                Debug.WriteLine("Count: {0}", count);
                 return count;
             }
 
