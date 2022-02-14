@@ -48,7 +48,7 @@ namespace EPG.Configuration
             // provider
             if (provider is null)
             {
-                this.provider = new EPG.Code.EPGConfiguratorSettingsProvider();
+                this.provider = new LocalFileSettingsProvider();
                 this.provider.Initialize("LocalFileSettingsProvider", new NameValueCollection());
             }
             else

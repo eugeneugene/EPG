@@ -10,7 +10,7 @@
     Width="800"
     Height="450"
     d:DataContext="{d:DesignInstance Type=controls:PrintPreviewerResultPage}"
+    localconfig:WindowSettings.Settings="PrintPreviewWindowSettings"
     mc:Ignorable="d">
-    <localconfig:WindowSettings.Settings>PrintPreviewWindowSettings</localconfig:WindowSettings.Settings>
     <controls:PrintPreviewerControl />
 </Window>
