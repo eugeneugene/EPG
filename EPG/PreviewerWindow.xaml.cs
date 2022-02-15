@@ -13,10 +13,10 @@ namespace EPG
     /// </summary>
     public partial class PreviewerWindow : Window
     {
-        public PreviewerWindow(PrintQueue printQueue, PrintTicket printTicket, PasswordResultModel resultModel)
+        public PreviewerWindow(PrintQueue printQueue, PrintTicket printTicket, MainWindowModel model)
         {
-            if (resultModel is null)
-                throw new ArgumentNullException(nameof(resultModel));
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
 
             InitializeComponent();
 
@@ -34,14 +34,14 @@ namespace EPG
                     product = productAttr.Product;
             }
 
-            PasswordResultPage resultPage = new(
+                       PasswordResultPage resultPage = new(
                 header: new PasswordResultHeader(
                     title: product,
                     version: version,
                     generationDate: DateTime.Now,
-                    passwordsGenerated: resultModel.DataCollection.Count,
+                    passwordsGenerated: model.AmountGenerated,
                     pageIndex: 0,
-                    pageCount: 1), resultModel: resultModel);
+                    pageCount: 1), resultModel: model.ResultModel);
 
             var previewer = new PrintPreviewer<PasswordResultPage>(
                 model: resultPage,

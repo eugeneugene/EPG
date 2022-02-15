@@ -8,6 +8,12 @@ namespace EPG.Models
 {
     public class PasswordResultModel : INotifyPropertyChanged
     {
+        private string mode;
+        private bool showHyphenated;
+        private bool calculateQuality;
+        private string include;
+        private string exclude;
+
         public PasswordResultModel()
         {
             DataCollection = new();
@@ -17,7 +23,7 @@ namespace EPG.Models
             exclude = string.Empty;
         }
 
-        public PasswordResultModel(IEnumerable<PasswordResultItem> collection, string mode, string include, string exclude)
+        public PasswordResultModel(IEnumerable<PasswordResultItem> collection, string mode, bool showHyphenated, bool calculateQuality, string include, string exclude)
         {
             if (collection is null)
                 throw new ArgumentNullException(nameof(collection));
@@ -34,11 +40,12 @@ namespace EPG.Models
             DataCollection = new(collection);
             DataCollection.CollectionChanged += DataCollectionChanged;
             this.mode = mode;
+            this.showHyphenated = showHyphenated;
+            this.calculateQuality = calculateQuality;
             this.include = include;
             this.exclude = exclude;
         }
 
-        private bool showHyphenated;
         public bool ShowHyphenated
         {
             get => showHyphenated;
@@ -52,7 +59,6 @@ namespace EPG.Models
             }
         }
 
-        private bool calculateQuality;
         public bool CalculateQuality
         {
             get => calculateQuality;
@@ -66,7 +72,6 @@ namespace EPG.Models
             }
         }
 
-        private string mode;
         public string Mode
         {
             get => mode;
@@ -80,7 +85,6 @@ namespace EPG.Models
             }
         }
 
-        private string include;
         public string Include
         {
             get => include;
@@ -94,7 +98,6 @@ namespace EPG.Models
             }
         }
 
-        private string exclude;
         public string Exclude
         {
             get => exclude;

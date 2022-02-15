@@ -10,10 +10,10 @@ namespace EPG.Models
 
         public IEnumerable<PasswordResultItem> Items => ResultModel.DataCollection;
 
-        IDataGridPrintable<PasswordResultItem> IDataGridPrintable<PasswordResultItem>.CreatePage(IReadOnlyList<PasswordResultItem> items, int pageIndex, int pageCount)
+        IDataGridPrintable<PasswordResultItem> IDataGridPrintable<PasswordResultItem>.CreatePage(IReadOnlyList<PasswordResultItem> items, uint pageIndex, uint pageCount)
         {
             var header = Header.UpdatePageIndexCount(pageIndex, pageCount);
-            return new PasswordResultPage(header, new PasswordResultModel(items, ResultModel.Mode, ResultModel.Include, ResultModel.Exclude));
+            return new PasswordResultPage(header, new PasswordResultModel(items, ResultModel.Mode, ResultModel.ShowHyphenated, ResultModel.CalculateQuality, ResultModel.Include, ResultModel.Exclude));
         }
 
         public PasswordResultPage(PasswordResultHeader header, PasswordResultModel resultModel)

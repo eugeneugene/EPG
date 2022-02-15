@@ -138,9 +138,10 @@ namespace EPG
                 model.ResultModel.DataCollection.Clear();
                 model.ResultModel.ShowHyphenated = false;
                 model.ResultModel.CalculateQuality = false;
+                model.AmountGenerated = 0;
             }
 
-            if (model.ShowHyphenated)
+            if (model.PasswordMode == PasswordMode.Pronounceable && model.ShowHyphenated)
                 model.ResultModel.ShowHyphenated = true;
 
             if (model.CalculateQuality)
@@ -152,7 +153,6 @@ namespace EPG
                 Mouse.OverrideCursor = Cursors.Wait;
                 await Task.Run(() =>
                 {
-                    uint counter = 0U;
                     Password password = new(modes, model.Include ?? string.Empty, model.Exclude ?? string.Empty);
                     if (model.EnableBloom && !string.IsNullOrEmpty(model.Filter))
                     {
@@ -180,7 +180,7 @@ namespace EPG
                                     int? Quality = null;
                                     if (model.CalculateQuality)
                                         Quality = PasswordQuality.CalculateQuality(pass);
-                                    data.Add(new(++counter, pass, hpass, bloomFilterResult, Quality));
+                                    data.Add(new(++model.AmountGenerated, pass, hpass, bloomFilterResult, Quality));
                                 }
                                 break;
                             case PasswordMode.Random:
@@ -194,7 +194,7 @@ namespace EPG
                                     int? Quality = null;
                                     if (model.CalculateQuality)
                                         Quality = PasswordQuality.CalculateQuality(pass);
-                                    data.Add(new(++counter, pass, null, bloomFilterResult, Quality));
+                                    data.Add(new(++model.AmountGenerated, pass, null, bloomFilterResult, Quality));
                                 }
                                 break;
                         }
@@ -239,6 +239,9 @@ namespace EPG
         {
             e.Handled = true;
             model.ResultModel.DataCollection.Clear();
+            model.ResultModel.ShowHyphenated = false;
+            model.ResultModel.CalculateQuality = false;
+            model.AmountGenerated = 0;
         }
 
         private BloomFilterResult CheckBloom(Bloom bloom, string password)
@@ -279,7 +282,7 @@ namespace EPG
             PrintDialog printDlg = new();
             if (printDlg.ShowDialog().GetValueOrDefault())
             {
-                PreviewerWindow previewer = new(printDlg.PrintQueue, printDlg.PrintTicket, model.ResultModel);
+                PreviewerWindow previewer = new(printDlg.PrintQueue, printDlg.PrintTicket, model);
                 previewer.ShowDialog();
             }
         }

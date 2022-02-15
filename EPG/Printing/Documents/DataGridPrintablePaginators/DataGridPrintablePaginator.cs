@@ -25,7 +25,7 @@ namespace EPG.Printing.Documents
                 var restItems = new ArraySegment<TItem>(allItems, index, allItems.Length - index);
                 var presenter = new ContentPresenter()
                 {
-                    Content = printable.CreatePage(restItems, pageIndex, pageCount: 1),
+                    Content = printable.CreatePage(restItems, (uint)pageIndex, pageCount: 1),
                     Width = pageSize.Width,
                     Height = pageSize.Height,
                 };
@@ -70,7 +70,7 @@ namespace EPG.Printing.Documents
                 var pages = new List<IDataGridPrintable<TItem>>();
                 int page = 0;
                 foreach (var chunk in chunks)
-                    pages.Add(printable.CreatePage(chunk, page++, chunks.Count()));
+                    pages.Add(printable.CreatePage(chunk, (uint)page++, (uint)chunks.Count()));
 
                 return pages;
             }
@@ -95,11 +95,11 @@ namespace EPG.Printing.Documents
                 return PagesFromChunks(chunks);
             }
 
-            public PaginateFunction(IDataGridPrintable<TItem> printable, TItem[] allItems, Size pageSize)
+            public PaginateFunction(IDataGridPrintable<TItem> printable, IEnumerable<TItem> allItems, Size pageSize)
             {
                 this.printable = printable;
                 this.pageSize = pageSize;
-                this.allItems = allItems;
+                this.allItems = allItems.ToArray();
             }
         }
 
@@ -111,8 +111,7 @@ namespace EPG.Printing.Documents
         /// <returns></returns>
         public static IEnumerable Paginate(IDataGridPrintable<TItem> printable, Size pageSize)
         {
-            var allItems = printable.Items.ToArray();
-            var function = new PaginateFunction(printable, allItems, pageSize);
+            var function = new PaginateFunction(printable, printable.Items, pageSize);
             return function.Paginate();
         }
     }

@@ -261,7 +261,6 @@ namespace EPG.Models
         }
 
         private string? filter;
-
         public string? Filter
         {
             get => filter;
@@ -276,7 +275,6 @@ namespace EPG.Models
         }
 
         private bool autoClear;
-
         public bool AutoClear
         {
             get => autoClear;
@@ -286,6 +284,20 @@ namespace EPG.Models
                 {
                     autoClear = value;
                     NotifyPropertyChanged(nameof(AutoClear));
+                }
+            }
+        }
+
+        private uint amountGenerated;
+        public uint AmountGenerated
+        {
+            get => amountGenerated;
+            set
+            {
+                if (amountGenerated != value)
+                {
+                    amountGenerated = value;
+                    NotifyPropertyChanged(nameof(AmountGenerated));
                 }
             }
         }

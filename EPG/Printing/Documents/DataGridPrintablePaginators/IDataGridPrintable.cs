@@ -12,6 +12,6 @@ namespace EPG.Printing.Documents
         /// <summary>
         /// Creates an object which represents a page with the specified items.
         /// </summary>
-        IDataGridPrintable<TItem> CreatePage(IReadOnlyList<TItem> items, int pageIndex, int pageCount);
+        IDataGridPrintable<TItem> CreatePage(IReadOnlyList<TItem> items, uint pageIndex, uint pageCount);
     }
 }

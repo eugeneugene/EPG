@@ -7,20 +7,20 @@ namespace EPG.Models
         public string Title { get; }
         public string Version { get; }
         public DateTime GenerationDate { get; }
-        public int PasswordsGenerated { get; }
-        public int PageIndex { get; }
-        public int PageCount { get; }
+        public uint PasswordsGenerated { get; }
+        public uint PageIndex { get; }
+        public uint PageCount { get; }
 
-        public int PageIndexPlus1 => PageIndex + 1;
+        public uint PageIndexPlus1 => PageIndex + 1;
 
         public
             PasswordResultHeader(
                 string title,
                 string version,
                 DateTime generationDate,
-                int passwordsGenerated,
-                int pageIndex,
-                int pageCount
+                uint passwordsGenerated,
+                uint pageIndex,
+                uint pageCount
             )
         {
             Title = title;
@@ -31,7 +31,7 @@ namespace EPG.Models
             PageCount = pageCount;
         }
 
-        public PasswordResultHeader UpdatePageIndexCount(int pageIndex, int pageCount)
+        public PasswordResultHeader UpdatePageIndexCount(uint pageIndex, uint pageCount)
         {
             return
                 new PasswordResultHeader(
