@@ -180,7 +180,7 @@ namespace EPG
                                     int? Quality = null;
                                     if (model.CalculateQuality)
                                         Quality = PasswordQuality.CalculateQuality(pass);
-                                    data.Add(new(++model.AmountGenerated, pass, hpass, bloomFilterResult, Quality));
+                                    data.Add(new(++model.AmountGenerated, pass, hpass, bloomFilterResult, Quality, false));
                                 }
                                 break;
                             case PasswordMode.Random:
@@ -194,7 +194,7 @@ namespace EPG
                                     int? Quality = null;
                                     if (model.CalculateQuality)
                                         Quality = PasswordQuality.CalculateQuality(pass);
-                                    data.Add(new(++model.AmountGenerated, pass, null, bloomFilterResult, Quality));
+                                    data.Add(new(++model.AmountGenerated, pass, null, bloomFilterResult, Quality, false));
                                 }
                                 break;
                         }
@@ -291,6 +291,26 @@ namespace EPG
         {
             e.Handled = true;
             e.CanExecute = ResultDataGrid.SelectedItems.Count > 0;
+        }
+
+        private void ResultDataGridBeginningEdit(object sender, DataGridBeginningEditEventArgs e)
+        {
+            var item = e.Row.Item as PasswordResultItem;
+            if (item is not null)
+            {
+                if (!item.ManuallyEnterred)
+                    e.Cancel = true;
+            }
+        }
+
+        private void ResultDataGridAddingNewItem(object sender, AddingNewItemEventArgs e)
+        {
+            var item = e.NewItem as PasswordResultItem;
+            if (item is not null)
+            {
+                item.Counter = 999;
+                item.ManuallyEnterred = true;
+            }
         }
     }
 }

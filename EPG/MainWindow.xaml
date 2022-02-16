@@ -286,15 +286,18 @@
             x:Name="ResultDataGrid"
             Grid.Row="5"
             Margin="10"
+            AddingNewItem="ResultDataGridAddingNewItem"
             AutoGenerateColumns="False"
+            BeginningEdit="ResultDataGridBeginningEdit"
+            CanUserAddRows="True"
             ClipboardCopyMode="IncludeHeader"
             ColumnHeaderStyle="{DynamicResource DataGridHeaderDefaultStyle}"
             ContextMenu="{StaticResource CopyMenu}"
             DataContext="{Binding Path=ResultModel}"
             ItemsSource="{Binding Path=DataCollection}"
             Style="{DynamicResource DataGridDefaultStyle}"
-            UseLayoutRounding="True"
-            Visibility="{Binding Path=DataCollection, Converter={StaticResource DataCollectionVisibleConverter}}">
+            UseLayoutRounding="True">
+            <!--  Visibility="{Binding Path=DataCollection, Converter={StaticResource DataCollectionVisibleConverter}}"  -->
             <DataGrid.Columns>
                 <DataGridTextColumn
                     Width="35"
@@ -320,7 +323,7 @@
                     Width="120"
                     Binding="{Binding Password}"
                     Header="Passwords"
-                    IsReadOnly="True" />
+                    IsReadOnly="False" />
                 <DataGridTextColumn
                     Width="*"
                     Binding="{Binding HyphenatedPassword}"
