@@ -1,27 +1,121 @@
-﻿namespace EPG.Models
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
+namespace EPG.Models
 {
-    public class PasswordResultItem
+    public class PasswordResultItem : INotifyPropertyChanged
     {
-        public PasswordResultItem(uint counter, string password, string? hyphenatedPassword, BloomFilterResult? bloomFilterResult, decimal? passwordQuality, bool manuallyEnterred)
+        public PasswordResultItem()
         {
-            Counter = counter;
-            Password = password;
-            HyphenatedPassword = hyphenatedPassword;
-            BloomFilterResult = bloomFilterResult;
-            PasswordQuality = passwordQuality;
-            ManuallyEnterred = manuallyEnterred;
+            password = string.Empty;
         }
 
-        public uint Counter { get; set; }
-        public string Password { get; set; }
-        public string? HyphenatedPassword { get; set; }
-        public BloomFilterResult? BloomFilterResult { get; set; }
-        public decimal? PasswordQuality { get; set; }
-        public bool ManuallyEnterred { get; set; }
+        public PasswordResultItem(uint counter, string password, string? hyphenatedPassword, BloomFilterResult? bloomFilterResult, decimal? passwordQuality, bool manuallyEnterred)
+        {
+            this.counter = counter;
+            this.password = password;
+            this.hyphenatedPassword = hyphenatedPassword;
+            this.bloomFilterResult = bloomFilterResult;
+            this.passwordQuality = passwordQuality;
+            this.manuallyEnterred = manuallyEnterred;
+        }
+
+        private uint counter;
+        public uint Counter
+        {
+            get => counter;
+            set
+            {
+                if (counter != value)
+                {
+                    counter = value;
+                    NotifyPropertyChanged(nameof(Counter));
+                }
+            }
+        }
+
+        private string password;
+        public string Password
+        {
+            get => password;
+            set
+            {
+                if (password != value)
+                {
+                    password = value;
+                    NotifyPropertyChanged(nameof(Password));
+                }
+            }
+        }
+
+        private string? hyphenatedPassword;
+        public string? HyphenatedPassword
+        {
+            get => hyphenatedPassword;
+            set
+            {
+                if (hyphenatedPassword != value)
+                {
+                    hyphenatedPassword = value;
+                    NotifyPropertyChanged(nameof(HyphenatedPassword));
+                }
+            }
+        }
+
+        private BloomFilterResult? bloomFilterResult;
+        public BloomFilterResult? BloomFilterResult
+        {
+            get => bloomFilterResult;
+            set
+            {
+                if (bloomFilterResult != value)
+                {
+                    bloomFilterResult = value;
+                    NotifyPropertyChanged(nameof(BloomFilterResult));
+                }
+            }
+        }
+
+        private decimal? passwordQuality;
+        public decimal? PasswordQuality
+        {
+            get => passwordQuality;
+            set
+            {
+                if (passwordQuality != value)
+                {
+                    passwordQuality = value;
+                    NotifyPropertyChanged(nameof(PasswordQuality));
+                }
+            }
+        }
+
+        private bool manuallyEnterred;
+        public bool ManuallyEnterred
+        {
+            get => manuallyEnterred;
+            set
+            {
+                if (manuallyEnterred != value)
+                {
+                    manuallyEnterred = value;
+                    NotifyPropertyChanged(nameof(ManuallyEnterred));
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        private void NotifyPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            if (string.IsNullOrEmpty(propertyName))
+                return;
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         public override string ToString()
         {
-            return $"{Counter}. {Password}";
+            return $"{Counter}. {Password} {BloomFilterResult}";
         }
     }
 }

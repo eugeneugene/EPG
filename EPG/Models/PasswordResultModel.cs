@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -13,6 +14,7 @@ namespace EPG.Models
         private bool calculateQuality;
         private string include;
         private string exclude;
+        private bool manualMode;
 
         public PasswordResultModel()
         {
@@ -21,6 +23,7 @@ namespace EPG.Models
             mode = string.Empty;
             include = string.Empty;
             exclude = string.Empty;
+            manualMode = false;
         }
 
         public PasswordResultModel(IEnumerable<PasswordResultItem> collection, string mode, bool showHyphenated, bool calculateQuality, string include, string exclude)
@@ -111,9 +114,22 @@ namespace EPG.Models
             }
         }
 
-        public ObservableCollection<PasswordResultItem> DataCollection { get; }
+        public bool ManualMode
+        {
+            get => manualMode;
+            set
+            {
+                if (manualMode != value)
+                {
+                    manualMode = value;
+                    NotifyPropertyChanged(nameof(ManualMode));
+                }
+            }
+        }
 
-        private void DataCollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        public ObservableCollection<PasswordResultItem> DataCollection { get; set; }
+
+        private void DataCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             NotifyPropertyChanged(nameof(DataCollection));
         }

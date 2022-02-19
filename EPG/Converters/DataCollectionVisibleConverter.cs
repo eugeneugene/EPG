@@ -7,16 +7,17 @@ using System.Windows.Data;
 
 namespace EPG.Converters
 {
-    internal class DataCollectionVisibleConverter : IValueConverter
+    internal class DataCollectionVisibleConverter : IMultiValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is ObservableCollection<PasswordResultItem> collection)
-                return collection.Count > 0 ? Visibility.Visible : Visibility.Hidden;
+            if (values[0] is ObservableCollection<PasswordResultItem> collection && values[1] is bool manualMode)
+                return (manualMode || collection.Count > 0) ? Visibility.Visible : Visibility.Hidden;
             return Binding.DoNothing;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

@@ -8,7 +8,7 @@
     xmlns:localconfig="clr-namespace:EPG.Configuration;assembly=Configuration"
     xmlns:localmodels="clr-namespace:EPG.Models"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="MainWindow"
+    Title="Extended Password Generator"
     Width="1200"
     Height="800"
     d:DataContext="{d:DesignInstance Type=localmodels:MainWindowModel}"
@@ -33,9 +33,28 @@
         <localcodeconverters:BloomFilterResultImageConverter x:Key="BloomFilterResultImageConverter" />
         <localcodeconverters:BloomFilterResultTextConverter x:Key="BloomFilterResultTextConverter" />
         <localcodeconverters:PasswordQualityPercentConverter x:Key="PasswordQualityPercentConverter" />
+        <localcodeconverters:ColumnBackgroundConverter x:Key="ColumnBackgroundConverter" />
         <ContextMenu x:Key="CopyMenu">
             <MenuItem Command="ApplicationCommands.Copy" />
         </ContextMenu>
+        <Style x:Key="ManualModeCellStyle" TargetType="DataGridCell">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding DataContext.ResultModel.ManualMode, Source={x:Reference ProxyElement}, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                    <Setter Property="Background" Value="LightGray" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ManualModePasswordCellStyle" TargetType="DataGridCell">
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding DataContext.ResultModel.ManualMode, Source={x:Reference ProxyElement}, UpdateSourceTrigger=PropertyChanged}" Value="True" />
+                        <Condition Binding="{Binding ManuallyEnterred, UpdateSourceTrigger=PropertyChanged}" Value="False" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Background" Value="LightGray" />
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -60,6 +79,10 @@
                     Header="AutoClear"
                     IsCheckable="True"
                     IsChecked="{Binding Path=AutoClear}" />
+                <MenuItem
+                    Header="Enter passwords manually"
+                    IsCheckable="True"
+                    IsChecked="{Binding Path=ResultModel.ManualMode}" />
             </MenuItem>
         </Menu>
         <FrameworkElement
@@ -289,23 +312,33 @@
             AddingNewItem="ResultDataGridAddingNewItem"
             AutoGenerateColumns="False"
             BeginningEdit="ResultDataGridBeginningEdit"
-            CanUserAddRows="True"
+            CanUserAddRows="{Binding Path=ManualMode}"
+            CellEditEnding="ResultDataGridCellEditEnding"
             ClipboardCopyMode="IncludeHeader"
             ColumnHeaderStyle="{DynamicResource DataGridHeaderDefaultStyle}"
             ContextMenu="{StaticResource CopyMenu}"
             DataContext="{Binding Path=ResultModel}"
-            ItemsSource="{Binding Path=DataCollection}"
+            ItemsSource="{Binding Path=DataCollection, Mode=TwoWay}"
             Style="{DynamicResource DataGridDefaultStyle}"
             UseLayoutRounding="True">
-            <!--  Visibility="{Binding Path=DataCollection, Converter={StaticResource DataCollectionVisibleConverter}}"  -->
+            <DataGrid.Visibility>
+                <MultiBinding Converter="{StaticResource DataCollectionVisibleConverter}">
+                    <Binding Path="DataCollection" />
+                    <Binding Path="ManualMode" />
+                </MultiBinding>
+            </DataGrid.Visibility>
             <DataGrid.Columns>
                 <DataGridTextColumn
+                    x:Name="Counter"
                     Width="35"
-                    Binding="{Binding Counter}"
+                    Binding="{Binding Counter, Mode=OneWay}"
+                    CellStyle="{StaticResource ManualModeCellStyle}"
                     Header="#"
                     IsReadOnly="True" />
                 <DataGridTemplateColumn
+                    x:Name="Applicability"
                     Width="100"
+                    CellStyle="{StaticResource ManualModeCellStyle}"
                     ClipboardContentBinding="{Binding BloomFilterResult, Converter={StaticResource BloomFilterResultTextConverter}}"
                     Header="Applicability"
                     IsReadOnly="True">
@@ -320,18 +353,23 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTextColumn
+                    x:Name="Passwords"
                     Width="120"
-                    Binding="{Binding Password}"
+                    Binding="{Binding Password, Mode=TwoWay}"
+                    CellStyle="{StaticResource ManualModePasswordCellStyle}"
                     Header="Passwords"
                     IsReadOnly="False" />
                 <DataGridTextColumn
+                    x:Name="HyphenatedPasswords"
                     Width="*"
-                    Binding="{Binding HyphenatedPassword}"
+                    Binding="{Binding HyphenatedPassword, Mode=OneWay}"
+                    CellStyle="{StaticResource ManualModeCellStyle}"
                     Header="Hyphenated Passwords"
                     IsReadOnly="True"
                     Visibility="{Binding DataContext.ResultModel.ShowHyphenated, Converter={StaticResource ColumnVisibleConverter}, Source={x:Reference ProxyElement}}" />
                 <DataGridTemplateColumn
-                    Width="120"
+                    x:Name="PasswordsQuality"
+                    Width="130"
                     ClipboardContentBinding="{Binding PasswordQuality, Converter={StaticResource PasswordQualityPercentConverter}}"
                     Header="Passwords Quality"
                     Visibility="{Binding DataContext.ResultModel.CalculateQuality, Converter={StaticResource ColumnVisibleConverter}, Source={x:Reference ProxyElement}}">

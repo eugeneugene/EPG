@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using WpfNotification;
 
@@ -147,6 +148,8 @@ namespace EPG
             if (model.CalculateQuality)
                 model.ResultModel.CalculateQuality = true;
 
+            model.ResultModel.ManualMode = false;
+
             Bloom? bloom = null;
             try
             {
@@ -242,6 +245,7 @@ namespace EPG
             model.ResultModel.ShowHyphenated = false;
             model.ResultModel.CalculateQuality = false;
             model.AmountGenerated = 0;
+            model.ResultModel.ManualMode = false;
         }
 
         private BloomFilterResult CheckBloom(Bloom bloom, string password)
@@ -279,6 +283,7 @@ namespace EPG
 
         private void CommandPrintExecuted(object sender, ExecutedRoutedEventArgs e)
         {
+            model.ResultModel.ManualMode = false;
             PrintDialog printDlg = new();
             if (printDlg.ShowDialog().GetValueOrDefault())
             {
@@ -298,18 +303,47 @@ namespace EPG
             var item = e.Row.Item as PasswordResultItem;
             if (item is not null)
             {
-                if (!item.ManuallyEnterred)
+                if (!model.ResultModel.ManualMode || !item.ManuallyEnterred)
                     e.Cancel = true;
             }
         }
 
         private void ResultDataGridAddingNewItem(object sender, AddingNewItemEventArgs e)
         {
-            var item = e.NewItem as PasswordResultItem;
-            if (item is not null)
+            e.NewItem = new PasswordResultItem(++model.AmountGenerated, string.Empty, string.Empty, null, null, true);
+        }
+
+        private void ResultDataGridCellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            if (e.EditingElement is TextBox textBox)
             {
-                item.Counter = 999;
-                item.ManuallyEnterred = true;
+                var pass = textBox.Text;
+                Bloom? bloom = null;
+                if (model.EnableBloom && !string.IsNullOrEmpty(model.Filter))
+                {
+                    bloom = new();
+                    bloom.Open(model.Filter);
+                    bloom.Load();
+                }
+                BloomFilterResult? bloomFilterResult = null;
+                if (bloom is not null)
+                    bloomFilterResult = CheckBloom(bloom, pass);
+                int? Quality = null;
+                if (model.CalculateQuality)
+                {
+                    Quality = PasswordQuality.CalculateQuality(pass);
+                    model.ResultModel.CalculateQuality = true;
+                }
+
+                var item = e.Row.Item as PasswordResultItem;
+                if (item is not null)
+                {
+                    item.Password = pass;
+                    item.BloomFilterResult = bloomFilterResult;
+                    item.PasswordQuality = Quality;
+                }
+                bloom?.Close();
+                bloom?.Dispose();
             }
         }
     }
