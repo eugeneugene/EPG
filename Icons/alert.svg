@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 64 64"
+   version="1.1"
+   id="svg9"
+   sodipodi:docname="alert.svg"
+   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs13">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient2047">
+      <stop
+         style="stop-color:#ff2a2a;stop-opacity:1"
+         offset="0"
+         id="stop2043" />
+      <stop
+         style="stop-color:#aa0000;stop-opacity:1"
+         offset="1"
+         id="stop2045" />
+    </linearGradient>
+    <inkscape:path-effect
+       effect="fill_between_many"
+       method="originald"
+       linkedpaths="#path2,0,1|"
+       id="path-effect1482" />
+    <inkscape:path-effect
+       effect="fill_between_many"
+       method="originald"
+       linkedpaths="#path4,0,1|"
+       id="path-effect1870" />
+    <inkscape:path-effect
+       effect="fill_between_many"
+       method="originald"
+       linkedpaths="#path6,0,1|"
+       id="path-effect1910" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2047"
+       id="linearGradient2049"
+       x1="3.0039594"
+       y1="32.008332"
+       x2="60.981742"
+       y2="32.008332"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(4.4257485,0,0,4.4257485,-10.29081,-197.11757)" />
+  </defs>
+  <sodipodi:namedview
+     id="namedview11"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:zoom="2.2953349"
+     inkscape:cx="185.376"
+     inkscape:cy="-28.753974"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg9" />
+  <path
+     inkscape:original-d="M -10.29081,-197.11757"
+     inkscape:path-effect="#path-effect1482"
+     d="M 257.77678,36.42918 143.50395,-161.4903 a 14.118138,14.118138 0 0 0 -24.34161,0 L 4.8895078,36.42918 A 14.073881,14.073881 0 0 0 17.060316,57.54 H 245.60596 a 14.162395,14.162395 0 0 0 12.17082,-21.11082 z"
+     id="path1484"
+     style="fill:url(#linearGradient2049);fill-opacity:1;stroke-width:4.42575"
+     inkscape:export-filename="D:\Devel\Repositories\EPG-CS\Icons\alert.png"
+     inkscape:export-xdpi="95.88092"
+     inkscape:export-ydpi="95.88092" />
+  <path
+     d="M 257.77678,36.42918 143.50395,-161.4903 a 14.118138,14.118138 0 0 0 -24.34161,0 L 4.8895078,36.42918 A 14.073881,14.073881 0 0 0 17.060316,57.54 H 245.60596 a 14.162395,14.162395 0 0 0 12.17082,-21.11082 z m -7.65655,9.869418 a 5.0896109,5.0896109 0 0 1 -4.42575,2.611193 H 17.060316 A 5.1781258,5.1781258 0 0 1 12.634568,41.076216 L 126.9074,-157.06455 a 5.2223833,5.2223833 0 0 1 8.8515,0 L 250.12023,40.854928 a 5.1338683,5.1338683 0 0 1 0,5.44367 z"
+     id="path2"
+     style="fill:#550000;stroke-width:4.42575"
+     inkscape:export-filename="D:\Devel\Repositories\EPG-CS\Icons\alert.png"
+     inkscape:export-xdpi="95.88092"
+     inkscape:export-ydpi="95.88092" />
+  <path
+     inkscape:original-d="M -10.29081,-197.11757"
+     inkscape:path-effect="#path-effect1870"
+     d="m 133.32473,-126.30559 h -3.98317 a 13.852593,13.852593 0 0 0 -13.8526,13.80833 v 85.195662 a 13.852593,13.852593 0 0 0 13.8526,13.808335 h 3.98317 a 13.852593,13.852593 0 0 0 13.85259,-13.808335 v -85.107142 a 13.852593,13.852593 0 0 0 -13.85259,-13.89685 z"
+     id="path1872"
+     style="fill:#ffffff;stroke-width:4.42575"
+     inkscape:export-filename="D:\Devel\Repositories\EPG-CS\Icons\alert.png"
+     inkscape:export-xdpi="95.88092"
+     inkscape:export-ydpi="95.88092" />
+  <path
+     d="m 133.32473,-126.30559 h -3.98317 a 13.852593,13.852593 0 0 0 -13.8526,13.80833 v 85.195662 a 13.852593,13.852593 0 0 0 13.8526,13.808335 h 3.98317 a 13.852593,13.852593 0 0 0 13.85259,-13.808335 v -85.107142 a 13.852593,13.852593 0 0 0 -13.85259,-13.89685 z m 5.0011,98.915476 a 4.9568385,4.9568385 0 0 1 -5.0011,4.956837 h -3.98317 a 5.0010959,5.0010959 0 0 1 -5.0011,-4.956837 v -85.018626 a 5.0010959,5.0010959 0 0 1 5.0011,-5.04536 h 3.98317 a 4.9568385,4.9568385 0 0 1 5.0011,4.95684 z"
+     id="path4"
+     style="fill:#550000;stroke-width:4.42575"
+     inkscape:export-filename="D:\Devel\Repositories\EPG-CS\Icons\alert.png"
+     inkscape:export-xdpi="95.88092"
+     inkscape:export-ydpi="95.88092" />
+  <path
+     inkscape:original-d="M -10.29081,-197.11757"
+     inkscape:path-effect="#path-effect1910"
+     d="m 131.33315,-0.96839507 a 15.84418,15.84418 0 0 0 0,31.68835907 15.84418,15.84418 0 0 0 0,-31.68835907 z"
+     id="path1912"
+     style="fill:#ffffff;stroke-width:4.42575"
+     inkscape:export-filename="D:\Devel\Repositories\EPG-CS\Icons\alert.png"
+     inkscape:export-xdpi="95.88092"
+     inkscape:export-ydpi="95.88092" />
+  <path
+     d="m 131.33315,-0.96839507 a 15.84418,15.84418 0 0 0 0,31.68835907 15.84418,15.84418 0 0 0 0,-31.68835907 z m 0,22.83686107 a 6.9926825,6.9926825 0 0 1 0,-13.9853632 6.9926825,6.9926825 0 0 1 0,13.9853632 z"
+     id="path6"
+     style="fill:#550000;stroke-width:4.42575"
+     inkscape:export-filename="D:\Devel\Repositories\EPG-CS\Icons\alert.png"
+     inkscape:export-xdpi="95.88092"
+     inkscape:export-ydpi="95.88092" />
+</svg>

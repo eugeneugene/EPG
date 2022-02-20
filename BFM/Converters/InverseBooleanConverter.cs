@@ -10,7 +10,6 @@ namespace BFM.Converters
         {
             if (targetType != typeof(bool))
                 return Binding.DoNothing;
-
             return !(bool)value;
         }
 

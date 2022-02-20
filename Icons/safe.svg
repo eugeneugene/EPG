@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Adobe Illustrator 23.0.3, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
+<svg
+   version="1.1"
+   id="Icons"
+   x="0px"
+   y="0px"
+   viewBox="0 0 32 32"
+   style="enable-background:new 0 0 32 32;"
+   xml:space="preserve"
+   sodipodi:docname="safe.svg"
+   inkscape:export-filename="D:\Devel\Repositories\EPG-CS\Icons\safe.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+   id="defs11"><linearGradient
+     inkscape:collect="always"
+     id="linearGradient1047"><stop
+       style="stop-color:#53df53;stop-opacity:1"
+       offset="0"
+       id="stop1043" /><stop
+       style="stop-color:#d1fad1;stop-opacity:1"
+       offset="1"
+       id="stop1045" /></linearGradient><linearGradient
+     inkscape:collect="always"
+     xlink:href="#linearGradient1047"
+     id="linearGradient1049"
+     x1="2"
+     y1="16.000014"
+     x2="30"
+     y2="16.000014"
+     gradientUnits="userSpaceOnUse"
+     gradientTransform="matrix(9.7467767,0,0,9.7467767,-18.032471,-261.8643)" /></defs><sodipodi:namedview
+   id="namedview9"
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1.0"
+   inkscape:pageshadow="2"
+   inkscape:pageopacity="0.0"
+   inkscape:pagecheckerboard="0"
+   showgrid="false"
+   inkscape:zoom="1.6230469"
+   inkscape:cx="221.49699"
+   inkscape:cy="-147.25391"
+   inkscape:window-width="1920"
+   inkscape:window-height="1017"
+   inkscape:window-x="-8"
+   inkscape:window-y="-8"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="Icons" />
+<style
+   type="text/css"
+   id="style2">
+	.st0{fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st1{fill:none;stroke:#000000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:10;}
+</style>
+<path
+   class="st0"
+   d="m 225.63696,-196.56091 c -33.13905,0 -64.32873,-13.64549 -87.721,-36.06307 -23.39226,22.41758 -54.581949,36.06307 -87.720991,36.06307 -13.645488,0 -26.316299,-2.92403 -38.987109,-6.82275 0,136.454887 53.607274,191.036838 126.7081,224.17588 73.10083,-33.139042 126.7081,-87.720993 126.7081,-224.17588 -12.67081,3.89872 -25.34162,6.82275 -38.9871,6.82275 z"
+   id="path4"
+   style="fill:url(#linearGradient1049);fill-opacity:1;stroke:#004000"
+   inkscape:export-filename="D:\Devel\Repositories\EPG-CS\Icons\safe.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96" />
+<polyline
+   class="st0"
+   points="12,16 15,19 21,13 "
+   id="polyline6"
+   style="stroke:#004000"
+   inkscape:export-filename="D:\Devel\Repositories\EPG-CS\Icons\safe.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   transform="matrix(9.7467771,0,0,9.7467771,-18.032471,-261.86431)" />
+</svg>

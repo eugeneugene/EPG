@@ -9,8 +9,8 @@ namespace BFM.Converters
         public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is null)
-                return null;
-            return $"{value:X4}h";
+                return Binding.DoNothing;
+            return $"0x{value:X4}";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

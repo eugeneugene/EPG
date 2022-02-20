@@ -18,18 +18,17 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="Resources\Found.png" />
-		<None Remove="Resources\NotChecked.png" />
-		<None Remove="Resources\NotChecked32.png" />
-		<None Remove="Resources\Ok.png" />
-		<None Remove="Resources\Unsafe.png" />
+	  <None Remove="Resources\alert.png" />
+	  <None Remove="Resources\ok.png" />
+	  <None Remove="Resources\question.png" />
+	  <None Remove="Resources\warning.png" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Resource Include="Resources\Found.png" />
-		<Resource Include="Resources\NotChecked.png" />
-		<Resource Include="Resources\Ok.png" />
-		<Resource Include="Resources\Unsafe.png" />
+	  <Resource Include="Resources\alert.png" />
+	  <Resource Include="Resources\ok.png" />
+	  <Resource Include="Resources\question.png" />
+	  <Resource Include="Resources\warning.png" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -48,21 +47,6 @@
 		<ProjectReference Include="..\Configuration\Configuration.csproj" />
 		<ProjectReference Include="..\CSAdapter\CSAdapter.csproj" />
 		<ProjectReference Include="..\WpfNotification\WpfNotification.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Compile Update="Resources\IconResources.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>IconResources.resx</DependentUpon>
-		</Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-		<EmbeddedResource Update="Resources\IconResources.resx">
-			<Generator>ResXFileCodeGenerator</Generator>
-			<LastGenOutput>IconResources.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>
