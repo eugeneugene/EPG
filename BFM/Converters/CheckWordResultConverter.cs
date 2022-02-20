@@ -10,7 +10,7 @@ namespace BFM.Converters
         {
             if (value is bool b)
                 return b ? "Found" : "Not found";
-            return Binding.DoNothing;
+            return null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -132,7 +132,7 @@
         <GroupBox
             Margin="5"
             BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
-            BorderThickness="1"
+            BorderThickness="1" Height="110"
             Header="Check a word">
             <Grid Margin="10">
                 <Grid.ColumnDefinitions>
@@ -142,8 +142,6 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
                 </Grid.RowDefinitions>
                 <Label
                     x:Name="CheckWordLbl"
@@ -151,7 +149,7 @@
                     Grid.Column="0"
                     Margin="2"
                     VerticalAlignment="Center"
-                    Content="Print a word to check:" />
+                    Content="Type a word to check:" />
                 <TextBox
                     x:Name="CheckWordTbx"
                     Grid.Row="0"
