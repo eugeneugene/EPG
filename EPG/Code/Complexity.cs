@@ -2,7 +2,7 @@
 
 namespace EPG.Code
 {
-    internal static class PasswordQuality
+    internal static class Complexity
     {
         const int CHARSPACE_ESCAPE = 60;
         const int CHARSPACE_ALPHA = 26;
@@ -11,7 +11,7 @@ namespace EPG.Code
         const int CHARSPACE_EXTSPECIAL = 17;
         const int CHARSPACE_HIGH = 112;
 
-        public static int CalculateQuality(string password)
+        public static int CalculateComplexity(string password)
         {
             bool chLower = false;
             bool chUpper = false;

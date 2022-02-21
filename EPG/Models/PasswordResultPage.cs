@@ -13,7 +13,7 @@ namespace EPG.Models
         IDataGridPrintable<PasswordResultItem> IDataGridPrintable<PasswordResultItem>.CreatePage(IReadOnlyList<PasswordResultItem> items, uint pageIndex, uint pageCount)
         {
             var header = Header.UpdatePageIndexCount(pageIndex, pageCount);
-            return new PasswordResultPage(header, new PasswordResultModel(items, ResultModel.Mode, ResultModel.ShowHyphenated, ResultModel.CalculateQuality, ResultModel.Include, ResultModel.Exclude));
+            return new PasswordResultPage(header, new PasswordResultModel(items, ResultModel.Mode, ResultModel.ShowHyphenated, ResultModel.CalculateComplexity, ResultModel.Include, ResultModel.Exclude));
         }
 
         public PasswordResultPage(PasswordResultHeader header, PasswordResultModel resultModel)

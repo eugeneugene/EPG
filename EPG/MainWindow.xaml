@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:localcode="clr-namespace:EPG.Code"
     xmlns:localcodeconverters="clr-namespace:EPG.Converters"
     xmlns:localcommands="clr-namespace:EPG.Commands"
     xmlns:localconfig="clr-namespace:EPG.Configuration;assembly=Configuration"
@@ -32,19 +33,25 @@
         <localcodeconverters:ColumnVisibleConverter x:Key="ColumnVisibleConverter" />
         <localcodeconverters:BloomFilterResultImageConverter x:Key="BloomFilterResultImageConverter" />
         <localcodeconverters:BloomFilterResultTextConverter x:Key="BloomFilterResultTextConverter" />
-        <localcodeconverters:PasswordQualityPercentConverter x:Key="PasswordQualityPercentConverter" />
+        <localcodeconverters:PasswordComplexityPercentConverter x:Key="PasswordComplexityPercentConverter" />
         <localcodeconverters:ColumnBackgroundConverter x:Key="ColumnBackgroundConverter" />
         <ContextMenu x:Key="CopyMenu">
             <MenuItem Command="ApplicationCommands.Copy" />
         </ContextMenu>
-        <Style x:Key="ManualModeCellStyle" TargetType="DataGridCell">
+        <Style
+            x:Key="ManualModeCellStyle"
+            BasedOn="{StaticResource DataGridDefaultCellStyle}"
+            TargetType="DataGridCell">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding DataContext.ResultModel.ManualMode, Source={x:Reference ProxyElement}, UpdateSourceTrigger=PropertyChanged}" Value="True">
                     <Setter Property="Background" Value="LightGray" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        <Style x:Key="ManualModePasswordCellStyle" TargetType="DataGridCell">
+        <Style
+            x:Key="ManualModePasswordCellStyle"
+            BasedOn="{StaticResource DataGridDefaultCellStyle}"
+            TargetType="DataGridCell">
             <Style.Triggers>
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
@@ -149,6 +156,7 @@
                             Grid.Row="0"
                             Grid.Column="1"
                             Margin="3"
+                            localcode:SelectTextOnFocus.Active="True"
                             Text="{Binding Path=NumberOfPasswords, Converter={StaticResource UIntConverter}, UpdateSourceTrigger=PropertyChanged}" />
                         <Label
                             Grid.Row="1"
@@ -158,6 +166,7 @@
                             Grid.Row="1"
                             Grid.Column="1"
                             Margin="3"
+                            localcode:SelectTextOnFocus.Active="True"
                             Text="{Binding Path=MinimumLength, Converter={StaticResource UIntConverter}, UpdateSourceTrigger=PropertyChanged}" />
                         <Label
                             Grid.Row="2"
@@ -167,6 +176,7 @@
                             Grid.Row="2"
                             Grid.Column="1"
                             Margin="3"
+                            localcode:SelectTextOnFocus.Active="True"
                             Text="{Binding Path=MaximumLength, Converter={StaticResource UIntConverter}, UpdateSourceTrigger=PropertyChanged}" />
                     </Grid>
                 </GroupBox>
@@ -182,6 +192,11 @@
                             <Binding Path="NumberOfPasswords" />
                             <Binding Path="MinimumLength" />
                             <Binding Path="MaximumLength" />
+                            <Binding Path="PasswordMode" />
+                            <Binding Path="SmallSymbols" />
+                            <Binding Path="CapitalSymbols" />
+                            <Binding Path="Numerals" />
+                            <Binding Path="SpecialSymbols" />
                         </MultiBinding>
                     </Button.IsEnabled>
                 </Button>
@@ -198,8 +213,8 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="25" />
-                    <RowDefinition Height="25" />
+                    <RowDefinition Height="26" />
+                    <RowDefinition Height="26" />
                 </Grid.RowDefinitions>
                 <CheckBox
                     Grid.Row="0"
@@ -238,6 +253,7 @@
                     <TextBox
                         Grid.Column="1"
                         Margin="3"
+                        localcode:SelectTextOnFocus.Active="True"
                         Text="{Binding Path=Exclude}" />
                 </Grid>
                 <Grid Grid.Row="1" Grid.Column="2">
@@ -249,6 +265,7 @@
                     <TextBox
                         Grid.Column="1"
                         Margin="3"
+                        localcode:SelectTextOnFocus.Active="True"
                         Text="{Binding Path=Include}" />
                 </Grid>
             </Grid>
@@ -277,7 +294,8 @@
                     Grid.Column="0"
                     Margin="3"
                     Content="Paranoid check"
-                    IsChecked="{Binding Path=ParanoidCheck}" />
+                    IsChecked="{Binding Path=ParanoidCheck}"
+                    IsEnabled="{Binding EnableBloom}" />
                 <Grid Grid.Row="0" Grid.Column="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="50" />
@@ -288,6 +306,8 @@
                     <TextBox
                         Grid.Column="1"
                         Margin="3"
+                        localcode:SelectTextOnFocus.Active="True"
+                        IsEnabled="{Binding EnableBloom}"
                         Text="{Binding Path=Filter}" />
                     <Button
                         Grid.Column="2"
@@ -295,14 +315,15 @@
                         Margin="3"
                         Command="localcommands:EpgCommands.FilterBrowse"
                         Content="Browse"
+                        IsEnabled="{Binding EnableBloom}"
                         Style="{StaticResource PressButtonEffectStyle}" />
                 </Grid>
                 <CheckBox
                     Grid.Row="1"
                     Grid.Column="1"
                     Margin="3"
-                    Content="Calculate quality"
-                    IsChecked="{Binding Path=CalculateQuality}" />
+                    Content="Calculate complexity"
+                    IsChecked="{Binding Path=CalculateComplexity}" />
             </Grid>
         </GroupBox>
         <DataGrid
@@ -314,13 +335,13 @@
             BeginningEdit="ResultDataGridBeginningEdit"
             CanUserAddRows="{Binding Path=ManualMode}"
             CellEditEnding="ResultDataGridCellEditEnding"
+            CellStyle="{StaticResource DataGridDefaultCellStyle}"
             ClipboardCopyMode="IncludeHeader"
-            ColumnHeaderStyle="{DynamicResource DataGridHeaderDefaultStyle}"
+            ColumnHeaderStyle="{StaticResource DataGridHeaderDefaultStyle}"
             ContextMenu="{StaticResource CopyMenu}"
             DataContext="{Binding Path=ResultModel}"
             ItemsSource="{Binding Path=DataCollection, Mode=TwoWay}"
-            Style="{DynamicResource DataGridDefaultStyle}"
-            UseLayoutRounding="True">
+            Style="{StaticResource DataGridDefaultStyle}">
             <DataGrid.Visibility>
                 <MultiBinding Converter="{StaticResource DataCollectionVisibleConverter}">
                     <Binding Path="DataCollection" />
@@ -329,19 +350,30 @@
             </DataGrid.Visibility>
             <DataGrid.Columns>
                 <DataGridTextColumn
-                    x:Name="Counter"
+                    x:Name="CounterColumn"
                     Width="35"
                     Binding="{Binding Counter, Mode=OneWay}"
                     CellStyle="{StaticResource ManualModeCellStyle}"
                     Header="#"
-                    IsReadOnly="True" />
+                    IsReadOnly="True">
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style BasedOn="{StaticResource DataGridHeaderDefaultStyle}" TargetType="DataGridColumnHeader">
+                            <Setter Property="ToolTip" Value="#" />
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle>
+                </DataGridTextColumn>
                 <DataGridTemplateColumn
-                    x:Name="Applicability"
+                    x:Name="ApplicabilityColumn"
                     Width="100"
                     CellStyle="{StaticResource ManualModeCellStyle}"
                     ClipboardContentBinding="{Binding BloomFilterResult, Converter={StaticResource BloomFilterResultTextConverter}}"
                     Header="Applicability"
                     IsReadOnly="True">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style BasedOn="{StaticResource DataGridHeaderDefaultStyle}" TargetType="DataGridColumnHeader">
+                            <Setter Property="ToolTip" Value="Tells if the password is safe to use in production" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Image
@@ -353,39 +385,57 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTextColumn
-                    x:Name="Passwords"
+                    x:Name="PasswordsColumn"
                     Width="120"
                     Binding="{Binding Password, Mode=TwoWay}"
                     CellStyle="{StaticResource ManualModePasswordCellStyle}"
                     Header="Passwords"
-                    IsReadOnly="False" />
+                    IsReadOnly="False">
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style BasedOn="{StaticResource DataGridHeaderDefaultStyle}" TargetType="DataGridColumnHeader">
+                            <Setter Property="ToolTip" Value="Generated password" />
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle>
+                </DataGridTextColumn>
                 <DataGridTextColumn
-                    x:Name="HyphenatedPasswords"
+                    x:Name="HyphenatedPasswordsColumn"
                     Width="*"
                     Binding="{Binding HyphenatedPassword, Mode=OneWay}"
                     CellStyle="{StaticResource ManualModeCellStyle}"
                     Header="Hyphenated Passwords"
                     IsReadOnly="True"
-                    Visibility="{Binding DataContext.ResultModel.ShowHyphenated, Converter={StaticResource ColumnVisibleConverter}, Source={x:Reference ProxyElement}}" />
+                    Visibility="{Binding DataContext.ResultModel.ShowHyphenated, Converter={StaticResource ColumnVisibleConverter}, Source={x:Reference ProxyElement}}">
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style BasedOn="{StaticResource DataGridHeaderDefaultStyle}" TargetType="DataGridColumnHeader">
+                            <Setter Property="ToolTip" Value="Passwords' syllables split by hyphens" />
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle>
+                </DataGridTextColumn>
                 <DataGridTemplateColumn
-                    x:Name="PasswordsQuality"
+                    x:Name="ComplexityColumn"
                     Width="130"
-                    ClipboardContentBinding="{Binding PasswordQuality, Converter={StaticResource PasswordQualityPercentConverter}}"
-                    Header="Passwords Quality"
-                    Visibility="{Binding DataContext.ResultModel.CalculateQuality, Converter={StaticResource ColumnVisibleConverter}, Source={x:Reference ProxyElement}}">
+                    ClipboardContentBinding="{Binding Complexity, Converter={StaticResource PasswordComplexityPercentConverter}}"
+                    Header="Complexity"
+                    Visibility="{Binding DataContext.ResultModel.CalculateComplexity, Converter={StaticResource ColumnVisibleConverter}, Source={x:Reference ProxyElement}}">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style BasedOn="{StaticResource DataGridHeaderDefaultStyle}" TargetType="DataGridColumnHeader">
+                            <Setter Property="ToolTip" Value="Passwords' complexity" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Grid>
                                 <ProgressBar
                                     Grid.Column="0"
+                                    Height="21"
                                     Maximum="128"
                                     Minimum="0"
-                                    Value="{Binding PasswordQuality, Mode=OneWay, TargetNullValue=0}" />
+                                    Value="{Binding Complexity, Mode=OneWay, TargetNullValue=0}" />
                                 <TextBlock
                                     Grid.Column="0"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Text="{Binding PasswordQuality, Converter={StaticResource PasswordQualityPercentConverter}, Mode=OneWay}" />
+                                    Text="{Binding Complexity, Converter={StaticResource PasswordComplexityPercentConverter}, Mode=OneWay}" />
                             </Grid>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

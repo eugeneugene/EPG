@@ -31,7 +31,7 @@ namespace EPG.Models
             Include = string.IsNullOrWhiteSpace(settings.Include) ? string.Empty : settings.Include;
             EnableBloom = settings.EnableBloom;
             ParanoidCheck = settings.ParanoidCheck;
-            CalculateQuality = settings.CalculateQuality;
+            CalculateComplexity = settings.CalculateComplexity;
             Filter = string.IsNullOrWhiteSpace(settings.Filter) ? string.Empty : settings.Filter;
             AutoClear = settings.AutoClear;
         }
@@ -246,16 +246,16 @@ namespace EPG.Models
             }
         }
 
-        private bool calculateQuality;
-        public bool CalculateQuality
+        private bool calculateComplexity;
+        public bool CalculateComplexity
         {
-            get => calculateQuality;
+            get => calculateComplexity;
             set
             {
-                if (calculateQuality != value)
+                if (calculateComplexity != value)
                 {
-                    calculateQuality = value;
-                    NotifyPropertyChanged(nameof(CalculateQuality));
+                    calculateComplexity = value;
+                    NotifyPropertyChanged(nameof(CalculateComplexity));
                 }
             }
         }

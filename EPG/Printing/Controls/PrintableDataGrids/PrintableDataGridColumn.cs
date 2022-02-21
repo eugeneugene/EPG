@@ -143,7 +143,7 @@ namespace EPG.Printing.Controls
         }
         #endregion
 
-        #region Hidden Columns
+        #region Visibility
 
         /// <summary>
         ///     Dependency property for Visibility

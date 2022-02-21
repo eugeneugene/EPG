@@ -11,7 +11,7 @@ namespace EPG.Models
     {
         private string mode;
         private bool showHyphenated;
-        private bool calculateQuality;
+        private bool calculateComplexity;
         private string include;
         private string exclude;
         private bool manualMode;
@@ -26,7 +26,7 @@ namespace EPG.Models
             manualMode = false;
         }
 
-        public PasswordResultModel(IEnumerable<PasswordResultItem> collection, string mode, bool showHyphenated, bool calculateQuality, string include, string exclude)
+        public PasswordResultModel(IEnumerable<PasswordResultItem> collection, string mode, bool showHyphenated, bool calculateComplexity, string include, string exclude)
         {
             if (collection is null)
                 throw new ArgumentNullException(nameof(collection));
@@ -44,7 +44,7 @@ namespace EPG.Models
             DataCollection.CollectionChanged += DataCollectionChanged;
             this.mode = mode;
             this.showHyphenated = showHyphenated;
-            this.calculateQuality = calculateQuality;
+            this.calculateComplexity = calculateComplexity;
             this.include = include;
             this.exclude = exclude;
         }
@@ -62,15 +62,15 @@ namespace EPG.Models
             }
         }
 
-        public bool CalculateQuality
+        public bool CalculateComplexity
         {
-            get => calculateQuality;
+            get => calculateComplexity;
             set
             {
-                if (calculateQuality != value)
+                if (calculateComplexity != value)
                 {
-                    calculateQuality = value;
-                    NotifyPropertyChanged(nameof(CalculateQuality));
+                    calculateComplexity = value;
+                    NotifyPropertyChanged(nameof(CalculateComplexity));
                 }
             }
         }

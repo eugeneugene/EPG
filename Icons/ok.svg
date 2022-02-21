@@ -5,7 +5,7 @@
    enable-background="new 0 0 48 48"
    id="svg6"
    sodipodi:docname="ok.svg"
-   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
    inkscape:export-filename="D:\Devel\Repositories\EPG-CS\Icons\ok.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
@@ -37,7 +37,7 @@
        y1="24"
        x2="45.5"
        y2="24"
-       gradientTransform="matrix(5.9505941,0,0,5.9505941,-98.094424,-127.88061)" />
+       gradientTransform="matrix(0.47516968,0,0,0.47516968,12.965545,10.483051)" />
   </defs>
   <sodipodi:namedview
      id="namedview8"
@@ -48,21 +48,27 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      showgrid="false"
-     inkscape:zoom="0.76511164"
-     inkscape:cx="122.20439"
-     inkscape:cy="-27.446975"
+     inkscape:zoom="17.3125"
+     inkscape:cx="36.6787"
+     inkscape:cy="27.35018"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
-     inkscape:window-x="-8"
+     inkscape:window-x="1912"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg6" />
   <path
      id="circle2"
-     style="fill:url(#linearGradient1284);fill-opacity:1;stroke:#008000;stroke-width:5.9506"
-     d="M 169.68231,14.933634 A 124.96248,124.96248 0 0 1 44.719846,139.89612 124.96248,124.96248 0 0 1 -80.242644,14.933634 124.96248,124.96248 0 0 1 44.719846,-110.02883 124.96248,124.96248 0 0 1 169.68231,14.933634 Z" />
+     style="fill:url(#linearGradient1284);fill-opacity:1;stroke:#008000;stroke-width:0.47517"
+     d="m 34.34818,21.887121 a 9.9785632,9.9785632 0 0 1 -9.978562,9.97856 9.9785632,9.9785632 0 0 1 -9.978564,-9.97856 9.9785632,9.9785632 0 0 1 9.978564,-9.97856 9.9785632,9.9785632 0 0 1 9.978562,9.97856 z"
+     inkscape:export-filename="D:\Devel\Repositories\EPG-CS\Icons\ok.png"
+     inkscape:export-xdpi="96"
+     inkscape:export-ydpi="96" />
   <path
-     style="color:#000000;fill:#e8fca4;stroke:#004c00;stroke-width:5.9506;stroke-linecap:round;stroke-linejoin:round;-inkscape-stroke:none"
-     d="M 148.82037,-55.404236 42.441876,30.368004 8.4700256,-14.737976 a 12.892319,12.892319 0 0 0 -18.04936,-2.54528 12.892319,12.892319 0 0 0 -2.5452696,18.06098967 L 29.866606,56.518054 a 12.893608,12.893608 0 0 0 18.39802,2.27798 l 116.745544,-94.11702 a 12.892319,12.892319 0 0 0 1.94092,-18.13071 12.892319,12.892319 0 0 0 -18.13072,-1.95254 z"
-     id="path2216" />
+     style="color:#000000;fill:#e8fca4;stroke:#004c00;stroke-width:0.418549;stroke-linecap:round;stroke-linejoin:round;-inkscape-stroke:none"
+     d="m 30.963525,17.315021 -7.394887,6.10437 -2.361549,-3.210171 a 0.89620782,0.91754108 0 0 0 -1.254698,-0.181149 0.89620782,0.91754108 0 0 0 -0.176934,1.285398 l 2.919013,3.967014 a 0.8962974,0.91763279 0 0 0 1.278936,0.16212 l 8.11555,-6.698272 a 0.89620782,0.91754108 0 0 0 0.134924,-1.290354 0.89620782,0.91754108 0 0 0 -1.260355,-0.138956 z"
+     id="path2216"
+     inkscape:export-filename="D:\Devel\Repositories\EPG-CS\Icons\ok.png"
+     inkscape:export-xdpi="96"
+     inkscape:export-ydpi="96" />
 </svg>

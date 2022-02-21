@@ -20,7 +20,7 @@ namespace EPG.Models
             Include = model.Include;
             EnableBloom = model.EnableBloom;
             ParanoidCheck = model.ParanoidCheck;
-            CalculateQuality = model.CalculateQuality;
+            CalculateComplexity = model.CalculateComplexity;
             Filter = model.Filter;
             AutoClear = model.AutoClear;
         }
@@ -65,7 +65,7 @@ namespace EPG.Models
         public bool ParanoidCheck { get; set; }
 
         [PropertySetting(DefaultValue = false)]
-        public bool CalculateQuality { get; set; }
+        public bool CalculateComplexity { get; set; }
 
         [PropertySetting(DefaultValue = "")]
         public string? Filter { get; set; }

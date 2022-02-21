@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace EPG.Converters
 {
-    internal class PasswordQualityPercentConverter : IValueConverter
+    internal class PasswordComplexityPercentConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

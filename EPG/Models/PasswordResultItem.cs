@@ -10,13 +10,13 @@ namespace EPG.Models
             password = string.Empty;
         }
 
-        public PasswordResultItem(uint counter, string password, string? hyphenatedPassword, BloomFilterResult? bloomFilterResult, decimal? passwordQuality, bool manuallyEnterred)
+        public PasswordResultItem(uint counter, string password, string? hyphenatedPassword, BloomFilterResult? bloomFilterResult, decimal? complexity, bool manuallyEnterred)
         {
             this.counter = counter;
             this.password = password;
             this.hyphenatedPassword = hyphenatedPassword;
             this.bloomFilterResult = bloomFilterResult;
-            this.passwordQuality = passwordQuality;
+            this.complexity = complexity;
             this.manuallyEnterred = manuallyEnterred;
         }
 
@@ -76,16 +76,16 @@ namespace EPG.Models
             }
         }
 
-        private decimal? passwordQuality;
-        public decimal? PasswordQuality
+        private decimal? complexity;
+        public decimal? Complexity
         {
-            get => passwordQuality;
+            get => complexity;
             set
             {
-                if (passwordQuality != value)
+                if (complexity != value)
                 {
-                    passwordQuality = value;
-                    NotifyPropertyChanged(nameof(PasswordQuality));
+                    complexity = value;
+                    NotifyPropertyChanged(nameof(Complexity));
                 }
             }
         }

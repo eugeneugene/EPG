@@ -138,15 +138,15 @@ namespace EPG
             {
                 model.ResultModel.DataCollection.Clear();
                 model.ResultModel.ShowHyphenated = false;
-                model.ResultModel.CalculateQuality = false;
+                model.ResultModel.CalculateComplexity = false;
                 model.AmountGenerated = 0;
             }
 
             if (model.PasswordMode == PasswordMode.Pronounceable && model.ShowHyphenated)
                 model.ResultModel.ShowHyphenated = true;
 
-            if (model.CalculateQuality)
-                model.ResultModel.CalculateQuality = true;
+            if (model.CalculateComplexity)
+                model.ResultModel.CalculateComplexity = true;
 
             model.ResultModel.ManualMode = false;
 
@@ -180,10 +180,10 @@ namespace EPG
                                     BloomFilterResult? bloomFilterResult = null;
                                     if (bloom is not null)
                                         bloomFilterResult = CheckBloom(bloom, pass);
-                                    int? Quality = null;
-                                    if (model.CalculateQuality)
-                                        Quality = PasswordQuality.CalculateQuality(pass);
-                                    data.Add(new(++model.AmountGenerated, pass, hpass, bloomFilterResult, Quality, false));
+                                    int? complexity = null;
+                                    if (model.CalculateComplexity)
+                                        complexity = Complexity.CalculateComplexity(pass);
+                                    data.Add(new(++model.AmountGenerated, pass, hpass, bloomFilterResult, complexity, false));
                                 }
                                 break;
                             case PasswordMode.Random:
@@ -194,10 +194,10 @@ namespace EPG
                                     BloomFilterResult? bloomFilterResult = null;
                                     if (bloom is not null)
                                         bloomFilterResult = CheckBloom(bloom, pass);
-                                    int? Quality = null;
-                                    if (model.CalculateQuality)
-                                        Quality = PasswordQuality.CalculateQuality(pass);
-                                    data.Add(new(++model.AmountGenerated, pass, null, bloomFilterResult, Quality, false));
+                                    int? complexity = null;
+                                    if (model.CalculateComplexity)
+                                        complexity = Complexity.CalculateComplexity(pass);
+                                    data.Add(new(++model.AmountGenerated, pass, null, bloomFilterResult, complexity, false));
                                 }
                                 break;
                         }
@@ -243,7 +243,7 @@ namespace EPG
             e.Handled = true;
             model.ResultModel.DataCollection.Clear();
             model.ResultModel.ShowHyphenated = false;
-            model.ResultModel.CalculateQuality = false;
+            model.ResultModel.CalculateComplexity = false;
             model.AmountGenerated = 0;
             model.ResultModel.ManualMode = false;
         }
@@ -328,11 +328,11 @@ namespace EPG
                 BloomFilterResult? bloomFilterResult = null;
                 if (bloom is not null)
                     bloomFilterResult = CheckBloom(bloom, pass);
-                int? Quality = null;
-                if (model.CalculateQuality)
+                int? complexity = null;
+                if (model.CalculateComplexity)
                 {
-                    Quality = PasswordQuality.CalculateQuality(pass);
-                    model.ResultModel.CalculateQuality = true;
+                    complexity = Complexity.CalculateComplexity(pass);
+                    model.ResultModel.CalculateComplexity = true;
                 }
 
                 var item = e.Row.Item as PasswordResultItem;
@@ -340,7 +340,7 @@ namespace EPG
                 {
                     item.Password = pass;
                     item.BloomFilterResult = bloomFilterResult;
-                    item.PasswordQuality = Quality;
+                    item.Complexity = complexity;
                 }
                 bloom?.Close();
                 bloom?.Dispose();
