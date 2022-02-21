@@ -10,9 +10,9 @@ namespace EPG.Converters
         {
             if (value is decimal dec)
             {
-                if (dec > 128.0m)
-                    dec = 128.0m;
-                return string.Format(CultureInfo.CurrentCulture, "{0:P1}", dec / 128.0m);
+                if (dec > 128m)
+                    dec = 128m;
+                return string.Format(CultureInfo.CurrentCulture, "{0:P1}", dec / 128m);
             }
             return Binding.DoNothing;
         }

@@ -40,7 +40,7 @@ namespace BloomCS_Test
             Assert.IsNotNull(password);
 
             int amount = 1000;
-            decimal l = 0.0m;
+            decimal l = 0m;
             for (int i = 0; i < amount; i++)
             {
                 bool res = password.GenerateWord(10);
@@ -72,7 +72,7 @@ namespace BloomCS_Test
             Assert.IsNotNull(password);
 
             int amount = 1000;
-            decimal c = 0.0m;
+            decimal c = 0m;
             for (int i = 0; i < amount; i++)
             {
                 bool res = password.GenerateWord(10);
