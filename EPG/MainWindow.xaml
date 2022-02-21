@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:lex="http://wpflocalizeextension.codeplex.com"
     xmlns:localcode="clr-namespace:EPG.Code"
     xmlns:localcodeconverters="clr-namespace:EPG.Converters"
     xmlns:localcommands="clr-namespace:EPG.Commands"
@@ -13,6 +14,10 @@
     Width="1200"
     Height="800"
     d:DataContext="{d:DesignInstance Type=localmodels:MainWindowModel}"
+    lex:LocalizeDictionary.DesignCulture="ru"
+    lex:LocalizeDictionary.IncludeInvariantCulture="False"
+    lex:ResxLocalizationProvider.DefaultAssembly="EPG"
+    lex:ResxLocalizationProvider.DefaultDictionary="Resources"
     localconfig:WindowSettings.Settings="MainWindowSettings"
     Closed="WindowClosed"
     Loaded="WindowLoaded"
@@ -23,6 +28,8 @@
         <CommandBinding Command="localcommands:EpgCommands.CommandGenerate" Executed="CommandGenerateExecuted" />
         <CommandBinding Command="localcommands:EpgCommands.EditClear" Executed="ClearExecuted" />
         <CommandBinding Command="localcommands:EpgCommands.FilterBrowse" Executed="FilterBrowse" />
+        <CommandBinding Command="localcommands:EpgCommands.LangEnglish" Executed="LangEnglishExecuted" />
+        <CommandBinding Command="localcommands:EpgCommands.LangRussian" Executed="LangRussianExecuted" />
     </Window.CommandBindings>
     <Window.Resources>
         <localcodeconverters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
@@ -73,7 +80,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Menu Grid.Row="0" VerticalAlignment="Top">
-            <MenuItem Header="File">
+            <MenuItem x:Name="MenuFile" Header="File">
                 <MenuItem Command="ApplicationCommands.Print" Header="Print" />
                 <Separator />
                 <MenuItem Command="ApplicationCommands.Close" Header="Exit" />
@@ -90,6 +97,10 @@
                     Header="Enter passwords manually"
                     IsCheckable="True"
                     IsChecked="{Binding Path=ResultModel.ManualMode}" />
+            </MenuItem>
+            <MenuItem Header="Lang">
+                <MenuItem Command="localcommands:EpgCommands.LangEnglish" Header="English" />
+                <MenuItem Command="localcommands:EpgCommands.LangRussian" Header="Russian" />
             </MenuItem>
         </Menu>
         <FrameworkElement
@@ -181,6 +192,7 @@
                     </Grid>
                 </GroupBox>
                 <Button
+                    x:Name="GenerateBtn"
                     Grid.Column="3"
                     Width="80"
                     Height="20"
