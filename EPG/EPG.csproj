@@ -18,17 +18,17 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="Resources\alert.png" />
-		<None Remove="Resources\ok.png" />
-		<None Remove="Resources\question.png" />
-		<None Remove="Resources\warning.png" />
+	  <None Remove="Resources\alert.png" />
+	  <None Remove="Resources\ok.png" />
+	  <None Remove="Resources\question.png" />
+	  <None Remove="Resources\warning.png" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Resource Include="Resources\alert.png" />
-		<Resource Include="Resources\ok.png" />
-		<Resource Include="Resources\question.png" />
-		<Resource Include="Resources\warning.png" />
+	  <Resource Include="Resources\alert.png" />
+	  <Resource Include="Resources\ok.png" />
+	  <Resource Include="Resources\question.png" />
+	  <Resource Include="Resources\warning.png" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -41,7 +41,6 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
 		<PackageReference Include="Prism.Core" Version="8.1.97" />
-		<PackageReference Include="WPFLocalizeExtension" Version="3.9.4" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -50,30 +49,6 @@
 		<ProjectReference Include="..\WpfNotification\WpfNotification.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Compile Update="Properties\Resources.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>Resources.resx</DependentUpon>
-		</Compile>
-		<Compile Update="Resources.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>Resources.resx</DependentUpon>
-		</Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-		<EmbeddedResource Update="Resources.resx" Generator="ResXFileCodeGenerator" LastGenOutput="Resources.Designer.cs" />
-	</ItemGroup>
-	<ItemGroup>
-		<Compile Update="Resources.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>Resources.resx</DependentUpon>
-		</Compile>
-	</ItemGroup>
-	
 	<ItemGroup>
 		<Page Update="Resources\Styles.xaml">
 			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>

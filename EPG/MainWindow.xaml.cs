@@ -13,8 +13,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using WPFLocalizeExtension.Engine;
-using WPFLocalizeExtension.Providers;
 using WpfNotification;
 
 namespace EPG
@@ -33,15 +31,6 @@ namespace EPG
         public MainWindow(IHostApplicationLifetime applicationLifetime)
         {
             _applicationLifetime = applicationLifetime ?? throw new Exception(nameof(applicationLifetime));
-
-            LocalizeDictionary.Instance.Culture = new System.Globalization.CultureInfo("ru");
-            (LocalizeDictionary.Instance.DefaultProvider as ResxLocalizationProvider).SearchCultures =
-                new List<System.Globalization.CultureInfo>()
-                {
-                    System.Globalization.CultureInfo.GetCultureInfo("ru-ru"),
-                    System.Globalization.CultureInfo.GetCultureInfo("en"),
-                };
-            LocalizeDictionary.Instance.OutputMissingKeys = true;
 
             model = new();
             settings = new();
@@ -259,12 +248,12 @@ namespace EPG
             model.ResultModel.ManualMode = false;
         }
 
-        private BloomFilterResult? CheckBloom(Bloom bloom, string password)
+        private BloomFilterResult CheckBloom(Bloom bloom, string password)
         {
             if (bloom is null)
                 throw new ArgumentNullException(nameof(bloom));
             if (string.IsNullOrEmpty(password))
-                return null;
+                throw new ArgumentNullException(nameof(password));
 
             bool bloomres = bloom.CheckString(password);
             if (bloomres)
@@ -356,16 +345,6 @@ namespace EPG
                 bloom?.Close();
                 bloom?.Dispose();
             }
-        }
-
-        private void LangEnglishExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            LocalizeDictionary.Instance.Culture=new System.Globalization.CultureInfo("en-US");
-        }
-
-        private void LangRussianExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            LocalizeDictionary.Instance.Culture = new System.Globalization.CultureInfo("ru-RU");
         }
     }
 }
