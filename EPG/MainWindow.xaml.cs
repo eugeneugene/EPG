@@ -248,12 +248,12 @@ namespace EPG
             model.ResultModel.ManualMode = false;
         }
 
-        private BloomFilterResult CheckBloom(Bloom bloom, string password)
+        private BloomFilterResult? CheckBloom(Bloom bloom, string password)
         {
             if (bloom is null)
                 throw new ArgumentNullException(nameof(bloom));
             if (string.IsNullOrEmpty(password))
-                throw new ArgumentNullException(nameof(password));
+                return null;
 
             bool bloomres = bloom.CheckString(password);
             if (bloomres)
