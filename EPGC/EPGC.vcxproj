@@ -95,6 +95,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Common\char_to_oem_filters.h" />
     <ClInclude Include="..\Common\WideHelp.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />

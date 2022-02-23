@@ -12,6 +12,12 @@
 #include <stdexcept>
 #include <format>
 #include <string>
+#include <cstdio>	
+
+#include <boost/iostreams/filtering_stream.hpp>
+#include <boost/iostreams/concepts.hpp>
+#include <boost/iostreams/filter/stdio.hpp>
+#include <boost/iostreams/operations.hpp>
 
 #if defined(_DEBUG)
 #include <crtdbg.h>
