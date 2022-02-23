@@ -7,9 +7,9 @@ inline Modes operator+(Modes modes1, Modes modes2)
 	return static_cast<Modes>(static_cast<int>(modes1) | static_cast<int>(modes2));
 }
 
-inline Modes operator+=(Modes modes1, Modes modes2)
+inline Modes& operator+=(Modes& modes1, Modes modes2)
 {
-	return static_cast<Modes>(static_cast<int>(modes1) | static_cast<int>(modes2));
+	return modes1 = modes1 + modes2;
 }
 
 inline Modes operator&(Modes modes1, Modes modes2)
@@ -17,9 +17,9 @@ inline Modes operator&(Modes modes1, Modes modes2)
 	return static_cast<Modes>(static_cast<int>(modes1) & static_cast<int>(modes2));
 }
 
-inline Modes operator&=(Modes modes1, Modes modes2)
+inline Modes& operator&=(Modes& modes1, Modes modes2)
 {
-	return static_cast<Modes>(static_cast<int>(modes1) & static_cast<int>(modes2));
+	return modes1 = modes1 & modes2;
 }
 
 inline Modes operator-(Modes modes1, Modes modes2)
@@ -27,9 +27,9 @@ inline Modes operator-(Modes modes1, Modes modes2)
 	return static_cast<Modes>(static_cast<int>(modes1) & ~static_cast<int>(modes2));
 }
 
-inline Modes operator-=(Modes modes1, Modes modes2)
+inline Modes& operator-=(Modes& modes1, Modes modes2)
 {
-	return static_cast<Modes>(static_cast<int>(modes1) & ~static_cast<int>(modes2));
+	return modes1 = modes1 - modes2;
 }
 
 inline Modes operator~(Modes modes)

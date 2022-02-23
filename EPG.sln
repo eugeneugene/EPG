@@ -31,6 +31,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfNotification", "WpfNotif
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Configuration", "Configuration\Configuration.csproj", "{594E47F4-6F11-4F0B-BD07-80D4608CFF55}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EPGC", "EPGC\EPGC.vcxproj", "{58DB39BE-C0D2-4C34-8081-EBD4A683AAD5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -85,6 +87,10 @@ Global
 		{594E47F4-6F11-4F0B-BD07-80D4608CFF55}.Debug|x64.Build.0 = Debug|x64
 		{594E47F4-6F11-4F0B-BD07-80D4608CFF55}.Release|x64.ActiveCfg = Release|x64
 		{594E47F4-6F11-4F0B-BD07-80D4608CFF55}.Release|x64.Build.0 = Release|x64
+		{58DB39BE-C0D2-4C34-8081-EBD4A683AAD5}.Debug|x64.ActiveCfg = Debug|x64
+		{58DB39BE-C0D2-4C34-8081-EBD4A683AAD5}.Debug|x64.Build.0 = Debug|x64
+		{58DB39BE-C0D2-4C34-8081-EBD4A683AAD5}.Release|x64.ActiveCfg = Release|x64
+		{58DB39BE-C0D2-4C34-8081-EBD4A683AAD5}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

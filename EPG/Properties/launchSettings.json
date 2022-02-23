@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "EPG": {
+      "commandName": "Project",
+      "commandLineArgs": "/?"
+    }
+  }
+}
