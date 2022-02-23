@@ -18,6 +18,9 @@
 #include <boost/iostreams/concepts.hpp>
 #include <boost/iostreams/filter/stdio.hpp>
 #include <boost/iostreams/operations.hpp>
+#include <boost/locale/conversion.hpp>
+#include <boost/locale/generator.hpp>
+
 
 #if defined(_DEBUG)
 #include <crtdbg.h>

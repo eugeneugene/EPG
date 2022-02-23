@@ -3,9 +3,11 @@
 #include "..\Rnd\CryptoRND.h"
 #include "..\Common\char_to_oem_filters.h"
 #include "..\Bloom\Bloom.h"
+#include "CPasswordResult.h"
 
 //boost::iostreams::filtering_wostream fcerr;
 boost::iostreams::filtering_wostream fcout;
+
 
 int main(int argc, char* argv[], char* envp[])
 {
@@ -146,13 +148,16 @@ int main(int argc, char* argv[], char* envp[])
 		else
 			_length = _min;
 
+		CPasswordResult result;
+
 		if (mode == 'r')
 		{
 			if (password.GenerateRandomWord(_length))
 			{
 				std::_tstring word;
 				password.GetWord(word);
-				fcout << word << std::endl;
+				result.word = word;
+				result.bloom_result = CheckBloom(_bloom, paranoid, word);
 			}
 		}
 		else if (mode == 'p')
@@ -161,25 +166,26 @@ int main(int argc, char* argv[], char* envp[])
 			{
 				std::_tstring word;
 				password.GetWord(word);
-				if (!bloom.empty())
-				{
-					BOOL res = _bloom.Check(toTstring(word).c_str());
-				}
-				fcout << word << std::endl;
+				result.word = word;
+				result.bloom_result = CheckBloom(_bloom, paranoid, word);
 			}
 		}
 		else if (mode == 'h')
 		{
 			if (password.GenerateWord(_length))
 			{
+				std::_tstring word;
+				password.GetWord(word);
 				std::_tstring hword;
 				password.GetHyphenatedWord(hword);
-				fcout << hword << std::endl;
-				_RPTWN(_CRT_WARN, L"%ls\r\n", hword.c_str());
+				result.word = hword;
+				result.bloom_result = CheckBloom(_bloom, paranoid, word);
 			}
 		}
 		else
 			throw std::exception("Invalid mode");
+
+		fcout << result.word << L' ' << result.bloom_result << std::endl;
 	}
 
 	return EXIT_SUCCESS;
