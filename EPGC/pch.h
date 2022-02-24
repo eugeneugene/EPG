@@ -5,7 +5,6 @@
 
 #include <Windows.h>
 #include <tchar.h>
-#include <CLI/CLI.hpp>
 
 #include <vector>
 #include <iostream>
@@ -14,13 +13,14 @@
 #include <string>
 #include <cstdio>	
 
+#include <CLI/CLI.hpp>
+
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/iostreams/concepts.hpp>
 #include <boost/iostreams/filter/stdio.hpp>
 #include <boost/iostreams/operations.hpp>
 #include <boost/locale/conversion.hpp>
 #include <boost/locale/generator.hpp>
-
 
 #if defined(_DEBUG)
 #include <crtdbg.h>

@@ -88,8 +88,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Common\WideHelp.cpp" />
-    <ClCompile Include="CheckBloom.cpp" />
     <ClCompile Include="EPGC.cpp" />
+    <ClCompile Include="EPGCUtils.cpp" />
+    <ClCompile Include="ModuleVersion.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -99,7 +100,9 @@
     <ClInclude Include="..\Common\char_to_oem_filters.h" />
     <ClInclude Include="..\Common\WideHelp.h" />
     <ClInclude Include="CPasswordResult.h" />
+    <ClInclude Include="EPGCUtils.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="ModuleVersion.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>

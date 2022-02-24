@@ -24,7 +24,10 @@
     <ClCompile Include="..\Common\WideHelp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CheckBloom.cpp">
+    <ClCompile Include="EPGCUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleVersion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -42,6 +45,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CPasswordResult.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EPGCUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleVersion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
