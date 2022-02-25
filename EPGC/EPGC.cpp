@@ -40,9 +40,9 @@ int main(int argc, char* argv[], char* envp[])
 			->check(CLI::Range(length, 255), "(length..255)", "max_range");
 
 		char mode = 0;
-		app.add_option("-d,--mode", mode, "Mode: p - Pronounceable (default), h - Hyphenated, r - Random")
+		app.add_option("-M,--mode", mode, "Mode: p - Pronounceable (default), h - Hyphenated, r - Random")
 			->required()
-			->check(CLI::IsMember({ 'p','h','r' }), "'p','h','r'");
+			->check(CLI::IsMember({ 'p','h','H','r'}), "'p','h','H','r'");
 
 		std::string set;
 		app.add_option("-s,--set", set, "Character set: lL - Small, cC - Capital, nN - Numbers, sS - Symbols")
@@ -102,6 +102,7 @@ int main(int argc, char* argv[], char* envp[])
 			_bloom.Load();
 		}
 
+		std::vector<CPasswordResult> results;
 		for (int i = 0; i < amount; i++)
 		{
 			unsigned _min = length;
@@ -122,7 +123,6 @@ int main(int argc, char* argv[], char* envp[])
 				_length = _min;
 
 			CPasswordResult result;
-
 			if (mode == 'r')
 			{
 				if (password.GenerateRandomWord(_length))
@@ -158,7 +158,19 @@ int main(int argc, char* argv[], char* envp[])
 			else
 				throw std::exception("Invalid mode");
 
-			fcout << result.word << L' ' << result.bloom_result << std::endl;
+			if (complexity)
+			{
+				DWORD q = PasswordBits(result.word);
+				double qp = q * 100.0 / 128.0;
+				result.complexity = std::format(L"{:.1f}%", qp);
+			}
+
+			results.push_back(result);
+		}
+
+		for (auto i : results)
+		{
+			fcout << i.word << L' ' << i.bloom_result << L' ' << i.complexity << std::endl;
 		}
 	}
 	catch (bloom_exception& e)
