@@ -114,6 +114,7 @@ void CBloom::Abort()
 		IO_Validate(_close(File));
 	File = 0;
 	Array.reset();
+	ArraySize = 0;
 	m_bDirty = FALSE;
 	Header.Default();
 	Header.Version(BLOOM_VERSION);

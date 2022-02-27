@@ -1,38 +1,59 @@
 #include "pch.h"
+#include <cstdlib>
+#include <stdexcept>
 #include "WideHelp.h"
+
+wchar_t toWideChar(char Char)
+{
+	wchar_t out;
+	std::string curLocale = setlocale(LC_ALL, "");
+	int SizeConverted = mbtowc(&out, &Char, 1);
+	setlocale(LC_ALL, curLocale.c_str());
+	if (SizeConverted != 1)
+		throw std::runtime_error("Char conversion error");
+	return out;
+}
+
+char toNarrowChar(wchar_t WChar)
+{
+	char out;
+	int SizeConverted;
+	std::string curLocale = setlocale(LC_ALL, "");
+	wctomb_s(&SizeConverted, &out, 1, WChar);
+	setlocale(LC_ALL, curLocale.c_str());
+	if (SizeConverted != 1)
+		throw std::runtime_error("Char conversion error");
+	return out;
+}
 
 std::wstring toWideString(const char* pStr, int len)
 {
-	// figure out how many wide characters we are going to get
-	int nChars = MultiByteToWideChar(CP_ACP, 0, pStr, len, NULL, 0);
-	if (len == -1)
-		--nChars;
-	if (nChars == 0)
-		return L"";
+	std::string curLocale = setlocale(LC_ALL, "");
+	size_t PtNumOfCharConverted = 0;
+	mbstowcs_s(&PtNumOfCharConverted, NULL, 0, pStr, 0);
+	if (PtNumOfCharConverted == 0)
+		return std::wstring();
 
-	// convert the narrow string to a wide string 
-	// nb: slightly naughty to write directly into the string like this
 	std::wstring buf;
-	buf.resize(nChars);
-	MultiByteToWideChar(CP_ACP, 0, pStr, len, const_cast<wchar_t*>(buf.c_str()), nChars);
+	buf.resize(PtNumOfCharConverted);
+	mbstowcs_s(&PtNumOfCharConverted, const_cast<wchar_t*>(buf.c_str()), buf.size(), pStr, _TRUNCATE);
+	setlocale(LC_ALL, curLocale.c_str());
 
 	return buf;
 }
 
 std::string toNarrowString(const wchar_t* pStr, int len)
 {
-	// figure out how many narrow characters we are going to get 
-	int nChars = WideCharToMultiByte(CP_ACP, 0, pStr, len, NULL, 0, NULL, NULL);
-	if (len == -1)
-		--nChars;
-	if (nChars == 0)
-		return "";
+	std::string curLocale = setlocale(LC_ALL, "");
+	size_t PtNumOfCharConverted = 0;
+	wcstombs_s(&PtNumOfCharConverted, NULL, 0, pStr, 0);
+	if (PtNumOfCharConverted == 0)
+		return std::string();
 
-	// convert the wide string to a narrow string
-	// nb: slightly naughty to write directly into the string like this
 	std::string buf;
-	buf.resize(nChars);
-	WideCharToMultiByte(CP_ACP, 0, pStr, len, const_cast<char*>(buf.c_str()), nChars, NULL, NULL);
+	buf.resize(PtNumOfCharConverted);
+	wcstombs_s(&PtNumOfCharConverted, const_cast<char*>(buf.c_str()), buf.size(), pStr, _TRUNCATE);
+	setlocale(LC_ALL, curLocale.c_str());
 
 	return buf;
 }

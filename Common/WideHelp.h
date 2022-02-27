@@ -21,7 +21,8 @@ using _tostringstream = std::ostringstream;
 #define to_tlower tolower
 #endif
 
-extern std::wstring toWideString(const char* pStr, int len = -1);
+wchar_t toWideChar(char Char);
+std::wstring toWideString(const char* pStr, int len = -1);
 inline std::wstring toWideString(const std::string& str)
 {
 	return toWideString(str.c_str(), (int)str.length());
@@ -35,7 +36,8 @@ inline std::wstring toWideString(const std::wstring& str)
 	return str;
 }
 
-extern std::string toNarrowString(const wchar_t* pStr, int len = -1);
+char toNarrowChar(wchar_t WChar);
+std::string toNarrowString(const wchar_t* pStr, int len = -1);
 inline std::string toNarrowString(const std::wstring& str)
 {
 	return toNarrowString(str.c_str(), (int)str.length());

@@ -15,22 +15,19 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="EPGC.cpp">
+    <ClCompile Include="LocaleTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\WideHelp.cpp">
+    <ClCompile Include="WideTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EPGCUtils.cpp">
+    <ClCompile Include="LocaleFacetTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ModuleVersion.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PasswordResult.cpp">
+    <ClCompile Include="LocaleStringTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,25 +35,7 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="framework.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\WideHelp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\char_to_oem_filters.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PasswordResult.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EPGCUtils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ModuleVersion.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PasswordItem.h">
+    <ClInclude Include="LocaleTWrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

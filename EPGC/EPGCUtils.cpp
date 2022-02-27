@@ -2,12 +2,12 @@
 #include "EPGCUtils.h"
 #include "ModuleVersion.h"
 
-std::wstring check_bloom(const CBloom& bloom, bool paranoid, const std::wstring& word)
+BloomResult check_bloom(const CBloom& bloom, bool paranoid, const std::wstring& word)
 {
 	if (bloom.GetSize() == 0)
-		return std::wstring();
+		return BloomResult::UNKNOWN;
 	if (bloom.Check(word.c_str()))
-		return std::wstring(L"FOUND");
+		return BloomResult::FOUND;
 	if (paranoid)
 	{
 		boost::locale::generator gen;
@@ -15,17 +15,17 @@ std::wstring check_bloom(const CBloom& bloom, bool paranoid, const std::wstring&
 
 		std::wstring upper = boost::locale::to_upper(word, loc);
 		if (bloom.Check(upper.c_str()))
-			return std::wstring(L"NOTSAFE");
+			return BloomResult::NOTSAFE;
 
 		std::wstring lower = boost::locale::to_lower(word, loc);
 		if (bloom.Check(lower.c_str()))
-			return std::wstring(L"NOTSAFE");
+			return BloomResult::NOTSAFE;
 
-		std::wstring title = boost::locale::to_title(lower, loc);
-		if (bloom.Check(title.c_str()))
-			return std::wstring(L"NOTSAFE");
+		lower[0] = upper[0];
+		if (bloom.Check(lower.c_str()))
+			return BloomResult::NOTSAFE;
 	}
-	return std::wstring(L"NOTFOUND");
+	return BloomResult::NOTFOUND;
 }
 
 Modes get_modes(const std::string& set)
@@ -77,11 +77,14 @@ void ShowBuild(boost::iostreams::filtering_wostream& fout/* = fcout*/)
 
 	wchar_t* buf;
 	std::wstring strTrademark;
-	if (version.GetValue(L"LegalTradeMarks", &buf)) strTrademark = buf;
+	if (version.GetValue(L"LegalTradeMarks", &buf))
+		strTrademark = buf;
 	std::wstring strVersion;
-	if (version.GetValue(L"FileVersion", &buf)) strVersion = buf;
+	if (version.GetValue(L"FileVersion", &buf))
+		strVersion = buf;
 	std::wstring strCopyright;
-	if (version.GetValue(L"LegalCopyright", &buf)) strCopyright = buf;
+	if (version.GetValue(L"LegalCopyright", &buf))
+		strCopyright = buf;
 	std::wstring strUsage;
 
 	fout << strTrademark << L' '
@@ -100,7 +103,7 @@ const int nCHARSPACE_SIMPSPECIAL = 16;
 const int nCHARSPACE_EXTSPECIAL = 17;
 const int nCHARSPACE_HIGH = 112;
 
-DWORD PasswordBits(const std::wstring& Password)
+unsigned PasswordBits(const std::wstring& Password)
 {
 	BOOL bChLower = FALSE, bChUpper = FALSE, bChNumber = FALSE;
 	BOOL bChSimpleSpecial = FALSE, bChExtSpecial = FALSE, bChHigh = FALSE;
@@ -150,8 +153,8 @@ DWORD PasswordBits(const std::wstring& Password)
 	if (dwCharSpace == 0)
 		return 0;
 
-	auto dblBitsPerChar = log((double)dwCharSpace) / log(2.00);
-	auto dwBits = (DWORD)ceil(dblBitsPerChar * static_cast<double>(Password.length()));
+	double dblBitsPerChar = log((double)dwCharSpace) / log(2.0);
+	unsigned dwBits = static_cast<unsigned>(ceil(dblBitsPerChar * Password.length()));
 	if (dwBits > 128)
 		dwBits = 128;
 

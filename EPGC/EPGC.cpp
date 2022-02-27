@@ -3,7 +3,7 @@
 #include "..\Rnd\CryptoRND.h"
 #include "..\Common\char_to_oem_filters.h"
 #include "..\Bloom\Bloom.h"
-#include "CPasswordResult.h"
+#include "PasswordResult.h"
 #include "EPGCUtils.h"
 #include "../Bloom/bloom_exception.h"
 
@@ -19,9 +19,11 @@ int main(int argc, char* argv[], char* envp[])
 	fcout.push(std::wcout);
 
 	int nRetCode = EXIT_SUCCESS;
+
+	CLI::App app("Extended Password Generator", "EPGC.exe");
+
 	try
 	{
-		CLI::App app("Extended Password Generator");
 		app.allow_windows_style_options();
 
 		int amount = 0;
@@ -42,12 +44,12 @@ int main(int argc, char* argv[], char* envp[])
 		char mode = 0;
 		app.add_option("-M,--mode", mode, "Mode: p - Pronounceable (default), h - Hyphenated, r - Random")
 			->required()
-			->check(CLI::IsMember({ 'p','h','H','r'}), "'p','h','H','r'");
+			->check(CLI::IsMember({ 'p','h','H','r' }), "'p','h','H','r'");
 
 		std::string set;
 		app.add_option("-s,--set", set, "Character set: lL - Small, cC - Capital, nN - Numbers, sS - Symbols")
 			->required()
-			->check([](const std::string str)
+			->check([](const std::string& str)
 				{
 					for (char c : str)
 					{
@@ -73,7 +75,7 @@ int main(int argc, char* argv[], char* envp[])
 		app.add_option("-i,--include", include, "Symbols to include");
 
 		std::string exclude;
-		app.add_option("-e,--exclude", include, "Symbols to exclude");
+		app.add_option("-x,--exclude", exclude, "Symbols to exclude");
 
 		std::string bloom;
 		app.add_option("-b,--bloom", bloom, "Check in bloom")
@@ -88,21 +90,27 @@ int main(int argc, char* argv[], char* envp[])
 		bool csv = false;
 		app.add_flag("-v,--csv", csv, "Output in comma-separated values format");
 
-		CLI11_PARSE(app, argc, argv);
+		char separator = ',';
+		app.add_option("-r,--separator", separator, "Use symbol as a CSV separator (default = ',')");
+
+		if (argc == 1)
+			throw CLI::CallForHelp();
+
+		app.parse(argc, argv);
 
 		Modes modes = get_modes(set);
 
 		CCryptoRND rnd;
-		CPassword password(modes, toTstring(include), toTstring(exclude));
-		CBloom  _bloom;
+		CPassword password(modes, toWideString(include), toWideString(exclude));
+		CBloom _bloom;
 
 		if (!bloom.empty())
 		{
-			_bloom.Open(toTstring(bloom).c_str());
+			_bloom.Open(toWideString(bloom).c_str());
 			_bloom.Load();
 		}
 
-		std::vector<CPasswordResult> results;
+		PasswordResult results(mode, _bloom.GetSize(), complexity, csv, toWideChar(separator));
 		for (int i = 0; i < amount; i++)
 		{
 			unsigned _min = length;
@@ -122,56 +130,68 @@ int main(int argc, char* argv[], char* envp[])
 			else
 				_length = _min;
 
-			CPasswordResult result;
-			if (mode == 'r')
+			PasswordItem item;
+			switch (mode)
 			{
+			case 'r':
 				if (password.GenerateRandomWord(_length))
 				{
-					std::_tstring word;
+					std::wstring word;
 					password.GetWord(word);
-					result.word = word;
-					result.bloom_result = check_bloom(_bloom, paranoid, word);
+					item.word = word;
+					item.bloom_result = check_bloom(_bloom, paranoid, word);
 				}
-			}
-			else if (mode == 'p')
-			{
+				break;
+			case 'p':
 				if (password.GenerateWord(_length))
 				{
-					std::_tstring word;
+					std::wstring word;
 					password.GetWord(word);
-					result.word = word;
-					result.bloom_result = check_bloom(_bloom, paranoid, word);
+					item.word = word;
+					item.bloom_result = check_bloom(_bloom, paranoid, word);
 				}
-			}
-			else if (mode == 'h')
-			{
+				break;
+			case 'h':
 				if (password.GenerateWord(_length))
 				{
-					std::_tstring word;
+					std::wstring word;
 					password.GetWord(word);
-					std::_tstring hword;
+					std::wstring hword;
 					password.GetHyphenatedWord(hword);
-					result.word = hword;
-					result.bloom_result = check_bloom(_bloom, paranoid, word);
+					item.word = word;
+					item.hword = hword;
+					item.bloom_result = check_bloom(_bloom, paranoid, word);
 				}
+				break;
+			case 'H':
+				if (password.GenerateWord(_length))
+				{
+					std::wstring word;
+					password.GetWord(word);
+					std::wstring hword;
+					password.GetHyphenatedWord(hword);
+					item.word = word;
+					item.hword = hword;
+					item.bloom_result = check_bloom(_bloom, paranoid, word);
+				}
+				break;
 			}
-			else
-				throw std::exception("Invalid mode");
 
 			if (complexity)
 			{
-				DWORD q = PasswordBits(result.word);
+				auto q = PasswordBits(item.word);
 				double qp = q * 100.0 / 128.0;
-				result.complexity = std::format(L"{:.1f}%", qp);
+				item.complexity = static_cast<float>(qp);
 			}
 
-			results.push_back(result);
+			results.Results.push_back(item);
 		}
 
-		for (auto i : results)
-		{
-			fcout << i.word << L' ' << i.bloom_result << L' ' << i.complexity << std::endl;
-		}
+		fcout << results;
+	}
+	catch (const CLI::ParseError& e)
+	{
+		return app.exit(e);
 	}
 	catch (bloom_exception& e)
 	{
