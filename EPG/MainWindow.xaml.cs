@@ -269,7 +269,7 @@ namespace EPG
                 if (res2)
                     return BloomFilterResult.NOTSAFE;
 
-                var title = string.Concat(upper[0].ToString(), lower[1..]);
+                var title = upper[0] + lower[1..];
                 var res3 = bloom.CheckString(title);
                 if (res3)
                     return BloomFilterResult.NOTSAFE;
