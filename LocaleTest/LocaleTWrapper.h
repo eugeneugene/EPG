@@ -33,36 +33,35 @@ public:
 		return ::_towlower_l(c, locale);
 	}
 
-	std::string toupperstr(const std::string& str)
+	std::string toupper(const std::string& str)
 	{
 		std::string result;
 		result.reserve(str.size());
-		std::transform(str.cbegin(), str.cend(), std::back_inserter(result), std::mem_fn(&LocaleTWrapper::toupper));
+		std::transform(str.cbegin(), str.cend(), std::back_inserter(result), [this](char c) { return this->toupper(c); });
 		return result;
 	}
 
-	std::wstring toupperstr(const std::wstring& str)
+	std::wstring toupper(const std::wstring& wstr)
 	{
 		std::wstring result;
-		result.reserve(str.size());
-		std::transform(str.cbegin(), str.cend(), std::back_inserter(result), std::mem_fn(&LocaleTWrapper::towupper));
+		result.reserve(wstr.size());
+		std::transform(wstr.cbegin(), wstr.cend(), std::back_inserter(result), [this](wchar_t c) { return this->towupper(c); });
 		return result;
 	}
 
-
-	inline std::string tolowerstr(const std::string& str) 
+	inline std::string tolower(const std::string& str)
 	{
 		std::string result;
-		result.reserve(str.size()); 
-		std::transform(str.cbegin(), str.cend(), std::back_inserter(result), std::mem_fn(&LocaleTWrapper::tolower));
+		result.reserve(str.size());
+		std::transform(str.cbegin(), str.cend(), std::back_inserter(result), [this](char c) { return this->tolower(c); });
 		return result;
 	}
 
-	inline std::wstring tolowerstr(const std::wstring& wstr) 
+	inline std::wstring tolower(const std::wstring& wstr)
 	{
 		std::wstring result;
-		result.reserve(wstr.size()); 
-		std::transform(wstr.cbegin(), wstr.cend(), std::back_inserter(result), std::mem_fn(&LocaleTWrapper::towlower));
+		result.reserve(wstr.size());
+		std::transform(wstr.cbegin(), wstr.cend(), std::back_inserter(result), [this](wchar_t c) { return this->towlower(c); });
 		return result;
 	}
 };

@@ -10,7 +10,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace LocaleTest
 {
-	TEST_CLASS(LocaleTest)
+	TEST_CLASS(LocaleStringTest)
 	{
 	public:
 
@@ -23,11 +23,11 @@ namespace LocaleTest
 			auto locale = _create_locale(LC_ALL, "");
 			LocaleTWrapper wrapper(locale);
 
-			dst = wrapper.toupperstr(str);
+			dst = wrapper.toupper(str);
 
 			_free_locale(locale);
 
-			Logger::WriteMessage(std::format(L"Comparing {} and {}", dst, str_ref).c_str());
+			Logger::WriteMessage(std::format("Comparing {} and {}", dst, str_ref).c_str());
 			Assert::AreEqual(0, dst.compare(str_ref));
 		}
 
@@ -40,7 +40,7 @@ namespace LocaleTest
 			auto locale = _wcreate_locale(LC_ALL, L"");
 			LocaleTWrapper wrapper(locale);
 
-			wdst = wrapper.toupperstr(wstr);
+			wdst = wrapper.toupper(wstr);
 
 			_free_locale(locale);
 
@@ -50,42 +50,36 @@ namespace LocaleTest
 
 		TEST_METHOD(ToLowerTest)
 		{
-			const char str[8] = { 'A','b','C','d','¿','·','¬','„' };
-			const char str_ref[8] = { 'a','b','c','d','‡','·','‚','„' };
-			char dst[8] = { 0 };
+			const std::string str = "AbCd¿·¬„";
+			const std::string str_ref = "abcd‡·‚„";
+			std::string dst;
 
 			auto locale = _create_locale(LC_ALL, "");
+			LocaleTWrapper wrapper(locale);
 
-			for (int i = 0; i < _countof(str); i++)
-				dst[i] = _tolower_l(str[i], locale);
+			dst = wrapper.tolower(str);
 
 			_free_locale(locale);
 
-			for (int i = 0; i < _countof(str); i++)
-			{
-				Logger::WriteMessage(std::format("Comparing {} and {}", dst[i], str_ref[i]).c_str());
-				Assert::AreEqual(str_ref[i], dst[i]);
-			}
+			Logger::WriteMessage(std::format("Comparing {} and {}", dst, str_ref).c_str());
+			Assert::AreEqual(0, dst.compare(str_ref));
 		}
 
 		TEST_METHOD(ToLowerWTest)
 		{
-			const wchar_t str[8] = { L'A',L'b',L'C',L'd',L'¿',L'·',L'¬',L'„' };
-			const wchar_t str_ref[8] = { L'a',L'b',L'c',L'd',L'‡',L'·',L'‚',L'„' };
-			wchar_t dst[8] = { 0 };
+			const std::wstring wstr = L"AbCd¿·¬„";
+			const std::wstring wstr_ref = L"abcd‡·‚„";
+			std::wstring wdst;
 
 			auto locale = _wcreate_locale(LC_ALL, L"");
+			LocaleTWrapper wrapper(locale);
 
-			for (int i = 0; i < _countof(str); i++)
-				dst[i] = _towlower_l(str[i], locale);
+			wdst = wrapper.tolower(wstr);
 
 			_free_locale(locale);
 
-			for (int i = 0; i < _countof(str); i++)
-			{
-				Logger::WriteMessage(std::format(L"Comparing {} and {}", dst[i], str_ref[i]).c_str());
-				Assert::AreEqual(str_ref[i], dst[i]);
-			}
-		}
+			Logger::WriteMessage(std::format(L"Comparing {} and {}", wdst, wstr_ref).c_str());
+			Assert::AreEqual(0, wdst.compare(wstr_ref));
+		}	
 	};
 }

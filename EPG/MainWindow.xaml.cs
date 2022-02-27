@@ -259,13 +259,18 @@ namespace EPG
                 return BloomFilterResult.FOUND;
             if (model.ParanoidCheck)
             {
-                var res1 = bloom.CheckString(password.ToLowerInvariant());
+                var lower = password.ToLowerInvariant();
+                var res1 = bloom.CheckString(lower);
                 if (res1)
                     return BloomFilterResult.NOTSAFE;
-                var res2 = bloom.CheckString(password.ToUpperInvariant());
+
+                var upper = password.ToUpperInvariant();
+                var res2 = bloom.CheckString(upper);
                 if (res2)
                     return BloomFilterResult.NOTSAFE;
-                var res3 = bloom.CheckString(string.Concat(password[0].ToString().ToUpper(), password.AsSpan(1)));
+
+                var title = string.Concat(upper[0].ToString(), lower[1..]);
+                var res3 = bloom.CheckString(title);
                 if (res3)
                     return BloomFilterResult.NOTSAFE;
             }
@@ -282,6 +287,7 @@ namespace EPG
 
         private void CommandPrintExecuted(object sender, ExecutedRoutedEventArgs e)
         {
+            e.Handled = true;
             model.ResultModel.ManualMode = false;
             PrintDialog printDlg = new();
             if (printDlg.ShowDialog().GetValueOrDefault())
@@ -343,6 +349,16 @@ namespace EPG
                 }
                 bloom?.Close();
                 bloom?.Dispose();
+            }
+        }
+
+        private void EnterManualModeExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            e.Handled = true;
+            if (model.ResultModel.ManualMode && model.AutoClear)
+            {
+                model.ResultModel.DataCollection.Clear();
+                model.AmountGenerated = 0;
             }
         }
     }

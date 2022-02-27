@@ -6,10 +6,10 @@
 wchar_t toWideChar(char Char)
 {
 	wchar_t out;
-	std::string curLocale = setlocale(LC_ALL, "");
-	int SizeConverted = mbtowc(&out, &Char, 1);
-	setlocale(LC_ALL, curLocale.c_str());
-	if (SizeConverted != 1)
+	auto locale = _create_locale(LC_ALL, "");
+	auto converted = _mbtowc_l(&out, &Char, 1, locale);
+	_free_locale(locale);
+	if (converted != 1)
 		throw std::runtime_error("Char conversion error");
 	return out;
 }
@@ -17,43 +17,42 @@ wchar_t toWideChar(char Char)
 char toNarrowChar(wchar_t WChar)
 {
 	char out;
-	int SizeConverted;
-	std::string curLocale = setlocale(LC_ALL, "");
-	wctomb_s(&SizeConverted, &out, 1, WChar);
-	setlocale(LC_ALL, curLocale.c_str());
-	if (SizeConverted != 1)
+	auto locale = _create_locale(LC_ALL, "");
+	int RetVal = 0;
+	auto error = _wctomb_s_l(&RetVal, &out, 1, WChar, locale);
+	_free_locale(locale);
+	if (error != 0)
 		throw std::runtime_error("Char conversion error");
 	return out;
 }
 
 std::wstring toWideString(const char* pStr, int len)
 {
-	std::string curLocale = setlocale(LC_ALL, "");
-	size_t PtNumOfCharConverted = 0;
-	mbstowcs_s(&PtNumOfCharConverted, NULL, 0, pStr, 0);
-	if (PtNumOfCharConverted == 0)
-		return std::wstring();
+	int nChars = MultiByteToWideChar(CP_ACP, 0, pStr, len, NULL, 0);
+	if (len == -1)
+		--nChars;
+	if (nChars == 0)
+		return L"";
 
 	std::wstring buf;
-	buf.resize(PtNumOfCharConverted);
-	mbstowcs_s(&PtNumOfCharConverted, const_cast<wchar_t*>(buf.c_str()), buf.size(), pStr, _TRUNCATE);
-	setlocale(LC_ALL, curLocale.c_str());
+	buf.resize(nChars);
+	MultiByteToWideChar(CP_ACP, 0, pStr, len,
+		const_cast<wchar_t*>(buf.c_str()), nChars);
 
 	return buf;
 }
 
 std::string toNarrowString(const wchar_t* pStr, int len)
 {
-	std::string curLocale = setlocale(LC_ALL, "");
-	size_t PtNumOfCharConverted = 0;
-	wcstombs_s(&PtNumOfCharConverted, NULL, 0, pStr, 0);
-	if (PtNumOfCharConverted == 0)
-		return std::string();
+	int nChars = WideCharToMultiByte(CP_ACP, 0, pStr, len, NULL, 0, NULL, NULL);
+	if (len == -1)
+		--nChars;
+	if (nChars == 0)
+		return "";
 
 	std::string buf;
-	buf.resize(PtNumOfCharConverted);
-	wcstombs_s(&PtNumOfCharConverted, const_cast<char*>(buf.c_str()), buf.size(), pStr, _TRUNCATE);
-	setlocale(LC_ALL, curLocale.c_str());
+	buf.resize(nChars);
+	WideCharToMultiByte(CP_ACP, 0, pStr, len, const_cast<char*>(buf.c_str()), nChars, NULL, NULL);
 
 	return buf;
 }

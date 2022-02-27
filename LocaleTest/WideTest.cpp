@@ -35,6 +35,27 @@ namespace LocaleTest
 			return out;
 		}
 
+		char wtombc(wchar_t wch)
+		{
+			char out;
+			auto locale = _create_locale(LC_ALL, "");
+			int RetVal = 0;
+			auto error = _wctomb_s_l(&RetVal, &out, 1, wch, locale);
+			_free_locale(locale);
+			if(error != 0)
+				throw std::runtime_error("Char conversion error");
+			return out;
+		}
+		char wtombc(wchar_t wch, _locale_t locale)
+		{
+			char out;
+			int RetVal = 0;
+			auto error = _wctomb_s_l(&RetVal, &out, 1, wch, locale);
+			if(error != 0)
+				throw std::runtime_error("Char conversion error");
+			return out;
+		}
+
 		std::wstring toWideString(const char* pStr, int len)
 		{
 			// figure out how many wide characters we are going to get
@@ -120,6 +141,54 @@ namespace LocaleTest
 
 			Logger::WriteMessage(std::format(L"Comparing {} and {}", wdst, wstr_ref).c_str());
 			Assert::AreEqual(0, wdst.compare(wstr_ref));
+		}
+
+		TEST_METHOD(WideToChar1)
+		{
+			const wchar_t wstr[8] = { L'A',L'b',L'C',L'd',L'À',L'á',L'Â',L'ã' };
+			const char str_ref[8] = { 'A','b','C','d','À','á','Â','ã' };
+			char dst[8] = { 0 };
+
+			for (int i = 0; i < _countof(wstr); i++)
+				dst[i] = wtombc(wstr[i]);
+
+			for (int i = 0; i < _countof(wstr); i++)
+			{
+				Logger::WriteMessage(std::format(L"Comparing {} and {}", dst[i], str_ref[i]).c_str());
+				Assert::AreEqual(str_ref[i], dst[i]);
+			}
+		}
+
+		TEST_METHOD(WideToChar2)
+		{
+			const wchar_t wstr[8] = { L'A',L'b',L'C',L'd',L'À',L'á',L'Â',L'ã' };
+			const char str_ref[8] = { 'A','b','C','d','À','á','Â','ã' };
+			char dst[8] = { 0 };
+
+			auto locale = _create_locale(LC_ALL, "");
+			
+			for (int i = 0; i < _countof(wstr); i++)
+				dst[i] = wtombc(wstr[i], locale);
+
+			_free_locale(locale);
+			
+			for (int i = 0; i < _countof(wstr); i++)
+			{
+				Logger::WriteMessage(std::format(L"Comparing {} and {}", dst[i], str_ref[i]).c_str());
+				Assert::AreEqual(str_ref[i], dst[i]);
+			}
+		}
+
+		TEST_METHOD(WideToString)
+		{
+			const std::wstring wstr = L"AbCdÀáÂã";
+			const std::string str_ref = "AbCdÀáÂã";
+			std::string dst;
+
+			dst = toNarrowString(wstr.c_str(), -1);
+
+			Logger::WriteMessage(std::format("Comparing {} and {}", dst, str_ref).c_str());
+			Assert::AreEqual(0, dst.compare(str_ref));
 		}
 	};
 }

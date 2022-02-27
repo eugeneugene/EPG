@@ -23,6 +23,7 @@
         <CommandBinding Command="localcommands:EpgCommands.CommandGenerate" Executed="CommandGenerateExecuted" />
         <CommandBinding Command="localcommands:EpgCommands.EditClear" Executed="ClearExecuted" />
         <CommandBinding Command="localcommands:EpgCommands.FilterBrowse" Executed="FilterBrowse" />
+        <CommandBinding Command="localcommands:EpgCommands.EnterManualMode" Executed="EnterManualModeExecuted" />
     </Window.CommandBindings>
     <Window.Resources>
         <localcodeconverters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
@@ -87,6 +88,7 @@
                     IsCheckable="True"
                     IsChecked="{Binding Path=AutoClear}" />
                 <MenuItem
+                    Command="localcommands:EpgCommands.EnterManualMode"
                     Header="Enter passwords manually"
                     IsCheckable="True"
                     IsChecked="{Binding Path=ResultModel.ManualMode}" />
