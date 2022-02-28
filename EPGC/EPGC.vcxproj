@@ -100,6 +100,7 @@
   <ItemGroup>
     <ClInclude Include="..\Common\char_to_oem_filters.h" />
     <ClInclude Include="..\Common\WideHelp.h" />
+    <ClInclude Include="LocaleTWrapper.h" />
     <ClInclude Include="PasswordResult.h" />
     <ClInclude Include="EPGCUtils.h" />
     <ClInclude Include="framework.h" />

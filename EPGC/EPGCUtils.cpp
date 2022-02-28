@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "EPGCUtils.h"
 #include "ModuleVersion.h"
+#include "LocaleTWrapper.h"
 
 BloomResult check_bloom(const CBloom& bloom, bool paranoid, const std::wstring& word)
 {
@@ -10,20 +11,22 @@ BloomResult check_bloom(const CBloom& bloom, bool paranoid, const std::wstring& 
 		return BloomResult::FOUND;
 	if (paranoid)
 	{
-		boost::locale::generator gen;
-		std::locale loc = gen.generate("");
+		auto locale = _wcreate_locale(LC_ALL, L"");
+		LocaleTWrapper wrapper(locale);
 
-		std::wstring upper = boost::locale::to_upper(word, loc);
+		std::wstring upper = wrapper.toupper(word);
 		if (bloom.Check(upper.c_str()))
 			return BloomResult::NOTSAFE;
-
-		std::wstring lower = boost::locale::to_lower(word, loc);
+		
+		std::wstring lower = wrapper.tolower(word);
 		if (bloom.Check(lower.c_str()))
 			return BloomResult::NOTSAFE;
 
 		lower[0] = upper[0];
 		if (bloom.Check(lower.c_str()))
 			return BloomResult::NOTSAFE;
+		
+		_free_locale(locale);
 	}
 	return BloomResult::NOTFOUND;
 }
