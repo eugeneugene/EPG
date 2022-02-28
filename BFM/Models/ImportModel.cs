@@ -1,5 +1,6 @@
 ﻿using BFM.Code;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -93,6 +94,8 @@ namespace BFM.Models
                 }
             }
         }
+
+        public HashSet<string> Strings { get; } = new();
 
         private readonly SimpleReaderWriterLock<LinesCounterState> state = new(LinesCounterState.NOTRUN);
         public LinesCounterState State

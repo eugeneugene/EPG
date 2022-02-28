@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BFM.Code
 {
-    internal class LinesCounter : IDisposable
+    internal class BloomLoader : IDisposable
     {
         private readonly ImportModel model;
 
@@ -18,7 +18,7 @@ namespace BFM.Code
         private CancellationTokenSource? cancellationTokenSource;
         private Regex? regex;
 
-        public LinesCounter(ImportModel Model)
+        public BloomLoader(ImportModel Model)
         {
             model = Model ?? throw new ArgumentNullException(nameof(Model));
             model.PropertyChanged += ModelPropertyChanged;
@@ -51,7 +51,7 @@ namespace BFM.Code
                 try
                 {
                     model.State = LinesCounterState.RUN;
-                    await InternalCounterAsync();
+                    await InternalLoaderAsync();
                     model.State = LinesCounterState.FINISH;
                 }
                 catch (Exception ex)
@@ -68,7 +68,7 @@ namespace BFM.Code
             });
         }
 
-        private async Task InternalCounterAsync()
+        private async Task InternalLoaderAsync()
         {
             if (model.TextFile is null)
                 return;
@@ -78,6 +78,7 @@ namespace BFM.Code
 
             using StreamReader reader = new(model.TextFile, new FileStreamOptions() { Mode = FileMode.Open, Access = FileAccess.Read, Options = FileOptions.SequentialScan });
             model.Lines = 0;
+            model.Strings.Clear();
             while (true)
             {
                 cancellationTokenSource!.Token.ThrowIfCancellationRequested();
@@ -85,7 +86,10 @@ namespace BFM.Code
                 if (line is null)
                     break;
                 if (regex is null || !regex.IsMatch(line))
-                    model.Lines++;
+                {
+                    if (model.Strings.Add(line))
+                        model.Lines++;
+                }
             }
         }
 

@@ -4,8 +4,6 @@ using CSAdapter;
 using Microsoft.Win32;
 using System;
 using System.Diagnostics;
-using System.IO;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,11 +20,10 @@ namespace BFM
 
         private readonly OpenFileDialog BloomFileDialog;
         private readonly OpenFileDialog TextFileDialog;
-        private readonly LinesCounter linesCounter;
+        private readonly BloomLoader linesCounter;
         private readonly CancellationTokenSource cancellationTokenSource;
 
         private Task? task;
-        private Regex? regex;
         private bool disposedValue;
 
         public ImportDialog()
@@ -47,25 +44,14 @@ namespace BFM
                 Title = "Open Text file"
             };
             Model = new();
-            Model.PropertyChanged += ModelPropertyChanged;
             linesCounter = new(Model);
             cancellationTokenSource = new();
             task = null;
-            regex = null;
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
         {
             DataContext = Model;
-        }
-
-        private void ModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (!ReferenceEquals(Model, sender))
-                return;
-
-            if (e.PropertyName == nameof(ImportModel.Comments) && !string.IsNullOrEmpty(Model.Comments))
-                regex = new(Model.Comments);
         }
 
         private void BloomFilterCreateCommandExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -84,11 +70,11 @@ namespace BFM
 
         private void BloomFilterImportCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            task = Task.Run(async () => await ImportAsync());
+            task = Task.Run(() => Import());
             Model.ImportTask = true;
         }
 
-        private async Task ImportAsync()
+        private void Import()
         {
             if (Model.Lines is null || Model.State != LinesCounterState.FINISH || string.IsNullOrEmpty(Model.BloomFilter) || string.IsNullOrEmpty(Model.TextFile))
                 return;
@@ -100,28 +86,21 @@ namespace BFM
                 bloom.Create(Model.BloomFilter);
                 bloom.Allocate(Model.Lines.Value);
 
-                using StreamReader reader = new(Model.TextFile, new FileStreamOptions() { Mode = FileMode.Open, Access = FileAccess.Read, Options = FileOptions.SequentialScan });
                 uint lines = 0;
                 double p;
                 double p10 = 0;
 
                 Model.ErrorMsg = "Importing...";
-                while (true)
+                foreach (var line in Model.Strings)
                 {
                     cancellationTokenSource.Token.ThrowIfCancellationRequested();
-                    var line = await reader.ReadLineAsync();
-                    if (line is null)
-                        break;
-                    if (regex is null || !regex.IsMatch(line))
+                    bloom.PutString(line);
+                    lines++;
+                    p = Math.Round(100.0 * lines / Model.Lines.Value, 1, MidpointRounding.ToZero);
+                    if (p > p10)
                     {
-                        bloom.PutString(line);
-                        lines++;
-                        p = Math.Round(100.0 * lines / Model.Lines.Value, 1, MidpointRounding.ToZero);
-                        if (p > p10)
-                        {
-                            p10 = p;
-                            Model.ErrorMsg = $"Importing... {p10:F1}% imported";
-                        }
+                        p10 = p;
+                        Model.ErrorMsg = $"Importing... {p10:F1}% imported";
                     }
                 }
                 bloom.Store();
@@ -150,7 +129,6 @@ namespace BFM
                     cancellationTokenSource?.Dispose();
                     linesCounter.Dispose();
                     task?.Dispose();
-                    Model.PropertyChanged -= ModelPropertyChanged;
                     Model.Dispose();
                 }
 
