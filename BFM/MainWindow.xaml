@@ -9,7 +9,7 @@
     xmlns:localconfig="clr-namespace:EPG.Configuration;assembly=Configuration"
     xmlns:localmodels="clr-namespace:BFM.Models"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="MainWindow"
+    Title="BloomFilter Manager"
     Width="660"
     Height="390"
     d:DataContext="{d:DesignInstance Type=localmodels:MainWindowModel}"
