@@ -12,7 +12,7 @@ BloomResult check_bloom(const CBloom& bloom, bool paranoid, const std::wstring& 
 	if (paranoid)
 	{
 		auto locale = _wcreate_locale(LC_ALL, L"");
-		LocaleTWrapper wrapper(locale);
+		LocaleTWrapper wrapper(locale, true);
 
 		std::wstring upper = wrapper.toupper(word);
 		if (bloom.Check(upper.c_str()))
@@ -24,9 +24,7 @@ BloomResult check_bloom(const CBloom& bloom, bool paranoid, const std::wstring& 
 
 		lower[0] = upper[0];
 		if (bloom.Check(lower.c_str()))
-			return BloomResult::NOTSAFE;
-		
-		_free_locale(locale);
+			return BloomResult::NOTSAFE;		
 	}
 	return BloomResult::NOTFOUND;
 }

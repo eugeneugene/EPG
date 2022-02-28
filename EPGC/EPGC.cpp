@@ -27,13 +27,13 @@ int main(int argc, char* argv[], char* envp[])
 		app.allow_windows_style_options();
 
 		int amount = 0;
-		app.add_option("-a,--amount", amount, "Amount of passwords to generate")
+		app.add_option("-A,--amount", amount, "Amount of passwords to generate")
 			->required()
 			->check(CLI::Range(1, 255), "(1..255)", "amount_range");
 
 
 		int length = 0;
-		app.add_option("-l,--length", length, "Length of generated passwords (min)")
+		app.add_option("-L,--length", length, "Length of generated passwords (min)")
 			->required()
 			->check(CLI::Range(1, 255), "(1..255)", "length_range");
 
@@ -47,7 +47,7 @@ int main(int argc, char* argv[], char* envp[])
 			->check(CLI::IsMember({ 'p','h','H','r' }), "'p','h','H','r'");
 
 		std::string set;
-		app.add_option("-s,--set", set, "Character set: lL - Small, cC - Capital, nN - Numbers, sS - Symbols")
+		app.add_option("-S,--set", set, "Character set: lL - Small, cC - Capital, nN - Numbers, sS - Symbols")
 			->required()
 			->check([](const std::string& str)
 				{

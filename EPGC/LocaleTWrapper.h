@@ -9,9 +9,16 @@
 class LocaleTWrapper
 {
 	_locale_t locale;
+	bool auto_free_locale;
 public:
-	LocaleTWrapper(const _locale_t _locale) : locale(_locale)
+	LocaleTWrapper(const _locale_t _locale, bool _auto_free_locale = false) : locale(_locale), auto_free_locale(_auto_free_locale)
 	{ }
+
+	~LocaleTWrapper()
+	{
+		if (auto_free_locale)
+			_free_locale(locale);
+	}
 
 	char toupper(char c)
 	{
